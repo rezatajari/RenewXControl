@@ -8,6 +8,10 @@ RenewXControl is a smart monitoring and management system designed to optimize r
 
 The project focuses on providing a comprehensive application for users to oversee their renewable energy infrastructure. This includes tracking asset conditions, monitoring energy generation, and ensuring efficient energy storage and distribution.
 
+## Project Documentation
+
+[Domain Documentation](https://github.com/rezatajari/RenewXControl/tree/master/RenewXControl.Console/doc/Domain%20Documentation)
+
 ## Key Components
 
 ### **Users & Energy Generation**
