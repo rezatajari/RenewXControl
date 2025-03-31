@@ -12,6 +12,7 @@ The project focuses on providing a comprehensive application for users to overse
 
 [Domain Documentation](https://github.com/rezatajari/RenewXControl/tree/master/RenewXControl.Console/doc/Domain%20Documentation)
 
+[Modular Structure](https://github.com/rezatajari/RenewXControl/blob/develop/RenewXControl.Console/doc/Modular%20Structure.md)
 ## Key Components
 
 ### **Users & Energy Generation**
