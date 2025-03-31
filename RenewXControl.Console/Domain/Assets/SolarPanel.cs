@@ -1,16 +1,23 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
+using RenewXControl.Console.InitConfiguration.AssetsModelConfig;
 
 namespace RenewXControl.Console.Domain.Assets
 {
     public class SolarPanel : Asset
     {
-        public SolarPanel()
+        private static int _id = 0;
+        public SolarPanel(SolarPanelConfig solarConfig)
         {
-       
+            Id = _id++;
+            Name = $"SP{Id}";
+            Irradiance = solarConfig.Irradiance;
+            ActivePower = solarConfig.ActivePower;
+            SetPoint = solarConfig.SetPoint;
         }
         public double Irradiance { get; set; } // W/m²
         public double ActivePower { get; set; } // kW

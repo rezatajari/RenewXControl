@@ -1,7 +1,19 @@
-﻿namespace RenewXControl.Console.Domain.Assets
+﻿using RenewXControl.Console.InitConfiguration.AssetsModelConfig;
+
+namespace RenewXControl.Console.Domain.Assets
 {
     public class Battery : Asset
     {
+        private static int _id = 0;
+        public Battery(BatteryConfig batteryConfig)
+        {
+            Id = _id++;
+            Name = $"Battery{Id}";
+            Capacity = batteryConfig.Capacity;
+            StateOfCharge = batteryConfig.StateOfCharge;
+            SetPoint = batteryConfig.SetPoint;
+            FrequentlyOfDisCharge = batteryConfig.FrequentlyOfDisCharge;
+        }
         public double Capacity { get; set; } // kW
         public double StateOfCharge { get; set; } // KW
         public double SetPoint { get; set; } // Charge/Discharge control

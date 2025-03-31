@@ -1,0 +1,18 @@
+{
+  "WindTurbineConfig": {
+    "SetPoint": 5.0,
+    "WindSpeed": 8.5,
+    "ActivePower": 2.0
+  },
+  "SolarPanelConfig": {
+    "SetPoint": 4.0,
+    "Irradiance": 500,
+    "ActivePower": 3.0
+  },
+  "BatteryConfig": {
+    "Capacity": 100.0,
+    "StateOfCharge": 50.0,
+    "SetPoint": 7.0,
+    "FrequentlyOfDisCharge": 5.0
+  }
+}

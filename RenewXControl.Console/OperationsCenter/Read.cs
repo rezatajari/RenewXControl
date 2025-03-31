@@ -18,7 +18,7 @@ namespace RenewXControl.Console.OperationsCenter
        
         public double GetSumAp()
         {
-          return _windTurbine.GetAp()+ _solarPanel.GetAp();
+          return _windTurbine.GetAp() + _solarPanel.GetAp();
         }
 
         public double GetWs()

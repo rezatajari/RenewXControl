@@ -10,6 +10,7 @@ namespace RenewXControl.Console.Domain.Users
     public class Site
     {
         public string Id { get; set; }
+        public string Name { get; set; }
         public string Location { get; set;}
         public List<Asset> Assets { get; set; } = [];
     }

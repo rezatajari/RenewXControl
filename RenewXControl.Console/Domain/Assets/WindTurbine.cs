@@ -3,11 +3,21 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using RenewXControl.Console.InitConfiguration.AssetsModelConfig;
 
 namespace RenewXControl.Console.Domain.Assets
 {
     public class WindTurbine : Asset
     {
+        private static int _id=0;
+        public WindTurbine(WindTurbineConfig turbineConfig)
+        {
+            Id = _id++;
+            Name = $"WT{Id}";
+            WindSpeed = turbineConfig.WindSpeed;
+            ActivePower = turbineConfig.ActivePower;
+            SetPoint = turbineConfig.SetPoint;
+        }
         public double WindSpeed { get; set; }  // km/h
         public double ActivePower { get; set; } // kW
         public double SetPoint { get; set; } // Determines operation status
