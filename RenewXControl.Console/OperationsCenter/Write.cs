@@ -1,12 +1,12 @@
 ﻿using RenewXControl.Console.Domain.Assets;
-using RenewXControl.Console.Interfaces.Operations;
+
 
 namespace RenewXControl.Console.OperationsCenter
 {
     /// <summary>
     /// Class responsible for writing data to various assets.
     /// </summary>
-    public class Write:IWriteOp
+    public class Write
     {
        private readonly Asset _asset;
        /// <summary>
