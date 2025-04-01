@@ -13,6 +13,6 @@
     "Capacity": 100.0,
     "StateOfCharge": 50.0,
     "SetPoint": 7.0,
-    "FrequentlyOfDisCharge": 15
+    "FrequentlyOfDisCharge": 7.5
   }
 }
