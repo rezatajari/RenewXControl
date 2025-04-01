@@ -73,19 +73,6 @@ async Task MonitoringShowInformation()
 {
     while (true)
     {
-        if (battery.SetPoint < battery.Capacity && battery.StateOfCharge < battery.Capacity) // If false, we are currently discharging
-        {
-            solarPanel.SetSp(4.0);
-            windTurbine.SetSp(8.5);
-            _ = Task.Run(() => battery.Charge(solarPanel.GetAp(), windTurbine.GetAp()));
-        }
-        else if (battery.SetPoint < battery.Capacity && Math.Abs(battery.Capacity - battery.StateOfCharge) < 0.001)// If true, we need to start charging again
-        {
-            solarPanel.SetSp(0); // Off solar panel
-            windTurbine.SetSp(0); // Off wind turbine
-            _ = Task.Run(() => battery.Discharge());
-        }
-
         Console.Clear(); // Clear previous output
         Console.SetCursorPosition(0, 0);
 
@@ -98,7 +85,10 @@ async Task MonitoringShowInformation()
         Console.ForegroundColor = ConsoleColor.Blue;
         Console.WriteLine("=== Wind Turbine Status ===");
         Console.ResetColor();
-        Console.WriteLine($"Status:        {windTurbine.PowerStatusMessage}");
+        Console.Write("Status:        "); // Keep "Status:" in the default color
+        Console.ForegroundColor = windTurbine.SetPoint == 0 ? ConsoleColor.Red : ConsoleColor.Green;
+        Console.WriteLine(windTurbine.PowerStatusMessage); // Change only the value color
+        Console.ResetColor();
         Console.WriteLine($"Name:          {windTurbine.Name}");
         Console.WriteLine($"SetPoint:      {windTurbine.SetPoint} kW");
         Console.WriteLine($"Wind Speed:    {windTurbine.GetWindSpeed()} km/h");
@@ -108,7 +98,10 @@ async Task MonitoringShowInformation()
         Console.ForegroundColor = ConsoleColor.Yellow;
         Console.WriteLine("=== Solar Panel Status ===");
         Console.ResetColor();
-        Console.WriteLine($"Status:        {solarPanel.PowerStatusMessage}");
+        Console.Write("Status:        "); // Keep "Status:" in the default color
+        Console.ForegroundColor = solarPanel.SetPoint == 0 ? ConsoleColor.Red : ConsoleColor.Green;
+        Console.WriteLine(solarPanel.PowerStatusMessage); // Change only the value color
+        Console.ResetColor();
         Console.WriteLine($"Name:          {solarPanel.Name}");
         Console.WriteLine($"SetPoint:      {solarPanel.SetPoint} kW");
         Console.WriteLine($"Irradiance:    {solarPanel.GetIrradiance()} W/m²");
@@ -118,12 +111,35 @@ async Task MonitoringShowInformation()
         Console.ForegroundColor = ConsoleColor.Green;
         Console.WriteLine("=== Battery Status ===");
         Console.ResetColor();
-        Console.WriteLine($"Status:        {battery.ChargeStateMessage}");
+        Console.Write("Status:        "); //
+        Console.ForegroundColor = battery.IsNeedToCharge ? ConsoleColor.Green : ConsoleColor.Red;
+        Console.WriteLine(battery.ChargeStateMessage); 
+        Console.ResetColor();
         Console.WriteLine($"Name:          {battery.Name}");
         Console.WriteLine($"Capacity:      {battery.Capacity} kWh");
         Console.WriteLine($"State of Charge: {battery.StateOfCharge} %");
         Console.WriteLine($"SetPoint:      {battery.SetPoint} kW");
         Console.WriteLine($"Discharge Rate: {battery.FrequentlyOfDisCharge} kW\n");
+
+        // charging 
+        if (battery is { IsNeedToCharge: true, IsStartingCharge: false })
+        {
+            solarPanel.SetSp(2.1);
+            solarPanel.PowerStatusMessage = $"Solar is run..";
+            windTurbine.SetSp(3.1);
+            windTurbine.PowerStatusMessage = $"Turbine is run..";
+            _ = Task.Run(() => battery.Charge(solarPanel.GetAp(), windTurbine.GetAp()));
+
+        }
+        // discharging 
+        else if (battery is { IsNeedToCharge: false, IsStartingCharge: false })
+        {
+            solarPanel.SetSp(0); 
+            solarPanel.PowerStatusMessage = "Solar is off..";
+            windTurbine.SetSp(0); 
+            windTurbine.PowerStatusMessage = "Turbine is off..";
+            _ = Task.Run(() => battery.Discharge());
+        }
 
         // Refresh every second
         await Task.Delay(1000);

@@ -12,12 +12,12 @@ namespace RenewXControl.Console.Domain.Assets
             WindSpeed = turbineConfig.WindSpeed;
             ActivePower = turbineConfig.ActivePower;
             SetPoint = turbineConfig.SetPoint;
-            PowerStatusMessage = "Wind turbine is not generating power";
+            PowerStatusMessage = "Wind turbine is not generating power now";
         }
         public double WindSpeed { get;private set; }  // km/h
         public double ActivePower { get;private set; } // kW
         public double SetPoint { get;private set; } // Determines operation status
-        public string PowerStatusMessage { get; private set; }
+        public string PowerStatusMessage { get;  set; }
 
         public void Start()
         {
@@ -36,7 +36,6 @@ namespace RenewXControl.Console.Domain.Assets
         public void SetSp(double setPoint)
         {
             SetPoint = setPoint;
-            PowerStatusMessage = "Solar panel is set base on new update set point";
             ActivePower = Math.Min(WindSpeed, SetPoint); // Update active power based on new set point
         }
         public double GetAp()

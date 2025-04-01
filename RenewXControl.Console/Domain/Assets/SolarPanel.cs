@@ -12,13 +12,13 @@ namespace RenewXControl.Console.Domain.Assets
             Irradiance = solarConfig.Irradiance;
             ActivePower = solarConfig.ActivePower;
             SetPoint = solarConfig.SetPoint;
-            PowerStatusMessage = "Solar panel is not generating power";
+            PowerStatusMessage = "Solar panel is not generating power now";
         }
 
         public double Irradiance { get; private set; } // W/m²
         public double ActivePower { get; private set; } // kW
         public double SetPoint { get; private set; } // Determines operation status
-        public string PowerStatusMessage { get; private set; }
+        public string PowerStatusMessage { get;  set; }
 
         public void Start()
         {
@@ -36,12 +36,12 @@ namespace RenewXControl.Console.Domain.Assets
         public void SetSp(double setPoint)
         {
             SetPoint = setPoint;
-            PowerStatusMessage = "Solar panel is set base on new update set point";
             ActivePower = Math.Min(Irradiance, SetPoint); // Update active power based on new set point
         }
         public double GetAp()
         {
             ActivePower = Math.Min(Irradiance, SetPoint);
+          
             return ActivePower;
         }
         public double GetIrradiance()
