@@ -3,6 +3,12 @@
 ## Overview
 This document explains how the asset monitoring application operates, focusing on key concepts such as asynchronous execution, continuous updates using a `while` loop, and battery charge/discharge handling. The system simulates the real-time monitoring of renewable energy sources, including wind turbines, solar panels, and batteries.
 
+## Initial Monitoring View
+![Initial Monitoring View](https://github.com/rezatajari/RenewXControl/blob/master/RenewXControl.Console/doc/Images%26Gifs/Init.jpg)
+
+## Live Monitoring in Action
+![Live Monitoring GIF](https://github.com/rezatajari/RenewXControl/blob/master/RenewXControl.Console/doc/Images%26Gifs/Live%20Monitoring%20Application%20Process.gif)
+
 ## Application Flow
 The monitoring application follows a structured sequence:
 
