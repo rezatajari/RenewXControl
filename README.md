@@ -10,11 +10,19 @@ The project focuses on providing a comprehensive application for users to overse
 
 ## Project Documentation
 
-[Domain Documentation](https://github.com/rezatajari/RenewXControl/tree/master/RenewXControl.Console/doc/Domain%20Documentation)
+- **[Assets Workflow](https://github.com/rezatajari/RenewXControl/tree/master/RenewXControl.Console/doc/Assets)**
+  - Describes the workflow of managing and simulating assets such as solar panels, wind turbines, and batteries.
 
-[Modular Structure](https://github.com/rezatajari/RenewXControl/blob/develop/RenewXControl.Console/doc/Modular%20Structure.md)
+- **[Domain](https://github.com/rezatajari/RenewXControl/tree/master/RenewXControl.Console/doc/Domain)**
+  - This documentation dives into the domain model, covering the logic and interaction between various entities.
+
+- **[Configuration](https://github.com/rezatajari/RenewXControl/blob/master/RenewXControl.Console/doc/Configuration.md)**
+  - Details the configuration settings for the system, helping you understand how to set up different components.
+
+- **[Monitoring Application Process](https://github.com/rezatajari/RenewXControl/blob/master/RenewXControl.Console/doc/Monitoring%20Application%20Process.md)**
+  - This document explains the monitoring process, including how data is captured, updated, and displayed in real-time for asset monitoring.
+
 ## Key Components
-
 ### **Users & Energy Generation**
 
 - Users generate electricity from renewable energy sources such as solar panels and wind turbines.
