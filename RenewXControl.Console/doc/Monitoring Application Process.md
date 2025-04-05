@@ -1,6 +1,3 @@
-Sure! Here's your enhanced documentation in **GitHub Markdown format**, **without images**, focused solely on **clear, structured written explanation**:
-
----
 
 # 🚀 **RenewXControl Core Monitoring System**
 
