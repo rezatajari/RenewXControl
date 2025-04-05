@@ -1,92 +1,131 @@
-# Monitoring Application Process
-
-## Overview
-This document explains how the asset monitoring application operates, focusing on key concepts such as asynchronous execution, continuous updates using a `while` loop, and battery charge/discharge handling. The system simulates the real-time monitoring of renewable energy sources, including wind turbines, solar panels, and batteries.
-
-## Application Flow
-The monitoring application follows a structured sequence:
-
-1. **Load Configuration:**
-   - Reads asset configuration from a JSON file (`Asset.json`).
-   - Initializes `WindTurbine`, `SolarPanel`, and `Battery` objects with respective configurations.
-
-2. **Print Initial Values:**
-   - Displays the initial status of wind turbines, solar panels, and batteries.
-   - Waits for user input before proceeding to live monitoring.
-
-3. **Start Assets:**
-   - Initiates energy generation from solar panels and wind turbines.
-
-4. **Monitoring Loop (Asynchronous):**
-   - Continuously updates asset status.
-   - Adjusts power generation dynamically based on battery charge levels.
+Sure! Here's your enhanced documentation in **GitHub Markdown format**, **without images**, focused solely on **clear, structured written explanation**:
 
 ---
 
-## Why Use Async and While Loop?
+# 🚀 **RenewXControl Core Monitoring System**
 
-### Asynchronous Execution (`async Task`)
-The application uses `Task.Run(MonitoringShowInformation)` to run the monitoring process asynchronously. This allows the application to:
-- **Avoid blocking the main thread** so that the system remains responsive.
-- **Execute background tasks concurrently**, such as monitoring and updating statuses without halting execution.
-
-### Continuous Monitoring (`while (true) Loop`)
-The infinite `while` loop ensures that:
-- The system constantly updates the asset status every second (`Task.Delay(1000)`).
-- Real-time conditions, such as wind speed and irradiance, influence the power output.
-- Battery state changes dynamically based on energy availability.
+A real-time, in-memory simulation engine that mimics renewable energy control—focusing on solar, wind, and battery interactions. This documentation walks you through the architecture, reasoning, and core loops.
 
 ---
 
-## Charge and Discharge Handling
-A crucial part of the monitoring system is determining when to charge or discharge the battery.
+## 📘 **Application Flow Overview**
 
-### **Charging Condition**
+1. **Load all JSON Configurations**
+2. **Initialize domain entities (User → Site → Assets)**
+3. **Start simulation loop**
+4. **Monitor battery state continuously**
+5. **Charge/Discharge dynamically based on logic**
+
+---
+
+## 🔧 **Key Components**
+
+### 1. **Configuration & Initialization**
+
+This is the app’s setup stage, where all your input values and relationships are formed from static `.json` files.
+
+#### ✅ Config Loading
 ```csharp
-if (battery is { IsNeedToCharge: true, IsStartingCharge: false })
+// Load all configurations
+var userConfig = ConfigurationSetting.ReadConfig<UserConfig>("User.json");
+var siteConfig = ConfigurationSetting.ReadConfig<SiteConfig>("Site.json");
+var batteryConfig = ConfigurationSetting.ReadConfig<BatteryConfig>("Battery.json");
+```
+
+#### 🔗 Entity Binding
+```csharp
+// Create full object graph
+var user = new User(userConfig);
+var site = new Site(siteConfig, user.Id);
+var battery = new Battery(batteryConfig, site.Id);
+```
+
+> **Why this structure?**  
+It mirrors real-world ownership: **Users own Sites, Sites own Assets.**
+
+---
+
+### 2. **Monitoring Engine (`RXCApp`)**
+
+#### 🌀 `Run()` Method Responsibilities:
+1. Print initial states
+2. Start power generators
+3. Begin a **forever monitoring loop** that:
+   - Checks charge/discharge state
+   - Updates energy values
+   - Logs output
+
+#### 🔄 Core Loop Mechanics
+```csharp
+while (true)
 {
-    solarPanel.SetSp(2.1);
-    solarPanel.PowerStatusMessage = "Solar is run..";
-    windTurbine.SetSp(3.1);
-    windTurbine.PowerStatusMessage = "Turbine is run..";
-    _ = Task.Run(() => battery.Charge(solarPanel.GetAp(), windTurbine.GetAp()));
+    UpdateAssetStates();
+    CheckBatteryLogic();
+    await Task.Delay(1000); // Refresh every second
 }
 ```
-#### Explanation:
-- If the battery **needs charging** (`IsNeedToCharge == true`) but **has not started charging yet** (`IsStartingCharge == false`):
-  - **Solar panel and wind turbine start generating power** to supply the battery.
-  - The battery begins charging asynchronously (`Task.Run(battery.Charge())`).
 
-### **Discharging Condition**
-```csharp
-else if (battery is { IsNeedToCharge: false, IsStartingCharge: false })
-{
-    solarPanel.SetSp(0);
-    solarPanel.PowerStatusMessage = "Solar is off..";
-    windTurbine.SetSp(0);
-    windTurbine.PowerStatusMessage = "Turbine is off..";
-    _ = Task.Run(() => battery.Discharge());
-}
-```
-#### Explanation:
-- If the battery **does not need charging** (`IsNeedToCharge == false`) and is **not currently charging**:
-  - **Solar panel and wind turbine shut down** to conserve energy.
-  - The battery starts supplying power asynchronously (`Task.Run(battery.Discharge())`).
+#### 🧠 Key Design Decisions
 
-### **Why This Happens at the End of Each Iteration?**
-- The system evaluates the battery’s status **after** displaying updated values.
-- It ensures the UI reflects the latest power states **before** making new changes.
-- Prevents unnecessary fluctuations by waiting for each cycle to complete.
+| Component               | Purpose                                                    |
+|------------------------|------------------------------------------------------------|
+| `while (true)`         | Infinite simulation                                        |
+| `Task.Delay(1000)`     | Keeps loop async and responsive                            |
+| `Task.Run(() => ...)`  | Avoids UI freeze during long operations like charging      |
 
 ---
 
-## Summary of Key Concepts
-| Feature | Purpose |
-|---------|---------|
-| **Async Execution** | Keeps monitoring responsive while handling charge/discharge tasks in parallel. |
-| **While Loop** | Ensures continuous status updates at regular intervals. |
-| **Battery Management** | Adjusts energy generation dynamically to optimize charging and discharging. |
-| **Status Display First** | Shows the latest status before deciding on power adjustments. |
+## ⚡ **Charge & Discharge Logic**
 
-This structured approach ensures that the monitoring system accurately tracks renewable energy assets in real-time, optimizing efficiency and performance.
+The battery behaves based on a clean **state machine**.
 
+### 🔁 State Transitions
+
+- **Charging ➡ Discharging**: When battery reaches full capacity.
+- **Discharging ➡ Charging**: When battery drops to set point.
+
+### 🔍 Conditions
+
+| State        | Condition                             | Actions                                        |
+|--------------|----------------------------------------|------------------------------------------------|
+| Charging     | `IsNeedToCharge && !IsStartingCharge`  | Start solar/wind, begin `Charge()` task       |
+| Discharging  | `!IsNeedToCharge && !IsStartingCharge` | Stop generators, begin `Discharge()` task     |
+
+> 💡 **Why check at loop end?**  
+Ensures all readings are fresh and prevents double-triggering or race conditions.
+
+---
+
+## 🖥️ **Console UI Behavior**
+
+| Feature              | Behavior                                                       |
+|----------------------|----------------------------------------------------------------|
+| Color-coded Output   | Green = Charging, Red = Idle or Discharging                   |
+| Live Values          | Random `GetAp()` and `GetWindSpeed()` simulate environment     |
+| Clear Separation     | Sections are formatted for visual readability on console       |
+
+---
+
+## 🧱 **Why This Architecture Works**
+
+1. **State-Driven**  
+   Using logic based on battery state (not tangled `if` trees) makes behavior predictable.
+
+2. **Non-Blocking Operations**  
+   Charging runs in parallel, keeping the console responsive.
+
+3. **Real-Time Simulation**  
+   `Task.Delay` mimics sensor update intervals without freezing the app.
+
+4. **Config-First System**  
+   Makes the system easily configurable and testable.
+
+---
+
+## 🧭 Final Thoughts
+
+The current setup is lightweight, testable, and mirrors real-world monitoring systems:
+- Configurable from JSON
+- Behaviors modeled as clean state machines
+- Live loop using async
+- Console UI for developer feedback

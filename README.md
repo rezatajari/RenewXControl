@@ -10,9 +10,6 @@ The project focuses on providing a comprehensive application for users to overse
 
 ## Project Documentation
 
-- **[Assets Workflow](https://github.com/rezatajari/RenewXControl/tree/master/RenewXControl.Console/doc/Assets)**
-  - Describes the workflow of managing and simulating assets such as solar panels, wind turbines, and batteries.
-
 - **[Domain](https://github.com/rezatajari/RenewXControl/tree/master/RenewXControl.Console/doc/Domain)**
   - This documentation dives into the domain model, covering the logic and interaction between various entities.
 
@@ -21,6 +18,22 @@ The project focuses on providing a comprehensive application for users to overse
 
 - **[Monitoring Application Process](https://github.com/rezatajari/RenewXControl/blob/master/RenewXControl.Console/doc/Monitoring%20Application%20Process.md)**
   - This document explains the monitoring process, including how data is captured, updated, and displayed in real-time for asset monitoring.
+
+
+---
+## **Application Demo**  
+### **1. Initial Configuration**  
+![Initial Setup](https://github.com/rezatajari/RenewXControl/blob/master/RenewXControl.Console/doc/Images%26Gifs/Init.jpg)  
+*System startup showing loaded configurations for all assets*
+
+### **2. Live Monitoring**  
+![Live Monitoring Demo](https://github.com/rezatajari/RenewXControl/blob/master/RenewXControl.Console/doc/Images%26Gifs/Live%20Monitoring%20Application%20Process.gif)  
+*Real-time operation featuring:*  
+- Color-coded status updates (Green=Active, Red=Inactive)  
+- Dynamic power level adjustments  
+- Automatic battery state transitions  
+
+---
 
 ## Key Components
 ### **Users & Energy Generation**
@@ -84,3 +97,14 @@ RenewXControl is designed to be highly flexible and scalable. Each user has uniq
 
 The goal of RenewXControl is to provide an intelligent platform for users to efficiently manage their renewable energy infrastructure, ensuring optimal performance, real-time monitoring, and seamless energy transactions with the government.
 
+
+
+Here's how to seamlessly integrate your GIF demonstration into the README.md with proper section flow:
+
+---
+
+## **Project Scope**  
+The project focuses on providing a comprehensive application for users to oversee their renewable energy infrastructure. This includes:  
+- Real-time tracking of asset conditions  
+- Solar/wind energy generation monitoring  
+- Intelligent battery charge/discharge management  
