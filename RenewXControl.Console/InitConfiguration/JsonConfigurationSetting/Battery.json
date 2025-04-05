@@ -1,0 +1,6 @@
+{
+  "Capacity": 100,
+  "StateOfCharge": 75,
+  "SetPoint": 50,
+  "FrequentlyOfDisCharge": 5
+}

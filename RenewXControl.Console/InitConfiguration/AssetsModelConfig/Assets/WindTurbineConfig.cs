@@ -4,12 +4,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace RenewXControl.Console.InitConfiguration.AssetsModelConfig
+namespace RenewXControl.Console.InitConfiguration.AssetsModelConfig.Assets
 {
-    public class SolarPanelConfig
+    public class WindTurbineConfig    
     {
-        public double Irradiance { get; set; }
         public double SetPoint { get; set; }
+        public double WindSpeed { get; set; }
         public double ActivePower { get; set; }
     }
 }

@@ -1,16 +1,46 @@
-﻿using System.Security.AccessControl;
-using System.Text.Json;
+﻿using System.Text.Json;
 using RenewXControl.Console.Domain.Assets;
-using RenewXControl.Console.InitConfiguration.AssetsModelConfig;
-using System.Threading.Tasks;
-using System.Xml.Serialization;
+using RenewXControl.Console.Domain.Users;
+using RenewXControl.Console.InitConfiguration.AssetsModelConfig.Assets;
+using RenewXControl.Console.InitConfiguration.AssetsModelConfig.Users;
 
-var jsonAssetsConfiguration = File.ReadAllText(path: @"D:\Repo\RenewXControl\RenewXControl.Console\InitConfiguration\JsonConfigurationSetting\Asset.json");
-var assets = JsonSerializer.Deserialize<AssetsConfig>(jsonAssetsConfiguration);
 
-var windTurbine = new WindTurbine(assets.WindTurbineConfig);
-var solarPanel = new SolarPanel(assets.SolarPanelConfig);
-var battery = new Battery(assets.BatteryConfig);
+var jsonUserConfig =
+    File.ReadAllText(
+        path: @"D:\Repo\RenewXControl\RenewXControl.Console\InitConfiguration\JsonConfigurationSetting\User.json");
+var userConfig = JsonSerializer.Deserialize<UserConfig>(jsonUserConfig);
+
+var jsonSiteConfig =
+    File.ReadAllText(
+        path: @"D:\Repo\RenewXControl\RenewXControl.Console\InitConfiguration\JsonConfigurationSetting\Site.json");
+var siteConfig = JsonSerializer.Deserialize<SiteConfig>(jsonSiteConfig);
+
+var jsonSolarConfig =
+    File.ReadAllText(
+        path: @"D:\Repo\RenewXControl\RenewXControl.Console\InitConfiguration\JsonConfigurationSetting\SolarPanel.json");
+var solarConfig = JsonSerializer.Deserialize<SolarPanelConfig>(jsonSolarConfig);
+
+var jsonTurbineConfig =
+    File.ReadAllText(
+        path: @"D:\Repo\RenewXControl\RenewXControl.Console\InitConfiguration\JsonConfigurationSetting\WindTurbine.json");
+var windTurbineConfig = JsonSerializer.Deserialize<WindTurbineConfig>(jsonTurbineConfig);
+
+var jsonBatteryConfig =
+    File.ReadAllText(
+        path: @"D:\Repo\RenewXControl\RenewXControl.Console\InitConfiguration\JsonConfigurationSetting\Battery.json");
+var batteryConfig = JsonSerializer.Deserialize<BatteryConfig>(jsonBatteryConfig);
+
+
+var user = new User(userConfig);
+var site = new Site(siteConfig, user.Id);
+var windTurbine = new WindTurbine(windTurbineConfig, site.Id);
+var solarPanel = new SolarPanel(solarConfig,site.Id);
+var battery = new Battery(batteryConfig,site.Id);
+site.AddAsset(windTurbine);
+site.AddAsset(solarPanel);
+site.AddAsset(battery);
+user.AddSite(site);
+
 
 // Print initial values once BEFORE entering the loop
 PrintInitial();
@@ -113,7 +143,7 @@ async Task MonitoringShowInformation()
         Console.ResetColor();
         Console.Write("Status:        "); //
         Console.ForegroundColor = battery.IsNeedToCharge ? ConsoleColor.Green : ConsoleColor.Red;
-        Console.WriteLine(battery.ChargeStateMessage); 
+        Console.WriteLine(battery.ChargeStateMessage);
         Console.ResetColor();
         Console.WriteLine($"Name:          {battery.Name}");
         Console.WriteLine($"Capacity:      {battery.Capacity} kWh");
@@ -121,27 +151,36 @@ async Task MonitoringShowInformation()
         Console.WriteLine($"SetPoint:      {battery.SetPoint} kW");
         Console.WriteLine($"Discharge Rate: {battery.FrequentlyOfDisCharge} kW\n");
 
-        // charging 
-        if (battery is { IsNeedToCharge: true, IsStartingCharge: false })
+        switch (battery)
         {
-            solarPanel.SetSp(2.1);
-            solarPanel.PowerStatusMessage = $"Solar is run..";
-            windTurbine.SetSp(3.1);
-            windTurbine.PowerStatusMessage = $"Turbine is run..";
-            _ = Task.Run(() => battery.Charge(solarPanel.GetAp(), windTurbine.GetAp()));
+            // charging 
+            case { IsNeedToCharge: true, IsStartingCharge: false }:
 
-        }
-        // discharging 
-        else if (battery is { IsNeedToCharge: false, IsStartingCharge: false })
-        {
-            solarPanel.SetSp(0); 
-            solarPanel.PowerStatusMessage = "Solar is off..";
-            windTurbine.SetSp(0); 
-            windTurbine.PowerStatusMessage = "Turbine is off..";
-            _ = Task.Run(() => battery.Discharge());
+                solarPanel.SetSp();
+                solarPanel.PowerStatusMessage = solarPanel.SetPoint != 0 ? "Solar is run.." : "Solar is off.. we doesn't have good Irradiance";
+
+                windTurbine.SetSp();
+                windTurbine.PowerStatusMessage = windTurbine.SetPoint != 0 ? "Turbine is run.." : "Turbine is off.. we doesn't have good Wind speed";
+
+                _ = Task.Run(() => battery.Charge(solarPanel.GetAp(), windTurbine.GetAp()));
+                break;
+
+            // discharging 
+            case { IsNeedToCharge: false, IsStartingCharge: false }:
+
+                solarPanel.Off();
+                solarPanel.PowerStatusMessage = "Solar is off..";
+
+                windTurbine.Off();
+                windTurbine.PowerStatusMessage = "Turbine is off..";
+
+                battery.SetSp();
+                _ = Task.Run(() => battery.Discharge());
+                break;
         }
 
         // Refresh every second
         await Task.Delay(1000);
     }
 }
+

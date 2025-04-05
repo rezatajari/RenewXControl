@@ -1,13 +1,14 @@
-﻿using RenewXControl.Console.InitConfiguration.AssetsModelConfig;
+﻿using RenewXControl.Console.InitConfiguration.AssetsModelConfig.Assets;
 
 namespace RenewXControl.Console.Domain.Assets
 {
     public class SolarPanel : Asset
     {
         private static int _id = 0;
-        public SolarPanel(SolarPanelConfig solarConfig)
+        public SolarPanel(SolarPanelConfig solarConfig, int siteId) : base(siteId)
         {
             Id = ++_id;
+            SiteId=siteId;
             Name = $"SP{Id}";
             Irradiance = solarConfig.Irradiance;
             ActivePower = solarConfig.ActivePower;
@@ -18,7 +19,7 @@ namespace RenewXControl.Console.Domain.Assets
         public double Irradiance { get; private set; } // W/m²
         public double ActivePower { get; private set; } // kW
         public double SetPoint { get; private set; } // Determines operation status
-        public string PowerStatusMessage { get;  set; }
+        public string PowerStatusMessage { get; set; }
 
         public void Start()
         {
@@ -33,21 +34,32 @@ namespace RenewXControl.Console.Domain.Assets
             }
 
         }
-        public void SetSp(double setPoint)
+
+        public void Off()
         {
-            SetPoint = setPoint;
-            ActivePower = Math.Min(Irradiance, SetPoint); // Update active power based on new set point
+            SetPoint = 0;
+            ActivePower = SetPoint;
+        }
+        public void SetSp()
+        {
+            SetPoint = new Random().NextDouble() * Irradiance;
+            if (SetPoint != 0){
+                ActivePower = SetPoint;
+            }
+            else
+            {
+                Off();
+            }
         }
         public double GetAp()
         {
             ActivePower = Math.Min(Irradiance, SetPoint);
-          
+
             return ActivePower;
         }
         public double GetIrradiance()
         {
-            var randomGen = new Random();
-            Irradiance = randomGen.NextDouble() * 10;
+            Irradiance = new Random().NextDouble() * 10;
             return Irradiance;
         }
 
