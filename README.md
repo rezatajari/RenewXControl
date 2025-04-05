@@ -102,9 +102,3 @@ The goal of RenewXControl is to provide an intelligent platform for users to eff
 Here's how to seamlessly integrate your GIF demonstration into the README.md with proper section flow:
 
 ---
-
-## **Project Scope**  
-The project focuses on providing a comprehensive application for users to oversee their renewable energy infrastructure. This includes:  
-- Real-time tracking of asset conditions  
-- Solar/wind energy generation monitoring  
-- Intelligent battery charge/discharge management  
