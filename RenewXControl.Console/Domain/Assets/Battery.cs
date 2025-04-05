@@ -1,13 +1,14 @@
-﻿using RenewXControl.Console.InitConfiguration.AssetsModelConfig;
+﻿using RenewXControl.Console.InitConfiguration.AssetsModelConfig.Assets;
 
 namespace RenewXControl.Console.Domain.Assets
 {
     public class Battery : Asset
     {
         private static int _id = 0;
-        public Battery(BatteryConfig batteryConfig)
+        public Battery(BatteryConfig batteryConfig, int siteId) : base(siteId)
         {
             Id = ++_id;
+            SiteId = siteId;
             Name = $"Battery{Id}";
             Capacity = batteryConfig.Capacity;
             StateOfCharge = batteryConfig.StateOfCharge;
@@ -16,16 +17,17 @@ namespace RenewXControl.Console.Domain.Assets
             ChargeStateMessage = "Battery is not connect to any of assets until now";
 
             if (!CheckEmpty()) return;
-            IsNeedToCharge=true;
+            IsNeedToCharge = true;
             IsStartingCharge = false;
         }
+
         public double Capacity { get; } // kW
         public double StateOfCharge { get; private set; } // KW
         public double SetPoint { get; set; } // Charge/Discharge control
         public double FrequentlyOfDisCharge { get; }
         public string ChargeStateMessage { get; private set; }
         public bool IsNeedToCharge { get; set; }
-        public bool IsStartingCharge{ get; set; }
+        public bool IsStartingCharge { get; set; }
 
         private bool CheckEmpty()
         {
@@ -47,7 +49,7 @@ namespace RenewXControl.Console.Domain.Assets
         }
         public async Task Discharge()
         {
-            IsNeedToCharge=false;
+            IsNeedToCharge = false;
             IsStartingCharge = true;
             ChargeStateMessage = "Battery is discharging";
             var amountToDischarge = StateOfCharge - SetPoint;
@@ -66,15 +68,11 @@ namespace RenewXControl.Console.Domain.Assets
                     StateOfCharge -= rateOfDischarge;
                 }
             }
-            IsStartingCharge= false;
+            IsStartingCharge = false;
             IsNeedToCharge = true;
             ChargeStateMessage = "Discharge complete.";
         }
-        public void SetSp(double setPoint)
-        {
-            SetPoint = setPoint;
-            System.Console.WriteLine($"SetPoint updated to {SetPoint} kW. Starting discharge process...");
-            _ = Discharge();
-        }
+        public void SetSp()
+         => SetPoint = new Random().NextDouble() * Capacity;
     }
 }

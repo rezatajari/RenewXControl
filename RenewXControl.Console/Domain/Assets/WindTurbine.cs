@@ -1,19 +1,21 @@
-﻿using RenewXControl.Console.InitConfiguration.AssetsModelConfig;
+﻿using RenewXControl.Console.InitConfiguration.AssetsModelConfig.Assets;
 
 namespace RenewXControl.Console.Domain.Assets
 {
     public class WindTurbine : Asset
     {
         private static int _id=0;
-        public WindTurbine(WindTurbineConfig turbineConfig)
+        public WindTurbine(WindTurbineConfig turbineConfig,int siteId) : base(siteId)
         {
             Id = ++_id;
+            SiteId=siteId;
             Name = $"WT{Id}";
             WindSpeed = turbineConfig.WindSpeed;
             ActivePower = turbineConfig.ActivePower;
             SetPoint = turbineConfig.SetPoint;
             PowerStatusMessage = "Wind turbine is not generating power now";
         }
+
         public double WindSpeed { get;private set; }  // km/h
         public double ActivePower { get;private set; } // kW
         public double SetPoint { get;private set; } // Determines operation status
@@ -33,11 +35,24 @@ namespace RenewXControl.Console.Domain.Assets
           
 
         }
-        public void SetSp(double setPoint)
+        public void Off()
         {
-            SetPoint = setPoint;
-            ActivePower = Math.Min(WindSpeed, SetPoint); // Update active power based on new set point
+            SetPoint = 0;
+            ActivePower = SetPoint;
         }
+        public void SetSp()
+        {
+            SetPoint = new Random().NextDouble() * WindSpeed;
+            if (SetPoint != 0)
+            {
+                ActivePower = SetPoint;
+            }
+            else
+            {
+                Off();
+            }
+        }
+
         public double GetAp()
         {
             ActivePower = Math.Min(WindSpeed, SetPoint);
@@ -45,8 +60,7 @@ namespace RenewXControl.Console.Domain.Assets
         }
         public double GetWindSpeed()
         {
-            var randomGen = new Random();
-            WindSpeed = randomGen.NextDouble() * 10;
+            WindSpeed = new Random().NextDouble() * 10;
             return WindSpeed;
         }
     }
