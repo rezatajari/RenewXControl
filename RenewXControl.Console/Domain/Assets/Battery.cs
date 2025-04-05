@@ -8,7 +8,7 @@ namespace RenewXControl.Console.Domain.Assets
         public Battery(BatteryConfig batteryConfig, int siteId) : base(siteId)
         {
             Id = ++_id;
-            SiteId=siteId;
+            SiteId = siteId;
             Name = $"Battery{Id}";
             Capacity = batteryConfig.Capacity;
             StateOfCharge = batteryConfig.StateOfCharge;
@@ -17,7 +17,7 @@ namespace RenewXControl.Console.Domain.Assets
             ChargeStateMessage = "Battery is not connect to any of assets until now";
 
             if (!CheckEmpty()) return;
-            IsNeedToCharge=true;
+            IsNeedToCharge = true;
             IsStartingCharge = false;
         }
 
@@ -27,7 +27,7 @@ namespace RenewXControl.Console.Domain.Assets
         public double FrequentlyOfDisCharge { get; }
         public string ChargeStateMessage { get; private set; }
         public bool IsNeedToCharge { get; set; }
-        public bool IsStartingCharge{ get; set; }
+        public bool IsStartingCharge { get; set; }
 
         private bool CheckEmpty()
         {
@@ -49,7 +49,7 @@ namespace RenewXControl.Console.Domain.Assets
         }
         public async Task Discharge()
         {
-            IsNeedToCharge=false;
+            IsNeedToCharge = false;
             IsStartingCharge = true;
             ChargeStateMessage = "Battery is discharging";
             var amountToDischarge = StateOfCharge - SetPoint;
@@ -68,13 +68,11 @@ namespace RenewXControl.Console.Domain.Assets
                     StateOfCharge -= rateOfDischarge;
                 }
             }
-            IsStartingCharge= false;
+            IsStartingCharge = false;
             IsNeedToCharge = true;
             ChargeStateMessage = "Discharge complete.";
         }
         public void SetSp()
-        {
-            SetPoint= new Random().NextDouble() * Capacity;
-        }
+         => SetPoint = new Random().NextDouble() * Capacity;
     }
 }
