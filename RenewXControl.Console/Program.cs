@@ -5,6 +5,7 @@ using RenewXControl.Console.Domain.Users;
 using RenewXControl.Console.InitConfiguration.AssetsModelConfig.Assets;
 using RenewXControl.Console.InitConfiguration.AssetsModelConfig.Users;
 
+// Configuration json files
 var userConfig = ConfigurationSetting.ReadConfig<UserConfig>(fileName: "User.json");
 var siteConfig = ConfigurationSetting.ReadConfig<SiteConfig>(fileName: "Site.json");
 var solarPanelConfig = ConfigurationSetting.ReadConfig<SolarPanelConfig>(fileName: "SolarPanel.json");

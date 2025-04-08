@@ -58,7 +58,7 @@ namespace RenewXControl.Console
             System.Console.WriteLine($"State of Charge: {battery.StateOfCharge} %");
             System.Console.WriteLine($"SetPoint:      {battery.SetPoint} kW");
             System.Console.WriteLine($"Discharge Rate: {battery.FrequentlyOfDisCharge} kW\n");
-
+            
             // Wait for user to acknowledge the initial status before starting the loop
             System.Console.ForegroundColor = ConsoleColor.Red;
             System.Console.WriteLine("\nPress any key to start live monitoring...");
