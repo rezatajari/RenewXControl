@@ -1,4 +1,6 @@
 {
+  // Although your approach to get settings from json files is not wrong but, it's good to know that in .NET we already have this as a built-in functionality
+ // Please refactor your configurations by using appsettings.json and to map your settings to a config class and then use them in the code by injecting IConfiguration interface into your service classes
   "Capacity": 100,
   "StateOfCharge": 75,
   "SetPoint": 50,
