@@ -35,9 +35,6 @@ namespace RenewXControl.Console
             System.Console.SetCursorPosition(0, 0);
             System.Console.ForegroundColor = ConsoleColor.Cyan;
 
-            // For logging purpose, please try using a tool like .Net OpenTelemtery. The current use of system.Console namespace is good enough for this console application but,
-            // What if we want to log some details inside our service classes if they are not placed in this console library? (we will talk more about different layers and libraries while talking about Architecture)
-            // Also, what if you need to review your application's log later? So, you need to be able to persist them somewhere and that's why you need a specific tools for your logging system
             System.Console.WriteLine("====================================");
             System.Console.WriteLine("       ASSET MONITORING SYSTEM      ");
             System.Console.WriteLine("====================================\n");
