@@ -23,11 +23,11 @@ namespace RenewXControl.Console.Domain.Assets
 
         public double Capacity { get; } // kW
         public double StateOfCharge { get; private set; } // KW
-        public double SetPoint { get; set; } // Charge/Discharge control
+        public double SetPoint { get; private set; } // Charge/Discharge control
         public double FrequentlyOfDisCharge { get; }
         public string ChargeStateMessage { get; private set; }
-        public bool IsNeedToCharge { get; set; }
-        public bool IsStartingCharge { get; set; }
+        public bool IsNeedToCharge { get; private set; }
+        public bool IsStartingCharge { get; private set; }
 
         private bool CheckEmpty()
         {
