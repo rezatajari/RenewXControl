@@ -1,15 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace RenewXControl.Console.InitConfiguration.AssetsModelConfig.Assets
+﻿namespace RenewXControl.Console.Configuration.AssetsModel.Assets
 {
-    public class SolarPanelConfig
-    {
-        public double Irradiance { get; set; }
-        public double SetPoint { get; set; }
-        public double ActivePower { get; set; }
-    }
+    public record SolarPanelConfig(double Irradiance, double SetPoint, double ActivePower);
+
 }

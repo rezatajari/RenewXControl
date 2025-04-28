@@ -2,8 +2,6 @@
 using System.Text.Json.Serialization.Metadata;
 using RenewXControl.Console.Domain.Assets;
 using RenewXControl.Console.Domain.Users;
-using RenewXControl.Console.InitConfiguration.AssetsModelConfig.Assets;
-using RenewXControl.Console.InitConfiguration.AssetsModelConfig.Users;
 
 namespace RenewXControl.Console.Configuration
 {
