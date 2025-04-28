@@ -1,9 +1,9 @@
 ﻿using RenewXControl.Console;
 using RenewXControl.Console.Configuration;
+using RenewXControl.Console.Configuration.AssetsModel.Assets;
+using RenewXControl.Console.Configuration.AssetsModel.Users;
 using RenewXControl.Console.Domain.Assets;
 using RenewXControl.Console.Domain.Users;
-using RenewXControl.Console.InitConfiguration.AssetsModelConfig.Assets;
-using RenewXControl.Console.InitConfiguration.AssetsModelConfig.Users;
 
 // Configuration json files
 var userConfig = ConfigurationSetting.ReadConfig<UserConfig>(fileName: "User.json");

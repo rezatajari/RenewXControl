@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using RenewXControl.Console.InitConfiguration.AssetsModelConfig.Users;
+using RenewXControl.Console.Configuration.AssetsModel.Users;
 
 namespace RenewXControl.Console.Domain.Users
 {
