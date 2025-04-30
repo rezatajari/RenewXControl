@@ -1,5 +1,6 @@
 ﻿using RenewXControl.Console;
 using RenewXControl.Console.Configuration;
+using RenewXControl.Console.Configuration.AssetsModel.Assets;
 using RenewXControl.Console.Domain.Assets;
 using RenewXControl.Console.Domain.Users;
 using RenewXControl.Console.InitConfiguration.AssetsModelConfig.Assets;
@@ -13,8 +14,8 @@ var windTurbineConfig = ConfigurationSetting.ReadConfig<WindTurbineConfig>(fileN
 var batteryConfig = ConfigurationSetting.ReadConfig<BatteryConfig>(fileName: "Battery.json");
 
 // Map binding to our entity
-var user = new User(userConfig);
-var site = new Site(siteConfig, user.Id);
+var user = User.Create(userConfig.Name);
+var site = new Site(siteConfig);
 var windTurbine = new WindTurbine(windTurbineConfig, site.Id);
 var solarPanel = new SolarPanel(solarPanelConfig, site.Id);
 var battery = new Battery(batteryConfig, site.Id);

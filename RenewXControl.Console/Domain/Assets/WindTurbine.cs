@@ -4,10 +4,8 @@ namespace RenewXControl.Console.Domain.Assets
 {
     public class WindTurbine : Asset
     {
-        private static int _id=0;
         public WindTurbine(WindTurbineConfig turbineConfig,int siteId) : base(siteId)
         {
-            Id = ++_id;
             SiteId=siteId;
             Name = $"WT{Id}";
             WindSpeed = turbineConfig.WindSpeed;
