@@ -105,7 +105,6 @@ namespace RenewXControl.Console
             // Please consider a small delay like Task.Delay(10) to prevent form putting too much prussure on CPU
             while (true)
             {
-                // It's nice to keep your logging and calculating processes in 2 different methods and orchestrate them here in MonitoringStart method.
                 System.Console.Clear(); // Clear previous output
                 System.Console.SetCursorPosition(0, 0);
 
@@ -158,41 +157,7 @@ namespace RenewXControl.Console
                 System.Console.WriteLine($"SetPoint:      {battery.SetPoint} kW");
                 System.Console.WriteLine($"Discharge Rate: {battery.FrequentlyOfDisCharge} kW\n");
 
-                // This is bussiness logic and should be encapsulated inside the battery entity
-                // We would like to always keep logics (business rules, calculations, validations, etc) inside the entity and expose them via methods (behaviours)
-                switch (battery)
-                {
-                    // charging
-                    case { IsNeedToCharge: true, IsStartingCharge: false }:
-
-                        solarPanel.SetSp();
-                        solarPanel.PowerStatusMessage =
-                            solarPanel.SetPoint != 0
-                                ? "Solar is run.."
-                                : "Solar is off.. we doesn't have good Irradiance";
-
-                        windTurbine.SetSp();
-                        windTurbine.PowerStatusMessage =
-                            windTurbine.SetPoint != 0
-                                ? "Turbine is run.."
-                                : "Turbine is off.. we doesn't have good Wind speed";
-
-                        _ = Task.Run(() => battery.Charge(solarPanel.GetAp(), windTurbine.GetAp()));
-                        break;
-
-                    // discharging
-                    case { IsNeedToCharge: false, IsStartingCharge: false }:
-
-                        solarPanel.Off();
-                        solarPanel.PowerStatusMessage = "Solar is off..";
-
-                        windTurbine.Off();
-                        windTurbine.PowerStatusMessage = "Turbine is off..";
-
-                        battery.SetSp();
-                        _ = Task.Run(battery.Discharge);
-                        break;
-                }
+                _ = Task.Run(() => battery.ChargeDischarge(solarPanel, windTurbine));
 
                 // Refresh every second
                 await Task.Delay(1000);
