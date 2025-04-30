@@ -1,16 +1,27 @@
-﻿using RenewXControl.Console;
-using RenewXControl.Console.Configuration;
+﻿using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using RenewXControl.Console;
+using Microsoft.Extensions.Options;
 using RenewXControl.Console.Domain.Assets;
 using RenewXControl.Console.Domain.Users;
 using RenewXControl.Console.InitConfiguration.AssetsModelConfig.Assets;
 using RenewXControl.Console.InitConfiguration.AssetsModelConfig.Users;
 
-// Configuration json files
-var userConfig = ConfigurationSetting.ReadConfig<UserConfig>(fileName: "User.json");
-var siteConfig = ConfigurationSetting.ReadConfig<SiteConfig>(fileName: "Site.json");
-var solarPanelConfig = ConfigurationSetting.ReadConfig<SolarPanelConfig>(fileName: "SolarPanel.json");
-var windTurbineConfig = ConfigurationSetting.ReadConfig<WindTurbineConfig>(fileName: "WindTurbine.json");
-var batteryConfig = ConfigurationSetting.ReadConfig<BatteryConfig>(fileName: "Battery.json");
+
+
+
+var con = new ConfigurationBuilder()
+    .SetBasePath(Directory.GetCurrentDirectory()) // Set the base path
+    .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true) // Load appsettings.json
+    .Build();  // Build the configuration
+
+// Bind and register configuration
+var batteryConfig = con.GetSection("BatteryConfig").Get<BatteryConfig>();
+var solarPanelConfig = con.GetSection("BatteryConfig").Get<SolarPanelConfig>();
+var windTurbineConfig = con.GetSection("BatteryConfig").Get<WindTurbineConfig>();
+var userConfig = con.GetSection("BatteryConfig").Get<UserConfig>();
+var siteConfig = con.GetSection("BatteryConfig").Get<SiteConfig>();
+
 
 // Map binding to our entity
 var user = new User(userConfig);
