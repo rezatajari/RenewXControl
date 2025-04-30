@@ -4,10 +4,8 @@ namespace RenewXControl.Console.Domain.Assets
 {
     public class Battery : Asset
     {
-        private static int _id = 0;
         public Battery(BatteryConfig batteryConfig, int siteId) : base(siteId)
         {
-            Id = ++_id;
             SiteId = siteId;
             Name = $"Battery{Id}";
             Capacity = batteryConfig.Capacity;
