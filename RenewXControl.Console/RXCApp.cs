@@ -1,34 +1,57 @@
-﻿using RenewXControl.Console.Domain.Assets;
+﻿using System.Diagnostics;
+using RenewXControl.Console.Domain.Assets;
 using RenewXControl.Console.Domain.Users;
 
 namespace RenewXControl.Console
 {
     public class RXCApp
     {
-        // While this service class already has access to the site, the asset parameters are useless here because the site already have a list of them in it.
-        public async Task Run(
-            User user,
-            Site site,
-            WindTurbine windTurbine,
-            SolarPanel solarPanel,
-            Battery battery
-        )
+        public async Task Run(User user, Site site)
         {
+            Battery battery = null;
+            SolarPanel solarPanel = null;
+            WindTurbine windTurbine = null;
+
+            foreach (var asset in site.Assets)
+            {
+                switch (asset)
+                {
+                    case Battery b:
+                        battery = b;
+                        break;
+                    case SolarPanel sp:
+                        solarPanel = sp;
+                        break;
+                    case WindTurbine wt:
+                        windTurbine = wt;
+                        break;
+
+                    default:
+                        System.Console.WriteLine($"Unknown asset type: {asset.GetType().Name}");
+                        break;
+                }
+            }
+
+            if (battery == null || solarPanel == null || windTurbine == null)
+            {
+                System.Console.WriteLine("One or more required assets are missing.");
+            }
+
             // Print initial values once BEFORE entering the loop
-            PrintInitial(windTurbine, solarPanel, battery);
+            PrintInitial(battery, solarPanel, windTurbine);
 
             // Starting assets
             solarPanel.Start();
             windTurbine.Start();
 
             // Start the monitoring loop
-            await MonitoringStart(windTurbine, solarPanel, battery);
+            await StartMonitoring(battery, solarPanel, windTurbine);
         }
 
         private static void PrintInitial(
-            WindTurbine windTurbine,
+            Battery battery,
             SolarPanel solarPanel,
-            Battery battery
+            WindTurbine windTurbine
         )
         {
             System.Console.Clear();
@@ -73,13 +96,10 @@ namespace RenewXControl.Console
             System.Console.ReadKey();
         }
 
-        // Please consider using business/human-like language and not machine-like language
-        // In a real-world you would say Start Monitoring and not Monitoring Start
-        // We will talk about this later when we talk about domain modeling
-        private async Task MonitoringStart(
-            WindTurbine windTurbine,
+        private async Task StartMonitoring(
+            Battery battery,
             SolarPanel solarPanel,
-            Battery battery
+            WindTurbine windTurbine
         )
         {
             // Please consider a small delay like Task.Delay(10) to prevent form putting too much prussure on CPU

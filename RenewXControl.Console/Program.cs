@@ -28,7 +28,7 @@ user.AddSite(site); // Add site to the user
 
 var app = new RXCApp();
 // Run the RXCApp
-await app.Run(user,site,windTurbine,solarPanel,battery);
+await app.Run(user,site);
 
 
 
