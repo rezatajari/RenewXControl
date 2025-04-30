@@ -5,10 +5,9 @@ namespace RenewXControl.Console.Domain.Assets
     public class SolarPanel : Asset
     {
         private static int _id = 0;
-        public SolarPanel(SolarPanelConfig solarConfig, int siteId) : base(siteId)
+        public SolarPanel(SolarPanelConfig solarConfig) 
         {
             Id = ++_id;
-            SiteId=siteId;
             Name = $"SP{Id}";
             Irradiance = solarConfig.Irradiance;
             ActivePower = solarConfig.ActivePower;
