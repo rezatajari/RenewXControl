@@ -1,4 +1,5 @@
-﻿using RenewXControl.Console.InitConfiguration.AssetsModelConfig.Assets;
+﻿using RenewXControl.Console.Configuration.AssetsModel.Assets;
+using RenewXControl.Console.InitConfiguration.AssetsModelConfig.Assets;
 
 namespace RenewXControl.Console.Domain.Assets
 {

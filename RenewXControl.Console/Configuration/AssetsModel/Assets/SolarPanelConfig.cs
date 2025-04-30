@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace RenewXControl.Console.InitConfiguration.AssetsModelConfig.Assets
+﻿namespace RenewXControl.Console.Configuration.AssetsModel.Assets
 {
     public class SolarPanelConfig
     {

@@ -1,5 +1,6 @@
 ﻿using RenewXControl.Console;
 using RenewXControl.Console.Configuration;
+using RenewXControl.Console.Configuration.AssetsModel.Assets;
 using RenewXControl.Console.Domain.Assets;
 using RenewXControl.Console.Domain.Users;
 using RenewXControl.Console.InitConfiguration.AssetsModelConfig.Assets;
