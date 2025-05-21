@@ -1,11 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using RenewXControl.Console.InitConfiguration.AssetsModelConfig.Users;
+﻿using RenewXControl.Configuration.AssetsModel.Users;
 
-namespace RenewXControl.Console.Domain.Users
+namespace RenewXControl.Domain.Users
 {
     // It's good to marke entity classes with 'seald' access modifier so, no one can inherit and change its behaviours
     public class User

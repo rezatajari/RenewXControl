@@ -2,7 +2,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.5.2.0
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RenewXControl.Console", "RenewXControl.Console.csproj", "{EEF99C7E-DFCA-AC56-28C5-FBE7CE3798BF}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RenewXControl", "RenewXControl.csproj", "{EEF99C7E-DFCA-AC56-28C5-FBE7CE3798BF}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
