@@ -1,7 +1,7 @@
-﻿using RenewXControl.Console.Domain.Assets;
-using RenewXControl.Console.Domain.Users;
+﻿using RenewXControl.Domain.Assets;
+using RenewXControl.Domain.Users;
 
-namespace RenewXControl.Console
+namespace RenewXControl
 {
     public class RXCApp
     {

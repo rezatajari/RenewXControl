@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace RenewXControl.Console.Domain.Assets
+﻿namespace RenewXControl.Domain.Assets
 {
     // It's good to mark your base classes with 'abstract' modifier so, these classes can not be initialized directly.
     // We never use them as a stand-alone object in out logic. We just use them to share some functionalities.

@@ -1,6 +1,6 @@
-﻿using RenewXControl.Console.InitConfiguration.AssetsModelConfig.Assets;
+﻿using RenewXControl.Configuration.AssetsModel.Assets;
 
-namespace RenewXControl.Console.Domain.Assets
+namespace RenewXControl.Domain.Assets
 {
     public class Battery : Asset
     {
