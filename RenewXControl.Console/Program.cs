@@ -24,9 +24,9 @@ var siteConfig = con.GetSection("BatteryConfig").Get<SiteConfig>();
 // Map binding to our entity
 var user = new User(userConfig);
 var site = new Site(siteConfig, user.Id);
-var windTurbine = new WindTurbine(windTurbineConfig, site.Id);
-var solarPanel = new SolarPanel(solarPanelConfig, site.Id);
-var battery = new Battery(batteryConfig, site.Id);
+var windTurbine = new WindTurbine(windTurbineConfig);
+var solarPanel = new SolarPanel(solarPanelConfig);
+var battery = new Battery(batteryConfig);
 
 // Add assets to the site
 site.AddAsset(windTurbine);
