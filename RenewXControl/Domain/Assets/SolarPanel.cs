@@ -4,14 +4,12 @@ namespace RenewXControl.Domain.Assets
 {
     public class SolarPanel : Asset
     {
-        private static int _id = 0;
-        public SolarPanel(SolarPanelConfig solarConfig) 
+        private SolarPanel(double irradiance,double activePower,double setPoint) 
         {
-            Id = ++_id;
             Name = $"SP{Id}";
-            Irradiance = solarConfig.Irradiance;
-            ActivePower = solarConfig.ActivePower;
-            SetPoint = solarConfig.SetPoint;
+            Irradiance = irradiance;
+            ActivePower =activePower;
+            SetPoint = setPoint;
             PowerStatusMessage = "Solar panel is not generating power now";
         }
 
@@ -20,6 +18,8 @@ namespace RenewXControl.Domain.Assets
         public double SetPoint { get; private set; } // Determines operation status
         public string PowerStatusMessage { get; set; }
 
+        public static SolarPanel Create(SolarPanelConfig solarConfig)
+            => new SolarPanel(solarConfig.Irradiance,solarConfig.ActivePower,solarConfig.SetPoint);
         public void Start()
         {
             if (Irradiance == 0.0 || SetPoint == 0.0)
@@ -33,7 +33,6 @@ namespace RenewXControl.Domain.Assets
             }
 
         }
-
         public void Off()
         {
             SetPoint = 0;

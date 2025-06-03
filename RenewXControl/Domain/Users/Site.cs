@@ -5,16 +5,20 @@ namespace RenewXControl.Domain.Users
 {
     public class Site
     {
-        public Site(SiteConfig siteConfig)
+        private Site(string name, string location)
         {
-            Name = siteConfig.Name;
-            Location = siteConfig.Location;
+            Name = name;
+            Location = location;
         }
-        public string Name { get; set; }
-        public string Location { get; set;}
-        public List<Asset> Assets { get;private set; } = [];
 
-        public void AddAsset(Asset  asset) 
+        public Guid Id { get; private set; } = Guid.NewGuid();
+        public string Name { get; set; }
+        public string Location { get; set; }
+        public List<Asset> Assets { get; private set; } = [];
+
+        public static Site Create(SiteConfig siteConfig)
+        => new Site(siteConfig.Name, siteConfig.Location);
+        public void AddAsset(Asset asset)
         => Assets.Add(asset);
     }
 }

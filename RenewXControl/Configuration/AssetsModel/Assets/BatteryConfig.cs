@@ -1,3 +1,3 @@
 ﻿namespace RenewXControl.Configuration.AssetsModel.Assets;
 
-public record BatteryConfig(double Capacity, double StateOfCharge, double SetPoint, double FrequentlyOfDisCharge);
+public record BatteryConfig(double Capacity, double StateCharge, double SetPoint, double FrequentlyDisCharge);

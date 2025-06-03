@@ -1,18 +1,18 @@
-﻿using RenewXControl.Configuration.AssetsModel.Assets;
+﻿using System.Net.Http.Headers;
+using RenewXControl.Configuration.AssetsModel.Assets;
 
 namespace RenewXControl.Domain.Assets
 {
     public class Battery : Asset
     {
-        private static int _id = 0;
-        public Battery(BatteryConfig batteryConfig) 
+        private Battery(double capacity,double stateCharge,double setPoint,double frequentlyDisCharge) 
         {
-            Id = ++_id;
+            FrequentlyDisCharge = frequentlyDisCharge;
             Name = $"Battery{Id}";
-            Capacity = batteryConfig.Capacity;
-            StateOfCharge = batteryConfig.StateOfCharge;
-            SetPoint = batteryConfig.SetPoint;
-            FrequentlyOfDisCharge = batteryConfig.FrequentlyOfDisCharge;
+            Capacity = capacity;
+            StateCharge = stateCharge;
+            SetPoint = setPoint;
+            FrequentlyDisCharge = frequentlyDisCharge;
             ChargeStateMessage = "Battery is not connect to any of assets until now";
 
             if (!CheckEmpty()) return;
@@ -21,26 +21,28 @@ namespace RenewXControl.Domain.Assets
         }
 
         public double Capacity { get; } // kW
-        public double StateOfCharge { get; private set; } // KW
+        public double StateCharge { get; private set; } // KW
         public double SetPoint { get; private set; } // Charge/Discharge control
-        public double FrequentlyOfDisCharge { get; }
+        public double FrequentlyDisCharge { get; }
         public string ChargeStateMessage { get; private set; }
         public bool IsNeedToCharge { get; private set; }
         public bool IsStartingCharge { get; private set; }
 
+        public static Battery Create(BatteryConfig batteryConfig)
+        => new Battery(batteryConfig.Capacity,batteryConfig.StateCharge,batteryConfig.SetPoint,batteryConfig.FrequentlyDisCharge);
         private bool CheckEmpty()
         {
-            return StateOfCharge < Capacity;
+            return StateCharge < Capacity;
         }
         public async Task Charge(double solarAp, double turbineAp)
         {
             IsStartingCharge = true;
             ChargeStateMessage = "Battery is charging";
             var totalPower = solarAp + turbineAp;
-            while (Math.Abs(Capacity - StateOfCharge) > 0.001)
+            while (Math.Abs(Capacity - StateCharge) > 0.001)
             {
                 await Task.Delay(1000);
-                StateOfCharge = Math.Max(0, Math.Min(Capacity, StateOfCharge + totalPower));
+                StateCharge = Math.Max(0, Math.Min(Capacity, StateCharge + totalPower));
             }
             IsNeedToCharge = false;
             IsStartingCharge = false;
@@ -51,20 +53,20 @@ namespace RenewXControl.Domain.Assets
             IsNeedToCharge = false;
             IsStartingCharge = true;
             ChargeStateMessage = "Battery is discharging";
-            var amountToDischarge = StateOfCharge - SetPoint;
-            var rateOfDischarge = amountToDischarge / FrequentlyOfDisCharge;
+            var amountToDischarge = StateCharge - SetPoint;
+            var rateOfDischarge = amountToDischarge / FrequentlyDisCharge;
 
-            while (StateOfCharge > SetPoint)
+            while (StateCharge > SetPoint)
             {
                 await Task.Delay(1000);
 
-                if (StateOfCharge - rateOfDischarge < SetPoint)
+                if (StateCharge - rateOfDischarge < SetPoint)
                 {
-                    StateOfCharge = SetPoint; // Stop exactly at SetPoint
+                    StateCharge = SetPoint; // Stop exactly at SetPoint
                 }
                 else
                 {
-                    StateOfCharge -= rateOfDischarge;
+                    StateCharge -= rateOfDischarge;
                 }
             }
             IsStartingCharge = false;

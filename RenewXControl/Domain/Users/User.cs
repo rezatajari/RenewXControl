@@ -4,11 +4,16 @@ namespace RenewXControl.Domain.Users
 {
     public sealed class User
     {
-        public string Name { get; private set; }
         private User(string name)
         {
             Name = name;
         }
+
+        public Guid Id { get;private set; } = Guid.NewGuid();
+        public string Name { get; private set; }
+        public List<Site> Sites { get; private set; } = [];
+
+   
         public static User Create(string name)
         {
             return new User(name);
@@ -20,6 +25,5 @@ namespace RenewXControl.Domain.Users
         }
 
         public void AddSite(Site site) => Sites.Add(site);
-        public List<Site> Sites { get; private set; } = [];
     }
 }

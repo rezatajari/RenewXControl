@@ -4,14 +4,12 @@ namespace RenewXControl.Domain.Assets
 {
     public class WindTurbine : Asset
     {
-        private static int _id=0;
-        public WindTurbine(WindTurbineConfig turbineConfig) 
+        private WindTurbine(double windSpeed,double activePower,double setPoint) 
         {
-            Id = ++_id;
             Name = $"WT{Id}";
-            WindSpeed = turbineConfig.WindSpeed;
-            ActivePower = turbineConfig.ActivePower;
-            SetPoint = turbineConfig.SetPoint;
+            WindSpeed = windSpeed;
+            ActivePower = activePower;
+            SetPoint = setPoint;
             PowerStatusMessage = "Wind turbine is not generating power now";
         }
 
@@ -20,6 +18,8 @@ namespace RenewXControl.Domain.Assets
         public double SetPoint { get;private set; } // Determines operation status
         public string PowerStatusMessage { get;  set; }
 
+        public static WindTurbine Create(WindTurbineConfig turbineConfig)
+            => new WindTurbine(turbineConfig.WindSpeed, turbineConfig.ActivePower, turbineConfig.SetPoint);
         public void Start()
         {
             if (WindSpeed == 0.0 || SetPoint == 0.0)

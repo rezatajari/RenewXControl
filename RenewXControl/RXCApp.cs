@@ -86,9 +86,9 @@ namespace RenewXControl
             System.Console.ResetColor();
             System.Console.WriteLine($"Name:          {battery.Name}");
             System.Console.WriteLine($"Capacity:      {battery.Capacity} kWh");
-            System.Console.WriteLine($"State of Charge: {battery.StateOfCharge} %");
+            System.Console.WriteLine($"State of Charge: {battery.StateCharge} %");
             System.Console.WriteLine($"SetPoint:      {battery.SetPoint} kW");
-            System.Console.WriteLine($"Discharge Rate: {battery.FrequentlyOfDisCharge} kW\n");
+            System.Console.WriteLine($"Discharge Rate: {battery.FrequentlyDisCharge} kW\n");
             // Wait for user to acknowledge the initial status before starting the loop
             System.Console.ForegroundColor = ConsoleColor.Red;
             System.Console.WriteLine("\nPress any key to start live monitoring...");
@@ -152,9 +152,9 @@ namespace RenewXControl
                 System.Console.ResetColor();
                 System.Console.WriteLine($"Name:          {battery.Name}");
                 System.Console.WriteLine($"Capacity:      {battery.Capacity} kWh");
-                System.Console.WriteLine($"State of Charge: {battery.StateOfCharge} %");
+                System.Console.WriteLine($"State of Charge: {battery.StateCharge} %");
                 System.Console.WriteLine($"SetPoint:      {battery.SetPoint} kW");
-                System.Console.WriteLine($"Discharge Rate: {battery.FrequentlyOfDisCharge} kW\n");
+                System.Console.WriteLine($"Discharge Rate: {battery.FrequentlyDisCharge} kW\n");
 
                 _ = Task.Run(() => battery.ChargeDischarge(solarPanel, windTurbine));
 
