@@ -71,6 +71,39 @@ namespace RenewXControl.Console.Domain.Assets
             IsNeedToCharge = true;
             ChargeStateMessage = "Discharge complete.";
         }
+        public async Task ChargeDischarge(SolarPanel solarPanel,WindTurbine windTurbine)
+        {
+            switch (IsNeedToCharge)
+            {
+                // charging
+                case true when IsStartingCharge == false:
+                    solarPanel.SetSp();
+                    solarPanel.PowerStatusMessage =
+                        solarPanel.SetPoint != 0
+                            ? "Solar is run.."
+                            : "Solar is off.. we doesn't have good Irradiance";
+
+                    windTurbine.SetSp();
+                    windTurbine.PowerStatusMessage =
+                        windTurbine.SetPoint != 0
+                            ? "Turbine is run.."
+                            : "Turbine is off.. we doesn't have good Wind speed";
+                    _ = Task.Run(() => Charge(solarPanel.GetAp(), windTurbine.GetAp()));
+                    break;
+
+                // discharging
+                case false when IsStartingCharge == false:
+                    solarPanel.Off();
+                    solarPanel.PowerStatusMessage = "Solar is off..";
+
+                    windTurbine.Off();
+                    windTurbine.PowerStatusMessage = "Turbine is off..";
+
+                    SetSp();
+                    _= Task.Run(Discharge);
+                    break;
+            }
+        }
         public void SetSp()
          => SetPoint = new Random().NextDouble() * Capacity;
     }

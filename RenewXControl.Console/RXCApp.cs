@@ -1,34 +1,57 @@
-﻿using RenewXControl.Console.Domain.Assets;
+﻿using System.Diagnostics;
+using RenewXControl.Console.Domain.Assets;
 using RenewXControl.Console.Domain.Users;
 
 namespace RenewXControl.Console
 {
     public class RXCApp
     {
-        // While this service class already has access to the site, the asset parameters are useless here because the site already have a list of them in it.
-        public async Task Run(
-            User user,
-            Site site,
-            WindTurbine windTurbine,
-            SolarPanel solarPanel,
-            Battery battery
-        )
+        public async Task Run(User user, Site site)
         {
+            Battery battery = null;
+            SolarPanel solarPanel = null;
+            WindTurbine windTurbine = null;
+
+            foreach (var asset in site.Assets)
+            {
+                switch (asset)
+                {
+                    case Battery b:
+                        battery = b;
+                        break;
+                    case SolarPanel sp:
+                        solarPanel = sp;
+                        break;
+                    case WindTurbine wt:
+                        windTurbine = wt;
+                        break;
+
+                    default:
+                        System.Console.WriteLine($"Unknown asset type: {asset.GetType().Name}");
+                        break;
+                }
+            }
+
+            if (battery == null || solarPanel == null || windTurbine == null)
+            {
+                System.Console.WriteLine("One or more required assets are missing.");
+            }
+
             // Print initial values once BEFORE entering the loop
-            PrintInitial(windTurbine, solarPanel, battery);
+            PrintInitial(battery, solarPanel, windTurbine);
 
             // Starting assets
             solarPanel.Start();
             windTurbine.Start();
 
             // Start the monitoring loop
-            await MonitoringStart(windTurbine, solarPanel, battery);
+            await StartMonitoring(battery, solarPanel, windTurbine);
         }
 
         private static void PrintInitial(
-            WindTurbine windTurbine,
+            Battery battery,
             SolarPanel solarPanel,
-            Battery battery
+            WindTurbine windTurbine
         )
         {
             System.Console.Clear();
@@ -73,19 +96,15 @@ namespace RenewXControl.Console
             System.Console.ReadKey();
         }
 
-        // Please consider using business/human-like language and not machine-like language
-        // In a real-world you would say Start Monitoring and not Monitoring Start
-        // We will talk about this later when we talk about domain modeling
-        private async Task MonitoringStart(
-            WindTurbine windTurbine,
+        private async Task StartMonitoring(
+            Battery battery,
             SolarPanel solarPanel,
-            Battery battery
+            WindTurbine windTurbine
         )
         {
             // Please consider a small delay like Task.Delay(10) to prevent form putting too much prussure on CPU
             while (true)
             {
-                // It's nice to keep your logging and calculating processes in 2 different methods and orchestrate them here in MonitoringStart method.
                 System.Console.Clear(); // Clear previous output
                 System.Console.SetCursorPosition(0, 0);
 
@@ -138,41 +157,7 @@ namespace RenewXControl.Console
                 System.Console.WriteLine($"SetPoint:      {battery.SetPoint} kW");
                 System.Console.WriteLine($"Discharge Rate: {battery.FrequentlyOfDisCharge} kW\n");
 
-                // This is bussiness logic and should be encapsulated inside the battery entity
-                // We would like to always keep logics (business rules, calculations, validations, etc) inside the entity and expose them via methods (behaviours)
-                switch (battery)
-                {
-                    // charging
-                    case { IsNeedToCharge: true, IsStartingCharge: false }:
-
-                        solarPanel.SetSp();
-                        solarPanel.PowerStatusMessage =
-                            solarPanel.SetPoint != 0
-                                ? "Solar is run.."
-                                : "Solar is off.. we doesn't have good Irradiance";
-
-                        windTurbine.SetSp();
-                        windTurbine.PowerStatusMessage =
-                            windTurbine.SetPoint != 0
-                                ? "Turbine is run.."
-                                : "Turbine is off.. we doesn't have good Wind speed";
-
-                        _ = Task.Run(() => battery.Charge(solarPanel.GetAp(), windTurbine.GetAp()));
-                        break;
-
-                    // discharging
-                    case { IsNeedToCharge: false, IsStartingCharge: false }:
-
-                        solarPanel.Off();
-                        solarPanel.PowerStatusMessage = "Solar is off..";
-
-                        windTurbine.Off();
-                        windTurbine.PowerStatusMessage = "Turbine is off..";
-
-                        battery.SetSp();
-                        _ = Task.Run(battery.Discharge);
-                        break;
-                }
+                _ = Task.Run(() => battery.ChargeDischarge(solarPanel, windTurbine));
 
                 // Refresh every second
                 await Task.Delay(1000);
