@@ -1,6 +1,6 @@
 ﻿namespace RenewXControl.Configuration.AssetsModel.Users
 {
-    public class UserConfig
+    public record UserConfig
     {
         public string Name { get; set; }
     }

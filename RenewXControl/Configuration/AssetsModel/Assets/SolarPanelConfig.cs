@@ -1,6 +1,6 @@
 ﻿namespace RenewXControl.Configuration.AssetsModel.Assets
 {
-    public class SolarPanelConfig
+    public record SolarPanelConfig
     {
         public double Irradiance { get; set; }
         public double SetPoint { get; set; }
