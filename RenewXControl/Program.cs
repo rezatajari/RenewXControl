@@ -15,10 +15,10 @@ var con = new ConfigurationBuilder()
 
 // Bind and register configuration
 var batteryConfig = con.GetSection("BatteryConfig").Get<BatteryConfig>();
-var solarPanelConfig = con.GetSection("BatteryConfig").Get<SolarPanelConfig>();
-var windTurbineConfig = con.GetSection("BatteryConfig").Get<WindTurbineConfig>();
-var userConfig = con.GetSection("BatteryConfig").Get<UserConfig>();
-var siteConfig = con.GetSection("BatteryConfig").Get<SiteConfig>();
+var solarPanelConfig = con.GetSection("SolarPanelConfig").Get<SolarPanelConfig>();
+var windTurbineConfig = con.GetSection("WindTurbineConfig").Get<WindTurbineConfig>();
+var userConfig = con.GetSection("UserConfig").Get<UserConfig>();
+var siteConfig = con.GetSection("SiteConfig").Get<SiteConfig>();
 
 
 // Map binding to our entity

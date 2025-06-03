@@ -1,10 +1,3 @@
-﻿namespace RenewXControl.Configuration.AssetsModel.Assets
-{
-    public record BatteryConfig
-    {
-        public double Capacity { get; init; }
-        public double StateOfCharge { get; init; }
-        public double SetPoint { get; init; }
-        public double FrequentlyOfDisCharge { get; init; }
-    }
-}
+﻿namespace RenewXControl.Configuration.AssetsModel.Assets;
+
+public record BatteryConfig(double Capacity, double StateOfCharge, double SetPoint, double FrequentlyOfDisCharge);
