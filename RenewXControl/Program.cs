@@ -1,5 +1,5 @@
-﻿using RenewXControl;
-using RenewXControl.Configuration;
+﻿using Microsoft.Extensions.Configuration;
+using RenewXControl;
 using RenewXControl.Configuration.AssetsModel.Assets;
 using RenewXControl.Configuration.AssetsModel.Users;
 using RenewXControl.Domain.Assets;
@@ -9,9 +9,9 @@ using RenewXControl.Domain.Users;
 
 
 var con = new ConfigurationBuilder()
-    .SetBasePath(Directory.GetCurrentDirectory()) // Set the base path
-    .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true) // Load appsettings.json
-    .Build();  // Build the configuration
+    .SetBasePath(Directory.GetCurrentDirectory()) 
+    .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true) 
+    .Build(); 
 
 // Bind and register configuration
 var batteryConfig = con.GetSection("BatteryConfig").Get<BatteryConfig>();
@@ -22,8 +22,8 @@ var siteConfig = con.GetSection("BatteryConfig").Get<SiteConfig>();
 
 
 // Map binding to our entity
-var user = new User(userConfig);
-var site = new Site(siteConfig, user.Id);
+var user = User.Create(userConfig.Name);
+var site= new Site(siteConfig);
 var windTurbine = new WindTurbine(windTurbineConfig);
 var solarPanel = new SolarPanel(solarPanelConfig);
 var battery = new Battery(batteryConfig);

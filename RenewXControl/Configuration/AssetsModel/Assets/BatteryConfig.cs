@@ -5,6 +5,6 @@
         public double Capacity { get; init; }
         public double StateOfCharge { get; init; }
         public double SetPoint { get; init; }
-        public double FrequentlyOfDischarge { get; init; }
+        public double FrequentlyOfDisCharge { get; init; }
     }
 }
