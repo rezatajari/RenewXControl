@@ -4,8 +4,6 @@ using RenewXControl.Console;
 using Microsoft.Extensions.Options;
 using RenewXControl.Console.Domain.Assets;
 using RenewXControl.Console.Domain.Users;
-using RenewXControl.Console.InitConfiguration.AssetsModelConfig.Assets;
-using RenewXControl.Console.InitConfiguration.AssetsModelConfig.Users;
 
 
 
