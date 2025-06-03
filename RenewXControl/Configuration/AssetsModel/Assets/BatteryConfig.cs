@@ -1,4 +1,4 @@
-﻿namespace RenewXControl.Console.Configuration.AssetsModel.Assets
+﻿namespace RenewXControl.Configuration.AssetsModel.Assets
 {
     public record BatteryConfig
     {

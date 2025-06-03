@@ -1,6 +1,6 @@
-﻿using RenewXControl.Console.Configuration.AssetsModel.Assets;
+﻿using RenewXControl.Configuration.AssetsModel.Assets;
 
-namespace RenewXControl.Console.Domain.Assets
+namespace RenewXControl.Domain.Assets
 {
     public class SolarPanel : Asset
     {

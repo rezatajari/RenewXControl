@@ -1,12 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using RenewXControl.Console.Configuration.AssetsModel.Users;
-using RenewXControl.Console.Domain.Assets;
+﻿using RenewXControl.Configuration.AssetsModel.Users;
+using RenewXControl.Domain.Assets;
 
-namespace RenewXControl.Console.Domain.Users
+namespace RenewXControl.Domain.Users
 {
     public class Site
     {
