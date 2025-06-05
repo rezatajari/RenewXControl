@@ -49,7 +49,7 @@ namespace RenewXControl.Infrastructure.Persistence.MyDbContext
 
             modelBuilder.Entity<Site>()
                 .HasMany(a => a.Assets)
-                .WithOne(a => a.site)
+                .WithOne(a => a.Site)
                 .HasForeignKey(a => a.SiteId);
 
             // Asset config
@@ -58,6 +58,11 @@ namespace RenewXControl.Infrastructure.Persistence.MyDbContext
                 .IsRequired()
                 .HasMaxLength(50);
 
+            modelBuilder.Entity<Asset>()
+                .HasDiscriminator<string>("AssetType")
+                .HasValue<Battery>("Battery")
+                .HasValue<SolarPanel>("Solar")
+                .HasValue<WindTurbine>("Wind");
         }
     }
 }

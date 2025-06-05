@@ -2,7 +2,7 @@
 
 namespace RenewXControl.Domain.Assets
 {
-    public abstract class Asset
+    public  class Asset
     {
         public Guid Id { get; set; }= Guid.NewGuid();
         public string Name { get; set; }

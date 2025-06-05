@@ -1,27 +1,32 @@
-﻿using Microsoft.Extensions.Configuration;
-using RenewXControl;
+﻿using RenewXControl;
 using RenewXControl.Configuration.AssetsModel.Assets;
 using RenewXControl.Configuration.AssetsModel.Users;
 using RenewXControl.Domain.Assets;
 using RenewXControl.Domain.Users;
+using Microsoft.EntityFrameworkCore;
+using RenewXControl.Infrastructure.Persistence.MyDbContext;
 
 
+var builder = WebApplication.CreateBuilder(args);
 
+builder.Services.AddDbContext<RxcDbContext>(options =>
+    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
-var con = new ConfigurationBuilder()
-    .SetBasePath(Directory.GetCurrentDirectory()) 
-    .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true) 
-    .Build(); 
+builder.Configuration.SetBasePath(Directory.GetCurrentDirectory())
+    .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true);
+
+builder.Build().Run();
+    
 
 // Bind and register configuration
-var batteryConfig = con.GetSection("BatteryConfig").Get<BatteryConfig>();
-var solarPanelConfig = con.GetSection("SolarPanelConfig").Get<SolarPanelConfig>();
-var windTurbineConfig = con.GetSection("WindTurbineConfig").Get<WindTurbineConfig>();
-var userConfig = con.GetSection("UserConfig").Get<UserConfig>();
-var siteConfig = con.GetSection("SiteConfig").Get<SiteConfig>();
+var batteryConfig =builder.Configuration.GetSection("BatteryConfig").Get<BatteryConfig>();
+var solarPanelConfig = builder.Configuration.GetSection("SolarPanelConfig").Get<SolarPanelConfig>();
+var windTurbineConfig = builder.Configuration.GetSection("WindTurbineConfig").Get<WindTurbineConfig>();
+var userConfig = builder.Configuration.GetSection("UserConfig").Get<UserConfig>();
+var siteConfig = builder.Configuration.GetSection("SiteConfig").Get<SiteConfig>();
 
 
-// Map binding to our entity
+// Factory pattern to create each our models
 var user = User.Create(userConfig.Name);
 var site = Site.Create(siteConfig);
 var windTurbine =WindTurbine.Create(windTurbineConfig);
