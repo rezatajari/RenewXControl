@@ -4,6 +4,7 @@ namespace RenewXControl.Domain.Assets
 {
     public class SolarPanel : Asset
     {
+        private SolarPanel() { }
         private SolarPanel(double irradiance,double activePower,double setPoint) 
         {
             Name = $"SP{Id}";

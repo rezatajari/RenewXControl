@@ -4,6 +4,7 @@ namespace RenewXControl.Domain.Users
 {
     public sealed class User
     {
+        private User(){}
         private User(string name)
         {
             Name = name;

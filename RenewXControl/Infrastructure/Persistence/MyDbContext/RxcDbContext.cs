@@ -25,7 +25,7 @@ namespace RenewXControl.Infrastructure.Persistence.MyDbContext
         {
             base.OnModelCreating(modelBuilder);
 
-            // User config
+            // User
             modelBuilder.Entity<User>()
                 .Property(u => u.Name)
                 .IsRequired()
@@ -36,7 +36,7 @@ namespace RenewXControl.Infrastructure.Persistence.MyDbContext
                 .WithOne(u => u.User)
                 .HasForeignKey(s => s.UserId);
 
-            // Site config
+            // Site
             modelBuilder.Entity<Site>()
                 .Property(s => s.Name)
                 .IsRequired()
@@ -52,7 +52,7 @@ namespace RenewXControl.Infrastructure.Persistence.MyDbContext
                 .WithOne(a => a.Site)
                 .HasForeignKey(a => a.SiteId);
 
-            // Asset config
+            // Asset
             modelBuilder.Entity<Asset>()
                 .Property(a => a.Name)
                 .IsRequired()
@@ -63,6 +63,25 @@ namespace RenewXControl.Infrastructure.Persistence.MyDbContext
                 .HasValue<Battery>("Battery")
                 .HasValue<SolarPanel>("Solar")
                 .HasValue<WindTurbine>("Wind");
+
+            // Battery
+            modelBuilder.Entity<Battery>()
+                .Ignore(b => b.ChargeStateMessage);
+
+            modelBuilder.Entity<Battery>()
+                .Ignore(b => b.IsNeedToCharge);
+
+            modelBuilder.Entity<Battery>()
+                .Ignore(b => b.IsStartingCharge);
+
+            // SolarPanel
+            modelBuilder.Entity<SolarPanel>()
+                .Ignore(s => s.PowerStatusMessage);
+
+            // WindTurbine
+            modelBuilder.Entity<WindTurbine>()
+                .Ignore(w => w.PowerStatusMessage);
+
         }
     }
 }

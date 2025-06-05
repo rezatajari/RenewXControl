@@ -5,6 +5,7 @@ namespace RenewXControl.Domain.Assets
 {
     public class Battery : Asset
     {
+        private Battery(){}
         private Battery(double capacity,double stateCharge,double setPoint,double frequentlyDisCharge) 
         {
             FrequentlyDisCharge = frequentlyDisCharge;

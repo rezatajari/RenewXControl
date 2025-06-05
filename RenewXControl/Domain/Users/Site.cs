@@ -5,6 +5,7 @@ namespace RenewXControl.Domain.Users
 {
     public class Site
     {
+        private Site(){}
         private Site(string name, string location)
         {
             Name = name;

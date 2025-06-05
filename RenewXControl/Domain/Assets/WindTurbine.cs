@@ -4,6 +4,7 @@ namespace RenewXControl.Domain.Assets
 {
     public class WindTurbine : Asset
     {
+        private WindTurbine() { }
         private WindTurbine(double windSpeed,double activePower,double setPoint) 
         {
             Name = $"WT{Id}";
