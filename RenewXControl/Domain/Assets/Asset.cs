@@ -1,8 +1,17 @@
-﻿namespace RenewXControl.Domain.Assets
+﻿using RenewXControl.Domain.Users;
+
+namespace RenewXControl.Domain.Assets
 {
     public abstract class Asset
     {
-        public int Id { get; set; }
+        public Guid Id { get; set; }= Guid.NewGuid();
         public string Name { get; set; }
+        public bool IsActive { get; set; } = true;
+        public DateTime UpdateTime { get; set; }
+        public DateTime CreateTime { get; set; } = DateTime.UtcNow;
+
+        public Guid SiteId { get; set; }
+        public Site Site { get; set; }
+
     }
 }

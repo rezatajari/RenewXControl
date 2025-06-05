@@ -12,9 +12,10 @@ namespace RenewXControl.Infrastructure.Persistence.MyDbContext
 {
     internal class RxcDbContext:DbContext
     {
-        public DbSet<Battery> Batteries { get; set; }
         public DbSet<User> Users { get; set; }
         public DbSet<Site> Sites { get;set; }
+        public DbSet<Asset> Assets { get; set; }
+
 
         public RxcDbContext(DbContextOptions<RxcDbContext> options) : base(options)
         {
@@ -23,6 +24,40 @@ namespace RenewXControl.Infrastructure.Persistence.MyDbContext
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
+
+            // User config
+            modelBuilder.Entity<User>()
+                .Property(u => u.Name)
+                .IsRequired()
+                .HasMaxLength(50);
+
+            modelBuilder.Entity<User>()
+                .HasMany(s => s.Sites)
+                .WithOne(u => u.User)
+                .HasForeignKey(s => s.UserId);
+
+            // Site config
+            modelBuilder.Entity<Site>()
+                .Property(s => s.Name)
+                .IsRequired()
+                .HasMaxLength(50);
+
+            modelBuilder.Entity<Site>()
+                .Property(s => s.Location)
+                .IsRequired()
+                .HasMaxLength(100);
+
+            modelBuilder.Entity<Site>()
+                .HasMany(a => a.Assets)
+                .WithOne(a => a.site)
+                .HasForeignKey(a => a.SiteId);
+
+            // Asset config
+            modelBuilder.Entity<Asset>()
+                .Property(a => a.Name)
+                .IsRequired()
+                .HasMaxLength(50);
+
         }
     }
 }
