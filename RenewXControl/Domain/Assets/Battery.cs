@@ -1,9 +1,10 @@
 ﻿using System.Net.Http.Headers;
 using RenewXControl.Configuration.AssetsModel.Assets;
+using RenewXControl.Domain.Assets.Interfaces;
 
 namespace RenewXControl.Domain.Assets
 {
-    public class Battery : Asset
+    public class Battery : Asset,ISetPoint
     {
         private Battery(){}
         private Battery(double capacity,double stateCharge,double setPoint,double frequentlyDisCharge) 
@@ -107,7 +108,10 @@ namespace RenewXControl.Domain.Assets
                     break;
             }
         }
-        public void SetSp()
-         => SetPoint = new Random().NextDouble() * Capacity;
+
+        public void UpdateSetPoint(double amount)
+        {
+            SetPoint = amount; // new Random().NextDouble() * Capacity;
+        }
     }
 }

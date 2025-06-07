@@ -1,8 +1,9 @@
 ﻿using RenewXControl.Configuration.AssetsModel.Assets;
+using RenewXControl.Domain.Assets.Interfaces;
 
 namespace RenewXControl.Domain.Assets
 {
-    public class SolarPanel : Asset
+    public class SolarPanel : Asset,ISetPoint,IGeneratorData
     {
         private SolarPanel() { }
         private SolarPanel(double irradiance,double activePower,double setPoint) 
@@ -39,10 +40,11 @@ namespace RenewXControl.Domain.Assets
             SetPoint = 0;
             ActivePower = SetPoint;
         }
-        public void SetSp()
+        public void UpdateSetPoint(double amount)
         {
-            SetPoint = new Random().NextDouble() * Irradiance;
-            if (SetPoint != 0){
+            SetPoint = amount; // new Random().NextDouble() * Irradiance;
+            if (SetPoint != 0)
+            {
                 ActivePower = SetPoint;
             }
             else
@@ -50,17 +52,27 @@ namespace RenewXControl.Domain.Assets
                 Off();
             }
         }
-        public double GetAp()
-        {
-            ActivePower = Math.Min(Irradiance, SetPoint);
 
-            return ActivePower;
-        }
-        public double GetIrradiance()
+        public void UpdateSensor()
         {
-            Irradiance = new Random().NextDouble() * 10;
-            return Irradiance;
+            Irradiance = new Random().NextDouble() *10; 
+            if (Irradiance == 0.0 || SetPoint == 0.0)
+            {
+                ActivePower = 0;
+                PowerStatusMessage = "Solar panel is not generating power";
+            }
+            else
+            {
+                PowerStatusMessage = "Solar panel is generating power";
+            }
         }
-
+        public double GetSensor()
+            => Irradiance;
+        public void UpdateActivePower()
+        {
+            ActivePower=Math.Min(Irradiance, SetPoint); // Assuming SetPoint is the maximum power output
+        }
+        public double GetActivePower()
+            => ActivePower;
     }
 }

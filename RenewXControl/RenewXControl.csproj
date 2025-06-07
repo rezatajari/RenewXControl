@@ -22,7 +22,6 @@
   <ItemGroup>
     <Folder Include="Api\Controllers\" />
     <Folder Include="Api\DTOs\" />
-    <Folder Include="Application\Interfaces\" />
     <Folder Include="Domain\Repositories\" />
     <Folder Include="Infrastructure\Repositories\" />
   </ItemGroup>
