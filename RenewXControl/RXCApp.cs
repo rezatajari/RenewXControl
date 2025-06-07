@@ -101,7 +101,6 @@ namespace RenewXControl
             WindTurbine windTurbine
         )
         {
-            // Please consider a small delay like Task.Delay(10) to prevent form putting too much prussure on CPU
             while (true)
             {
                 System.Console.Clear(); // Clear previous output

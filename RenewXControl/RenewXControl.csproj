@@ -6,6 +6,7 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
   <ItemGroup>
+    <PackageReference Include="microsoft.aspnetcore.signalr" Version="1.2.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="9.0.5" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="9.0.5">
       <PrivateAssets>all</PrivateAssets>
@@ -19,6 +20,9 @@
     </None>
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="Api\Controllers\" />
+    <Folder Include="Api\DTOs\" />
+    <Folder Include="Application\Interfaces\" />
     <Folder Include="Domain\Repositories\" />
     <Folder Include="Infrastructure\Repositories\" />
   </ItemGroup>
