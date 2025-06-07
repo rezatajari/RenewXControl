@@ -3,7 +3,7 @@ using RenewXControl.Domain.Assets.Interfaces;
 
 namespace RenewXControl.Domain.Assets
 {
-    public class SolarPanel : Asset,ISetPoint,IGeneratorData
+    public class SolarPanel : Asset,ISetPointAsset,IGeneratorData
     {
         private SolarPanel() { }
         private SolarPanel(double irradiance,double activePower,double setPoint) 
@@ -35,11 +35,12 @@ namespace RenewXControl.Domain.Assets
             }
 
         }
-        public void Off()
+        public void Stop()
         {
             SetPoint = 0;
             ActivePower = SetPoint;
         }
+
         public void UpdateSetPoint(double amount)
         {
             SetPoint = amount; // new Random().NextDouble() * Irradiance;

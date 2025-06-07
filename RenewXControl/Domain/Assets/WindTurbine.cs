@@ -3,7 +3,7 @@ using RenewXControl.Domain.Assets.Interfaces;
 
 namespace RenewXControl.Domain.Assets
 {
-    public class WindTurbine : Asset, ISetPoint, IGeneratorData
+    public class WindTurbine : Asset, ISetPointAsset, IGeneratorData
     {
         private WindTurbine() { }
         private WindTurbine(double windSpeed, double activePower, double setPoint)
@@ -36,11 +36,12 @@ namespace RenewXControl.Domain.Assets
 
 
         }
-        public void Off()
+        public void Stop()
         {
             SetPoint = 0;
             ActivePower = SetPoint;
         }
+
         public void UpdateSetPoint(double amount)
         {
             SetPoint = amount; // new Random().NextDouble() * WindSpeed;

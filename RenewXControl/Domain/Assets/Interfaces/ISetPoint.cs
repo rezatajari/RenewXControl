@@ -1,6 +1,6 @@
 ﻿namespace RenewXControl.Domain.Assets.Interfaces
 {
-    public interface ISetPoint
+    public interface ISetPointAsset
     {
         void UpdateSetPoint(double amount);
     }

@@ -4,7 +4,7 @@ using RenewXControl.Domain.Assets.Interfaces;
 
 namespace RenewXControl.Domain.Assets
 {
-    public class Battery : Asset,ISetPoint
+    public class Battery : Asset,ISetPointAsset
     {
         private Battery(){}
         private Battery(double capacity,double stateCharge,double setPoint,double frequentlyDisCharge) 

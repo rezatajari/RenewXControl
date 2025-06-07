@@ -2,6 +2,8 @@
 {
     public interface IGeneratorData
     {
+        void Start();
+        void Stop();
         void UpdateSensor();
         double GetSensor();
         void UpdateActivePower();
