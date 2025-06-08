@@ -8,6 +8,7 @@ namespace RenewXControl.Application.Services
     public class SolarService : ISolarService
     {
         private readonly ISolarActive _solarActive;
+
         public SolarService(ISolarActive solarActive)
         {
             _solarActive = solarActive;
@@ -28,19 +29,12 @@ namespace RenewXControl.Application.Services
             _solarActive.UpdateActivePower();
         }
 
-        public double GetActivePower()
-        {
-          return  _solarActive.GetActivePower();
-        }
-
+        public double GetActivePower => _solarActive.ActivePower;
         public void UpdateIrradiance()
         {
             _solarActive.UpdateIrradiance();
         }
 
-        public double GetIrradiance()
-        {
-            return _solarActive.GetIrradiance();
-        }
+        public double GetIrradiance=> _solarActive.Irradiance;
     }
 }

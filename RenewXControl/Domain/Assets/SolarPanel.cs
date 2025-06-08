@@ -6,7 +6,7 @@ namespace RenewXControl.Domain.Assets
 {
     public class SolarPanel : Asset, ISolarActive
     {
-        public SolarPanel() { }
+        private SolarPanel() { }
         private SolarPanel(double irradiance, double activePower, double setPoint)
         {
             Name = $"SP{Id}";
@@ -68,13 +68,9 @@ namespace RenewXControl.Domain.Assets
                 PowerStatusMessage = "Solar panel is generating power";
             }
         }
-        public double GetIrradiance()
-            => Irradiance;
         public void UpdateActivePower()
         {
             ActivePower = Math.Min(Irradiance, SetPoint); // Assuming SetPoint is the maximum power output
         }
-        public double GetActivePower()
-            => ActivePower;
     }
 }

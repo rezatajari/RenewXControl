@@ -5,7 +5,7 @@ namespace RenewXControl.Domain.Assets
 {
     public class WindTurbine : Asset, ITurbineActive
     {
-        public WindTurbine() { }
+        private WindTurbine() { }
         private WindTurbine(double windSpeed, double activePower, double setPoint)
         {
             Name = $"WT{Id}";
@@ -68,13 +68,9 @@ namespace RenewXControl.Domain.Assets
                 PowerStatusMessage = "Wind turbine is generating power";
             }
         }
-        public double GetWindSpeed()
-            => WindSpeed;
         public void UpdateActivePower()
         {
             ActivePower = Math.Min(WindSpeed, SetPoint); // Assuming SetPoint is the maximum power output
         }
-        public double GetActivePower()
-        => ActivePower;
     }
 }

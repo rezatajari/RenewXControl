@@ -6,7 +6,7 @@
         void Stop();
         void UpdateWindSpeed();
         void UpdateActivePower();
-        double GetActivePower();
-        double GetWindSpeed();
+        double ActivePower { get; }
+        double WindSpeed { get; }
     }
 }

@@ -24,20 +24,13 @@ namespace RenewXControl.Domain.Assets.Implementatons
         {
             _turbine.UpdateWindSpeed();
         }
+        public double WindSpeed => _turbine.WindSpeed;
 
         public void UpdateActivePower()
         {
-            _turbine.UpdateWindSpeed();
+            _turbine.UpdateActivePower();
         }
 
-        public double GetActivePower()
-        {
-            return _turbine.GetActivePower();
-        }
-
-        public double GetWindSpeed()
-        {
-            return _turbine.GetWindSpeed();
-        }
+        public double ActivePower => _turbine.ActivePower;
     }
 }

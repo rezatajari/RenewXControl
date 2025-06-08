@@ -34,8 +34,8 @@ namespace RenewXControl.Application.Services
                 {
                     AssetType = "SolarPanel",
                     AssetName = "Main Solar", // Replace with actual name if available
-                    SensorValue = _solarService.GetIrradiance(),
-                    ActivePower = _solarService.GetActivePower(),
+                    SensorValue = _solarService.GetIrradiance,
+                    ActivePower = _solarService.GetActivePower,
                     SetPoint = 0, // Set actual set point if available
                     Timestamp = DateTime.UtcNow
                 };
@@ -47,8 +47,8 @@ namespace RenewXControl.Application.Services
                 {
                     AssetType = "WindTurbine",
                     AssetName = "Main Turbine", // Replace with actual name if available
-                    SensorValue = _turbineService.GetWindSpeed(),
-                    ActivePower = _turbineService.GetActivePower(),
+                    SensorValue = _turbineService.GetWindSpeed,
+                    ActivePower = _turbineService.GetActivePower,
                     SetPoint = 0, // Set actual set point if available
                     Timestamp = DateTime.UtcNow
                 };

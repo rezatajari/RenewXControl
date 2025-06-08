@@ -5,8 +5,8 @@
         void Start();
         void Stop();
         void UpdateIrradiance();
-        double GetIrradiance();
+        double Irradiance { get; }
+        double ActivePower { get; }
         void UpdateActivePower();
-        double GetActivePower();
     }
 }

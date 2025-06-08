@@ -7,8 +7,8 @@ namespace RenewXControl.Application.Interfaces
         void StartGenerator();
         void TurnOffGenerator();
         void UpdateActivePower();
-        double GetActivePower();
+        double GetActivePower { get; }
         void UpdateWindSpeed();
-        double GetWindSpeed();
+        double GetWindSpeed { get; }
     }
 }

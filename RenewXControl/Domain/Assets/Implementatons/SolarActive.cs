@@ -25,19 +25,13 @@ namespace RenewXControl.Domain.Assets.Implementatons
             _panel.UpdateIrradiance();
         }
 
-        public double GetIrradiance()
-        {
-            return _panel.GetIrradiance();
-        }
+        public double Irradiance => _panel.Irradiance; 
 
         public void UpdateActivePower()
         {
            _panel.UpdateActivePower();
         }
 
-        public double GetActivePower()
-        {
-          return  _panel.GetActivePower();
-        }
+        public double ActivePower=> _panel.ActivePower;
     }
 }
