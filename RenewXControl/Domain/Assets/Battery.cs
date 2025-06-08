@@ -1,10 +1,10 @@
-﻿using System.Net.Http.Headers;
-using RenewXControl.Configuration.AssetsModel.Assets;
+﻿using RenewXControl.Configuration.AssetsModel.Assets;
 using RenewXControl.Domain.Assets.Interfaces;
+
 
 namespace RenewXControl.Domain.Assets
 {
-    public class Battery : Asset,ISetPointAsset
+    public class Battery : Asset,IBatteryControl
     {
         private Battery(){}
         private Battery(double capacity,double stateCharge,double setPoint,double frequentlyDisCharge) 
@@ -35,6 +35,10 @@ namespace RenewXControl.Domain.Assets
         private bool CheckEmpty()
         {
             return StateCharge < Capacity;
+        }
+        public void UpdateSetPoint()
+        {
+            SetPoint =  new Random().NextDouble() * Capacity;
         }
         public async Task Charge(double solarAp, double turbineAp)
         {
@@ -74,44 +78,6 @@ namespace RenewXControl.Domain.Assets
             IsStartingCharge = false;
             IsNeedToCharge = true;
             ChargeStateMessage = "Discharge complete.";
-        }
-        public async Task ChargeDischarge(SolarPanel solarPanel,WindTurbine windTurbine)
-        {
-            switch (IsNeedToCharge)
-            {
-                // charging
-                case true when IsStartingCharge == false:
-                    solarPanel.UpdateSetPoint(2);
-                    solarPanel.PowerStatusMessage =
-                        solarPanel.SetPoint != 0
-                            ? "Solar is run.."
-                            : "Solar is off.. we doesn't have good Irradiance";
-
-                    windTurbine.UpdateSetPoint(2);
-                    windTurbine.PowerStatusMessage =
-                        windTurbine.SetPoint != 0
-                            ? "Turbine is run.."
-                            : "Turbine is off.. we doesn't have good Wind speed";
-                   // _ = Task.Run(() => Charge(solarPanel.GetAp(), windTurbine.GetAp()));
-                    break;
-
-                // discharging
-                case false when IsStartingCharge == false:
-                   // solarPanel.Off();
-                    solarPanel.PowerStatusMessage = "Solar is off..";
-
-                 //   windTurbine.Off();
-                    windTurbine.PowerStatusMessage = "Turbine is off..";
-
-                 //   SetSp();
-                    _= Task.Run(Discharge);
-                    break;
-            }
-        }
-
-        public void UpdateSetPoint(double amount)
-        {
-            SetPoint = amount; // new Random().NextDouble() * Capacity;
         }
     }
 }

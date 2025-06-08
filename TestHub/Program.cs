@@ -7,17 +7,31 @@ var connection = new HubConnectionBuilder()
 
 connection.On<MonitoringDto>("AssetUpdate", data =>
 {
-    if (data.AssetType == "SolarPanel")
-        Console.ForegroundColor = ConsoleColor.Yellow;
-    else if (data.AssetType == "WindTurbine")
-        Console.ForegroundColor = ConsoleColor.Red;
-    else
-        Console.ResetColor();
+    switch (data.AssetType)
+    {
+        case "SolarPanel":
+            Console.ForegroundColor = ConsoleColor.Yellow;
+            break;
+        case "WindTurbine":
+            Console.ForegroundColor = ConsoleColor.Red;
+            break;
+        case "Battery":
+            Console.ForegroundColor = ConsoleColor.Cyan;
+            break;
+        default:
+            Console.ResetColor();
+            break;
+    }
 
-    Console.WriteLine(
-        $"[{data.Timestamp:HH:mm:ss}] {data.AssetType} ({data.AssetName}) | " +
-        $"Sensor: {data.SensorValue} | ActivePower: {data.ActivePower} | SetPoint: {data.SetPoint}"
-    );
+    Console.Write($"[{data.Timestamp:HH:mm:ss}] {data.AssetType} ({data.AssetName}) | ");
+    Console.Write($"Sensor: {data.SensorValue} | ActivePower: {data.ActivePower} | SetPoint: {data.SetPoint}");
+
+    if (data.AssetType == "Battery")
+    {
+        Console.Write($" | StateCharge: {data.StateCharge} | RateDischarge: {data.RateDischarge}");
+    }
+
+    Console.WriteLine();
     Console.ResetColor();
 });
 

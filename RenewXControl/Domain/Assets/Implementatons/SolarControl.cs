@@ -2,10 +2,10 @@
 
 namespace RenewXControl.Domain.Assets.Implementatons
 {
-    public class SolarActive:ISolarActive
+    public class SolarControl:ISolarControl
     {
         private readonly SolarPanel _panel;
-        public SolarActive(SolarPanel panel)
+        public SolarControl(SolarPanel panel)
         {
             _panel = panel;
         }
@@ -30,6 +30,11 @@ namespace RenewXControl.Domain.Assets.Implementatons
         public void UpdateActivePower()
         {
            _panel.UpdateActivePower();
+        }
+
+        public void UpdateSetPoint(double amount)
+        {
+            _panel.UpdateSetPoint(amount);
         }
 
         public double ActivePower=> _panel.ActivePower;

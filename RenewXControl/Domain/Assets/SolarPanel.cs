@@ -4,7 +4,7 @@ using RenewXControl.Domain.Assets.Interfaces;
 
 namespace RenewXControl.Domain.Assets
 {
-    public class SolarPanel : Asset, ISolarActive
+    public class SolarPanel : Asset, ISolarControl
     {
         private SolarPanel() { }
         private SolarPanel(double irradiance, double activePower, double setPoint)

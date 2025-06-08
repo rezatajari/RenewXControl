@@ -3,7 +3,7 @@ using RenewXControl.Domain.Assets.Interfaces;
 
 namespace RenewXControl.Domain.Assets
 {
-    public class WindTurbine : Asset, ITurbineActive
+    public class WindTurbine : Asset, ITurbineControl
     {
         private WindTurbine() { }
         private WindTurbine(double windSpeed, double activePower, double setPoint)

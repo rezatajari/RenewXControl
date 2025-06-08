@@ -10,5 +10,6 @@ namespace RenewXControl.Application.Interfaces
         double GetActivePower { get; }
         void UpdateIrradiance();
         double GetIrradiance { get; }
+        void UpdateSetPoint(double amount);
     }
 }

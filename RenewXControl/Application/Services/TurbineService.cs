@@ -5,9 +5,9 @@ namespace RenewXControl.Application.Services
 {
     public class TurbineService : ITurbineService
     {
-        private readonly ITurbineActive _windActive;
+        private readonly ITurbineControl _windActive;
 
-        public TurbineService(ITurbineActive windActive)
+        public TurbineService(ITurbineControl windActive)
         {
             _windActive = windActive;
         }
@@ -34,6 +34,9 @@ namespace RenewXControl.Application.Services
         }
 
         public double GetWindSpeed => _windActive.WindSpeed;
-
+        public void UpdateSetPoint(double amount)
+        {
+            _windActive.UpdateSetPoint(amount);
+        }
     }
 }

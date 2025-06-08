@@ -10,5 +10,6 @@ namespace RenewXControl.Application.Interfaces
         double GetActivePower { get; }
         void UpdateWindSpeed();
         double GetWindSpeed { get; }
+        void UpdateSetPoint(double amount);
     }
 }

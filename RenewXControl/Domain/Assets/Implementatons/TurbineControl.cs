@@ -3,10 +3,10 @@ using RenewXControl.Domain.Assets.Interfaces;
 
 namespace RenewXControl.Domain.Assets.Implementatons
 {
-    public class TurbineActive:ITurbineActive
+    public class TurbineControl:ITurbineControl
     {
         private readonly WindTurbine _turbine;
-        public TurbineActive(WindTurbine turbine)
+        public TurbineControl(WindTurbine turbine)
         {
             _turbine = turbine;
         }
@@ -25,6 +25,10 @@ namespace RenewXControl.Domain.Assets.Implementatons
             _turbine.UpdateWindSpeed();
         }
         public double WindSpeed => _turbine.WindSpeed;
+        public void UpdateSetPoint(double amount)
+        {
+            _turbine.UpdateSetPoint(amount);
+        }
 
         public void UpdateActivePower()
         {

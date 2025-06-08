@@ -155,7 +155,7 @@ namespace RenewXControl
                 System.Console.WriteLine($"SetPoint:      {battery.SetPoint} kW");
                 System.Console.WriteLine($"Discharge Rate: {battery.FrequentlyDisCharge} kW\n");
 
-                _ = Task.Run(() => battery.ChargeDischarge(solarPanel, windTurbine));
+                //_ = Task.Run(() => battery.ChargeDischarge(solarPanel, windTurbine));
 
                 // Refresh every second
                 await Task.Delay(1000);

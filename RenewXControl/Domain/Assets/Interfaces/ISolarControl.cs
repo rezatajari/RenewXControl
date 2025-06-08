@@ -1,6 +1,6 @@
 ﻿namespace RenewXControl.Domain.Assets.Interfaces
 {
-    public interface ISolarActive
+    public interface ISolarControl
     {
         void Start();
         void Stop();
@@ -8,5 +8,6 @@
         double Irradiance { get; }
         double ActivePower { get; }
         void UpdateActivePower();
+        void UpdateSetPoint(double amount);
     }
 }

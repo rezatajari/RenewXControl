@@ -8,6 +8,7 @@ using RenewXControl.Application.Services;
 using RenewXControl.Domain.Assets.Implementatons;
 using RenewXControl.Domain.Assets.Interfaces;
 using RenewXControl.Infrastructure.Persistence.MyDbContext;
+using Battery = RenewXControl.Domain.Assets.Battery;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -20,6 +21,8 @@ builder.Services.Configure<SolarPanelConfig>(
     builder.Configuration.GetSection("SolarPanelConfig"));
 builder.Services.Configure<WindTurbineConfig>(
     builder.Configuration.GetSection("WindTurbineConfig"));
+builder.Services.Configure<BatteryConfig>(
+    builder.Configuration.GetSection("BatteryConfig"));
 
 // ✅ 3. SolarPanel & Turbine setup
 builder.Services.AddSingleton<SolarPanel>(sp =>
@@ -32,12 +35,20 @@ builder.Services.AddSingleton<WindTurbine>(wt =>
     var config = wt.GetRequiredService<IOptions<WindTurbineConfig>>().Value;
     return WindTurbine.Create(config);
 });
+builder.Services.AddSingleton<Battery>(b =>
+{
+    var config = b.GetRequiredService<IOptions<BatteryConfig>>().Value;
+    return Battery.Create(config);
+});
 
 // ✅ 4. Register solar & turbine services and interfaces
-builder.Services.AddSingleton<ISolarActive, SolarActive>();
+builder.Services.AddSingleton<ISolarControl, SolarControl>();
 builder.Services.AddSingleton<ISolarService, SolarService>();
 builder.Services.AddSingleton<ITurbineService, TurbineService>();
-builder.Services.AddSingleton<ITurbineActive, TurbineActive>();
+builder.Services.AddSingleton<ITurbineControl, TurbineControl>();
+builder.Services.AddSingleton<IBatteryControl, BatteryControl>();
+builder.Services.AddSingleton<IBatteryService, BatteryService>();
+builder.Services.AddSingleton<IAssetControl, AssetControl>();
 
 // ✅ 5. Others
 builder.Services.AddDbContext<RxcDbContext>(options =>
@@ -52,16 +63,12 @@ app.MapHub<AssetsHub>("/assetsHub");
 app.MapControllers();
 app.Run();
 
-// Bind and register configuration
-// var batteryConfig = builder.Configuration.GetSection("BatteryConfig").Get<BatteryConfig>();
 // var userConfig = builder.Configuration.GetSection("UserConfig").Get<UserConfig>();
 // var siteConfig = builder.Configuration.GetSection("SiteConfig").Get<SiteConfig>();
-
 
 // Factory pattern to create each our models
 // var user = User.Create(userConfig.Name);
 // var site = Site.Create(siteConfig);
-// var battery = Battery.Create(batteryConfig);
 
 // Add assets to the site
 // site.AddAsset(windTurbine);
