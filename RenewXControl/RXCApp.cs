@@ -123,7 +123,7 @@ namespace RenewXControl
                 System.Console.WriteLine($"Name:          {windTurbine.Name}");
                 System.Console.WriteLine($"SetPoint:      {windTurbine.SetPoint} kW");
                 System.Console.WriteLine($"Wind Speed:    {windTurbine.GetWindSpeed()} km/h");
-                System.Console.WriteLine($"Active Power:  {windTurbine.GetAp()} kW\n");
+               // System.Console.WriteLine($"Active Power:  {windTurbine.GetAp()} kW\n");
 
                 // Solar Panel Status
                 System.Console.ForegroundColor = ConsoleColor.Yellow;
@@ -137,7 +137,7 @@ namespace RenewXControl
                 System.Console.WriteLine($"Name:          {solarPanel.Name}");
                 System.Console.WriteLine($"SetPoint:      {solarPanel.SetPoint} kW");
                 System.Console.WriteLine($"Irradiance:    {solarPanel.GetIrradiance()} W/m²");
-                System.Console.WriteLine($"Active Power:  {solarPanel.GetAp()} kW\n");
+              //  System.Console.WriteLine($"Active Power:  {solarPanel.GetAp()} kW\n");
 
                 // Battery Status
                 System.Console.ForegroundColor = ConsoleColor.Green;

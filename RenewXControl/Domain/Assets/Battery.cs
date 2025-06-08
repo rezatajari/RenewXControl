@@ -81,29 +81,29 @@ namespace RenewXControl.Domain.Assets
             {
                 // charging
                 case true when IsStartingCharge == false:
-                    solarPanel.SetSp();
+                    solarPanel.UpdateSetPoint(2);
                     solarPanel.PowerStatusMessage =
                         solarPanel.SetPoint != 0
                             ? "Solar is run.."
                             : "Solar is off.. we doesn't have good Irradiance";
 
-                    windTurbine.SetSp();
+                    windTurbine.UpdateSetPoint(2);
                     windTurbine.PowerStatusMessage =
                         windTurbine.SetPoint != 0
                             ? "Turbine is run.."
                             : "Turbine is off.. we doesn't have good Wind speed";
-                    _ = Task.Run(() => Charge(solarPanel.GetAp(), windTurbine.GetAp()));
+                   // _ = Task.Run(() => Charge(solarPanel.GetAp(), windTurbine.GetAp()));
                     break;
 
                 // discharging
                 case false when IsStartingCharge == false:
-                    solarPanel.Off();
+                   // solarPanel.Off();
                     solarPanel.PowerStatusMessage = "Solar is off..";
 
-                    windTurbine.Off();
+                 //   windTurbine.Off();
                     windTurbine.PowerStatusMessage = "Turbine is off..";
 
-                    SetSp();
+                 //   SetSp();
                     _= Task.Run(Discharge);
                     break;
             }

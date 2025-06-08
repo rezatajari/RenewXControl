@@ -3,9 +3,9 @@ using RenewXControl.Domain.Assets.Interfaces;
 
 namespace RenewXControl.Domain.Assets
 {
-    public class WindTurbine : Asset, ISetPointAsset, IGeneratorData
+    public class WindTurbine : Asset, ITurbineActive
     {
-        private WindTurbine() { }
+        public WindTurbine() { }
         private WindTurbine(double windSpeed, double activePower, double setPoint)
         {
             Name = $"WT{Id}";
@@ -51,11 +51,11 @@ namespace RenewXControl.Domain.Assets
             }
             else
             {
-                Off();
+                Stop();
             }
         }
 
-        public void UpdateSensor()
+        public void UpdateWindSpeed()
         {
             WindSpeed = new Random().NextDouble() * 10;
             if (WindSpeed == 0.0 || SetPoint == 0.0)
@@ -68,7 +68,7 @@ namespace RenewXControl.Domain.Assets
                 PowerStatusMessage = "Wind turbine is generating power";
             }
         }
-        public double GetSensor()
+        public double GetWindSpeed()
             => WindSpeed;
         public void UpdateActivePower()
         {
