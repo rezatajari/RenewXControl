@@ -6,10 +6,11 @@ namespace RenewXControl.Application.Interfaces.Assets
     {
         GeneralResponse<bool> StartGenerator();
         void TurnOffGenerator();
-        void UpdateActivePower();
-        double GetActivePower { get; }
         GeneralResponse<bool> UpdateWindSpeed();
         double GetWindSpeed { get; }
-        void UpdateSetPoint(double amount);
+        void UpdateActivePower();
+        double GetActivePower { get; }
+        void UpdateSetPoint();
+        double GetSetPoint { get; }
     }
 }

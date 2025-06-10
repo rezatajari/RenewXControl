@@ -18,6 +18,8 @@ namespace RenewXControl.Application.Services.Assets
         public double GetFrequentlyDisCharge => _batteryControl.FrequentlyDisCharge;
         public bool GetIsNeedToCharge =>_batteryControl.IsNeedToCharge;
         public bool GetIsStartingCharge =>_batteryControl.IsStartingCharge;
+        public string GetChargeStateMessage { get; }
+
         public async Task ChargeAsync(double solarAp, double turbineAp)
         {
            await  _batteryControl.Charge(solarAp, turbineAp);

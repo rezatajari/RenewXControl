@@ -147,7 +147,7 @@ namespace RenewXControl
                 System.Console.ForegroundColor = battery.IsNeedToCharge
                     ? ConsoleColor.Green
                     : ConsoleColor.Red;
-                System.Console.WriteLine(battery.ChargeStateMessage);
+              //  System.Console.WriteLine(battery.ChargeStateMessage);
                 System.Console.ResetColor();
                 System.Console.WriteLine($"Name:          {battery.Name}");
                 System.Console.WriteLine($"Capacity:      {battery.Capacity} kWh");

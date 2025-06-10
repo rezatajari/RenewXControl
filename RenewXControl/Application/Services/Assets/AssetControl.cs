@@ -24,8 +24,8 @@ namespace RenewXControl.Application.Services.Assets
             {
                 // charging
                 case true when _batteryService.GetIsStartingCharge == false:
-                    _solarService.UpdateSetPoint(2);
-                    _turbineService.UpdateSetPoint(2);
+                    _solarService.UpdateSetPoint();
+                    _turbineService.UpdateSetPoint();
                     _ = _batteryService.ChargeAsync(
                                 _solarService.GetActivePower,
                               _turbineService.GetActivePower);

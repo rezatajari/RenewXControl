@@ -8,6 +8,7 @@
         double GetFrequentlyDisCharge { get; }
         bool GetIsNeedToCharge { get; }
         bool GetIsStartingCharge { get; }
+        string GetChargeStateMessage { get;}
         Task ChargeAsync(double solarAp, double turbineAp);
         Task DischargeAsync();
         void UpdateSetPoint();

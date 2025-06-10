@@ -11,7 +11,6 @@ namespace RenewXControl.Domain.Implementatons.Assets
         {
             _panel = panel;
         }
-
         public GeneralResponse<bool> Start()
         {
             if (_panel.Start())
@@ -23,12 +22,10 @@ namespace RenewXControl.Domain.Implementatons.Assets
                 return GeneralResponse<bool>.Failure(message: "Solar panel is not generating power", isSuccess: false);
             }
         }
-
         public void Stop()
         {
             _panel.Stop();
         }
-
         public GeneralResponse<bool> UpdateIrradiance()
         {
             if (_panel.UpdateIrradiance())
@@ -40,19 +37,17 @@ namespace RenewXControl.Domain.Implementatons.Assets
                 return GeneralResponse<bool>.Failure(message: "Solar panel is not generating power", isSuccess: false);
             }
         }
-
         public double Irradiance => _panel.Irradiance; 
-
         public void UpdateActivePower()
         {
            _panel.UpdateActivePower();
         }
-
-        public void UpdateSetPoint(double amount)
+        public double ActivePower=> _panel.ActivePower;
+        public void UpdateSetPoint()
         {
-            _panel.UpdateSetPoint(amount);
+            _panel.UpdateSetPoint();
         }
 
-        public double ActivePower=> _panel.ActivePower;
+        public double SetPoint => _panel.SetPoint;
     }
 }

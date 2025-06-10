@@ -66,9 +66,6 @@ namespace RenewXControl.Infrastructure.Persistence.MyDbContext
 
             // Battery
             modelBuilder.Entity<Battery>()
-                .Ignore(b => b.ChargeStateMessage);
-
-            modelBuilder.Entity<Battery>()
                 .Ignore(b => b.IsNeedToCharge);
 
             modelBuilder.Entity<Battery>()

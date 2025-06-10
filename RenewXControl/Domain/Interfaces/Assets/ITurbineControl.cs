@@ -7,9 +7,10 @@ namespace RenewXControl.Domain.Interfaces.Assets
         GeneralResponse<bool> Start();
         void Stop();
         GeneralResponse<bool> UpdateWindSpeed();
+        double WindSpeed { get; }
         void UpdateActivePower();
         double ActivePower { get; }
-        double WindSpeed { get; }
-        void UpdateSetPoint(double amount);
+        void UpdateSetPoint();
+        double SetPointSpeed { get; }
     }
 }

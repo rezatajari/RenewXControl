@@ -39,9 +39,9 @@ namespace RenewXControl.Domain.Assets
             ActivePower = SetPoint;
         }
 
-        public void UpdateSetPoint(double amount)
+        public void UpdateSetPoint()
         {
-            SetPoint = amount; // new Random().NextDouble() * WindSpeed;
+            SetPoint = new Random().NextDouble() * WindSpeed;
             if (SetPoint != 0)
             {
                 ActivePower = SetPoint;
@@ -51,7 +51,6 @@ namespace RenewXControl.Domain.Assets
                 Stop();
             }
         }
-
         public bool UpdateWindSpeed()
         {
             WindSpeed = new Random().NextDouble() * 10;

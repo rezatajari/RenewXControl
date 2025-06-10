@@ -8,8 +8,9 @@ namespace RenewXControl.Domain.Interfaces.Assets
         void Stop();
         GeneralResponse<bool> UpdateIrradiance();
         double Irradiance { get; }
-        double ActivePower { get; }
         void UpdateActivePower();
-        void UpdateSetPoint(double amount);
+        double ActivePower { get; }
+        void UpdateSetPoint();
+        double SetPoint { get; }
     }
 }

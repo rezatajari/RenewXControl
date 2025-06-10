@@ -23,12 +23,10 @@ namespace RenewXControl.Domain.Implementatons.Assets
                 return GeneralResponse<bool>.Failure(message: "Wind turbine is not generating power", isSuccess: false);
             }
         }
-
         public void Stop()
         {
             _turbine.Stop();
         }
-
         public GeneralResponse<bool> UpdateWindSpeed()
         {
             if (_turbine.UpdateWindSpeed())
@@ -41,16 +39,16 @@ namespace RenewXControl.Domain.Implementatons.Assets
             }
         }
         public double WindSpeed => _turbine.WindSpeed;
-        public void UpdateSetPoint(double amount)
-        {
-            _turbine.UpdateSetPoint(amount);
-        }
-
         public void UpdateActivePower()
         {
             _turbine.UpdateActivePower();
         }
-
         public double ActivePower => _turbine.ActivePower;
+        public void UpdateSetPoint()
+        {
+            _turbine.UpdateSetPoint();
+        }
+
+        public double SetPointSpeed => _turbine.SetPoint;
     }
 }
