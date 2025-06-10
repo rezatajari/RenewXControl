@@ -4,7 +4,8 @@ namespace RenewXControl.Application.Interfaces.Assets
 {
     public interface ISolarService
     {
-        GeneralResponse<bool> StartGenerator();
+        string StatusMessage { get; set; }
+        void StartGenerator();
         void TurnOffGenerator();
         GeneralResponse<bool> UpdateIrradiance();
         double GetIrradiance { get; }

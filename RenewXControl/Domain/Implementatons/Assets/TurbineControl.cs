@@ -23,9 +23,10 @@ namespace RenewXControl.Domain.Implementatons.Assets
                 return GeneralResponse<bool>.Failure(message: "Wind turbine is not generating power", isSuccess: false);
             }
         }
-        public void Stop()
+        public GeneralResponse<bool> Stop()
         {
             _turbine.Stop();
+            return GeneralResponse<bool>.Success(data:true,message: "Wind turbine is off",isSuccess:true);
         }
         public GeneralResponse<bool> UpdateWindSpeed()
         {

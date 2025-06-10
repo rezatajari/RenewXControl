@@ -23,7 +23,8 @@ namespace RenewXControl.Domain.Assets
             => new WindTurbine(turbineConfig.WindSpeed, turbineConfig.ActivePower, turbineConfig.SetPoint);
         public bool Start()
         {
-            if (WindSpeed != 0.0 && SetPoint != 0.0)
+            SetPoint = 10;
+            if (WindSpeed != 0.0 )
             {
                 return true;
             }
@@ -35,21 +36,12 @@ namespace RenewXControl.Domain.Assets
         }
         public void Stop()
         {
-            SetPoint = 0;
             ActivePower = SetPoint;
         }
 
         public void UpdateSetPoint()
         {
-            SetPoint = new Random().NextDouble() * WindSpeed;
-            if (SetPoint != 0)
-            {
-                ActivePower = SetPoint;
-            }
-            else
-            {
-                Stop();
-            }
+            SetPoint = 0;
         }
         public bool UpdateWindSpeed()
         {

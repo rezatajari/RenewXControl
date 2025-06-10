@@ -22,9 +22,10 @@ namespace RenewXControl.Domain.Implementatons.Assets
                 return GeneralResponse<bool>.Failure(message: "Solar panel is not generating power", isSuccess: false);
             }
         }
-        public void Stop()
+        public GeneralResponse<bool> Stop()
         {
             _panel.Stop();
+            return GeneralResponse<bool>.Success(data:true,message: "Solar panel is off",isSuccess:true);
         }
         public GeneralResponse<bool> UpdateIrradiance()
         {

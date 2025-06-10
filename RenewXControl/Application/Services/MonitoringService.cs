@@ -30,19 +30,18 @@ namespace RenewXControl.Application.Services
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
-            var startSolar = _solarService.StartGenerator();
-            var startTurbine = _turbineService.StartGenerator();
+            _solarService.StartGenerator();
+            _turbineService.StartGenerator();
 
             while (!stoppingToken.IsCancellationRequested)
             {
 
                 // Solar
                 _solarService.UpdateIrradiance();
-                _solarService.UpdateActivePower();
                 var solarDto = new Solar
                 (
                    AssetType: "SolarPanel",
-                   Message: startSolar.Message,
+                   Message: _solarService.StatusMessage,
                    Irradiance: _solarService.GetIrradiance,
                    ActivePower: _solarService.GetActivePower,
                    SetPoint: _solarService.GetSetPoint,
@@ -51,11 +50,10 @@ namespace RenewXControl.Application.Services
 
                 // Turbine
                 _turbineService.UpdateWindSpeed();
-                _turbineService.UpdateActivePower();
                 var turbineDto = new Turbine
                 (
                     AssetType: "WindTurbine",
-                    Message: startTurbine.Message,
+                    Message: _turbineService.StatusMessage,
                     WindSpeed: _turbineService.GetWindSpeed,
                     ActivePower: _turbineService.GetActivePower,
                     SetPoint: _turbineService.GetSetPoint,
@@ -63,7 +61,7 @@ namespace RenewXControl.Application.Services
                 );
 
                 // Battery
-                await _assetControl.ChargeDischarge();
+                Task.Run(async  ()=>_assetControl.ChargeDischarge());
                 var batteryDto = new Battery
                 (
                     AssetType: "Battery",
@@ -80,6 +78,7 @@ namespace RenewXControl.Application.Services
                 // Send both DTOs to all clients
                 await _hub.Clients.All.SendAsync("AssetUpdate", model, stoppingToken);
                 await Task.Delay(1000, stoppingToken);
+               
             }
         }
     }

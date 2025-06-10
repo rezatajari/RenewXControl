@@ -5,7 +5,7 @@ namespace RenewXControl.Domain.Interfaces.Assets
     public interface ITurbineControl
     {
         GeneralResponse<bool> Start();
-        void Stop();
+        GeneralResponse<bool> Stop();
         GeneralResponse<bool> UpdateWindSpeed();
         double WindSpeed { get; }
         void UpdateActivePower();

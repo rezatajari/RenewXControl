@@ -11,13 +11,18 @@ namespace RenewXControl.Application.Services.Assets
         {
             _solarControl = solarActive;
         }
-        public GeneralResponse<bool> StartGenerator()
+
+        public string StatusMessage { get; set; }
+
+        public void StartGenerator()
         {
-          return  _solarControl.Start();
+           var result= _solarControl.Start();
+           StatusMessage = result.Message;
         }
         public void TurnOffGenerator()
         {
-            _solarControl.Stop();
+         var result=   _solarControl.Stop();
+         StatusMessage = result.Message;
         }
         public GeneralResponse<bool> UpdateIrradiance()
         {
@@ -33,7 +38,6 @@ namespace RenewXControl.Application.Services.Assets
         {
             _solarControl.UpdateSetPoint();
         }
-
         public double GetSetPoint => _solarControl.SetPoint;
     }
 }

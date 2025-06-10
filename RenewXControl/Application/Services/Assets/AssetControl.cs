@@ -1,4 +1,5 @@
 ﻿using RenewXControl.Application.Interfaces.Assets;
+using Console = System.Console;
 
 namespace RenewXControl.Application.Services.Assets
 {
@@ -18,27 +19,58 @@ namespace RenewXControl.Application.Services.Assets
             _turbineService = turbineService;
         }
 
+        private void UpdateTotalPower()
+        {
+            UpdateGenerators();
+
+            var totalPower = _solarService.GetActivePower + _turbineService.GetActivePower;
+            _batteryService.SetTotalPower(totalPower);
+        }
+        private void UpdateGenerators()
+        {
+            _solarService.UpdateActivePower();
+            _turbineService.UpdateActivePower();
+        }
+        private void UpdateSetPointGenerators()
+        {
+            _solarService.UpdateSetPoint();
+            _turbineService.UpdateSetPoint();
+        }
+
+
+        public void StartGenerators()
+        {
+            _solarService.StartGenerator();
+            _turbineService.StartGenerator();
+        }
         public async Task ChargeDischarge()
         {
             switch (_batteryService.GetIsNeedToCharge)
             {
                 // charging
-                case true when _batteryService.GetIsStartingCharge == false:
-                    _solarService.UpdateSetPoint();
-                    _turbineService.UpdateSetPoint();
-                    _ = _batteryService.ChargeAsync(
-                                _solarService.GetActivePower,
-                              _turbineService.GetActivePower);
+                case true when _batteryService.GetIsStartingChargeDischarge == false:
+                    StartGenerators();
+                    UpdateTotalPower();
+                    await _batteryService.ChargeAsync();
+                    break;
+
+                // when battery need to update new total power for charging
+                case true when _batteryService.GetIsStartingChargeDischarge == true:
+                    UpdateTotalPower();
                     break;
 
                 // discharging
-                case false when _batteryService.GetIsStartingCharge == false:
-                    _batteryService.UpdateSetPoint();
-                    _solarService.TurnOffGenerator();
-                    _turbineService.TurnOffGenerator();
-                    _ = _batteryService.DischargeAsync();
+                case false when _batteryService.GetIsStartingChargeDischarge == false:
+                     TurnOffGenerators();
+                  await  _batteryService.DischargeAsync();
                     break;
             }
+        }
+        public void TurnOffGenerators()
+        {
+            UpdateSetPointGenerators();
+            _solarService.TurnOffGenerator();
+            _turbineService.TurnOffGenerator();
         }
     }
 }

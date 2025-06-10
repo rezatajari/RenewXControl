@@ -15,29 +15,33 @@ namespace RenewXControl.Domain.Implementatons.Assets
         public double SetPoint => _battery.SetPoint;
         public double FrequentlyDisCharge => _battery.FrequentlyDisCharge;
         public bool IsNeedToCharge => _battery.IsNeedToCharge;
-        public bool IsStartingCharge => _battery.IsStartingCharge;
+        public bool IsStartingChargeDischarge => _battery.IsStartingChargeDischarge;
         public string ChargeStateMessage { get; set; }
 
-        public async Task Charge(double solarAp,double turbineAp)
+        public async Task Charge()
         {
             ChargeStateMessage= "Battery is charging";
-            var totalPower = solarAp + turbineAp;
-            await _battery.Charge(totalPower);
+            await _battery.Charge();
             ChargeStateMessage = "Charge complete.";
         }
 
-        public async Task Discharge()
+        public async Task  Discharge()
         {
             ChargeStateMessage = "Battery is discharging";
             var amountToDischarge = StateCharge - SetPoint;
             var rateOfDischarge = amountToDischarge / FrequentlyDisCharge;
-            await  _battery.Discharge(rateOfDischarge);
+           await   _battery.Discharge(rateOfDischarge);
             ChargeStateMessage = "Discharge complete.";
         }
 
         public void UpdateSetPoint()
         {
             _battery.UpdateSetPoint();
+        }
+
+        public void SetTotalPower(double amount)
+        {
+            _battery.SetTotalPower(amount);
         }
     }
 }

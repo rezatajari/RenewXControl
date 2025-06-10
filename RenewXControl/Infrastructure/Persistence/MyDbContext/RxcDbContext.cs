@@ -69,7 +69,10 @@ namespace RenewXControl.Infrastructure.Persistence.MyDbContext
                 .Ignore(b => b.IsNeedToCharge);
 
             modelBuilder.Entity<Battery>()
-                .Ignore(b => b.IsStartingCharge);
+                .Ignore(b => b.IsStartingChargeDischarge);
+
+            modelBuilder.Entity<Battery>()
+                .Ignore(b => b.TotalPower);
         }
     }
 }

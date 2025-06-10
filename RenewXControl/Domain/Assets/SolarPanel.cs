@@ -25,7 +25,9 @@ namespace RenewXControl.Domain.Assets
 
         public bool Start()
         {
-            if (Irradiance != 0.0 && SetPoint != 0.0)
+
+            SetPoint = 10;
+            if (Irradiance != 0.0)
             {
                 return true;
             }
@@ -35,23 +37,15 @@ namespace RenewXControl.Domain.Assets
                 return false;
             }
         }
-        public void Stop()
+        public bool Stop()
         {
-            SetPoint = 0;
             ActivePower = SetPoint;
+            return true;
         }
 
         public void UpdateSetPoint()
         {
-            SetPoint =  new Random().NextDouble() * Irradiance;
-            if (SetPoint != 0)
-            {
-                ActivePower = SetPoint;
-            }
-            else
-            {
-                Stop();
-            }
+            SetPoint = 0;
         }
         public bool UpdateIrradiance()
         {

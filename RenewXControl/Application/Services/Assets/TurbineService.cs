@@ -11,13 +11,19 @@ namespace RenewXControl.Application.Services.Assets
         {
             _turbineControl = windActive;
         }
-        public GeneralResponse<bool> StartGenerator()
+
+        public string StatusMessage { get; set; }
+
+        public void StartGenerator()
         {
-            return _turbineControl.Start();
+         var result=    _turbineControl.Start();
+         StatusMessage = result.Message;
         }
         public void TurnOffGenerator()
         {
-            _turbineControl.Stop();
+            var result =_turbineControl.Stop();
+            StatusMessage = result.Message;
+
         }
         public GeneralResponse<bool> UpdateWindSpeed()
         {
@@ -33,7 +39,6 @@ namespace RenewXControl.Application.Services.Assets
         {
             _turbineControl.UpdateSetPoint();
         }
-
         public double GetSetPoint => _turbineControl.SetPointSpeed;
     }
 }

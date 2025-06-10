@@ -17,20 +17,26 @@ namespace RenewXControl.Application.Services.Assets
         public double GetSetPoint => _batteryControl.SetPoint;
         public double GetFrequentlyDisCharge => _batteryControl.FrequentlyDisCharge;
         public bool GetIsNeedToCharge =>_batteryControl.IsNeedToCharge;
-        public bool GetIsStartingCharge =>_batteryControl.IsStartingCharge;
-        public string GetChargeStateMessage { get; }
+        public bool GetIsStartingChargeDischarge =>_batteryControl.IsStartingChargeDischarge;
+        public string GetChargeStateMessage => _batteryControl.ChargeStateMessage;
 
-        public async Task ChargeAsync(double solarAp, double turbineAp)
+        public async Task ChargeAsync()
         {
-           await  _batteryControl.Charge(solarAp, turbineAp);
+           await  _batteryControl.Charge();
+           UpdateSetPoint();
         }
 
         public async Task DischargeAsync()
         {
-           await _batteryControl.Discharge();
+          await _batteryControl.Discharge();
         }
 
-        public void UpdateSetPoint()
+        public void SetTotalPower(double amount)
+        {
+            _batteryControl.SetTotalPower(amount);
+        }
+
+        private void UpdateSetPoint()
         {
             _batteryControl.UpdateSetPoint();
         }
