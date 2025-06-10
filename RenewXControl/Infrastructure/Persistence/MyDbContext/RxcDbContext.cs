@@ -73,15 +73,6 @@ namespace RenewXControl.Infrastructure.Persistence.MyDbContext
 
             modelBuilder.Entity<Battery>()
                 .Ignore(b => b.IsStartingCharge);
-
-            // SolarPanel
-            modelBuilder.Entity<SolarPanel>()
-                .Ignore(s => s.PowerStatusMessage);
-
-            // WindTurbine
-            modelBuilder.Entity<WindTurbine>()
-                .Ignore(w => w.PowerStatusMessage);
-
         }
     }
 }

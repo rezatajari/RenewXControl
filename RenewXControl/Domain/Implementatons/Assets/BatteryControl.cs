@@ -1,6 +1,7 @@
-﻿using RenewXControl.Domain.Assets.Interfaces;
+﻿using RenewXControl.Domain.Assets;
+using RenewXControl.Domain.Interfaces.Assets;
 
-namespace RenewXControl.Domain.Assets.Implementatons
+namespace RenewXControl.Domain.Implementatons.Assets
 {
     public class BatteryControl:IBatteryControl
     {

@@ -1,6 +1,6 @@
-﻿using RenewXControl.Application.Interfaces;
+﻿using RenewXControl.Application.Interfaces.Assets;
 
-namespace RenewXControl.Application.Services
+namespace RenewXControl.Application.Services.Assets
 {
     public class AssetControl : IAssetControl
     {

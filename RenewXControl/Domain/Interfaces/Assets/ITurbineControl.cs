@@ -1,10 +1,12 @@
-﻿namespace RenewXControl.Domain.Assets.Interfaces
+﻿using RenewXControl.Api.Utility;
+
+namespace RenewXControl.Domain.Interfaces.Assets
 {
     public interface ITurbineControl
     {
-        void Start();
+        GeneralResponse<bool> Start();
         void Stop();
-        void UpdateWindSpeed();
+        GeneralResponse<bool> UpdateWindSpeed();
         void UpdateActivePower();
         double ActivePower { get; }
         double WindSpeed { get; }

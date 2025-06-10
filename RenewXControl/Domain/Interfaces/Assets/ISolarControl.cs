@@ -1,10 +1,12 @@
-﻿namespace RenewXControl.Domain.Assets.Interfaces
+﻿using RenewXControl.Api.Utility;
+
+namespace RenewXControl.Domain.Interfaces.Assets
 {
     public interface ISolarControl
     {
-        void Start();
+        GeneralResponse<bool> Start();
         void Stop();
-        void UpdateIrradiance();
+        GeneralResponse<bool> UpdateIrradiance();
         double Irradiance { get; }
         double ActivePower { get; }
         void UpdateActivePower();

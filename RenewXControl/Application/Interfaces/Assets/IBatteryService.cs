@@ -1,4 +1,4 @@
-﻿namespace RenewXControl.Application.Interfaces
+﻿namespace RenewXControl.Application.Interfaces.Assets
 {
     public interface IBatteryService
     {

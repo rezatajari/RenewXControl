@@ -1,9 +1,10 @@
-﻿using RenewXControl.Configuration.AssetsModel.Assets;
-using RenewXControl.Domain.Assets.Interfaces;
+﻿using RenewXControl.Api.Utility;
+using RenewXControl.Configuration.AssetsModel.Assets;
+using RenewXControl.Domain.Interfaces.Assets;
 
 namespace RenewXControl.Domain.Assets
 {
-    public class WindTurbine : Asset, ITurbineControl
+    public class WindTurbine : Asset
     {
         private WindTurbine() { }
         private WindTurbine(double windSpeed, double activePower, double setPoint)
@@ -12,29 +13,25 @@ namespace RenewXControl.Domain.Assets
             WindSpeed = windSpeed;
             ActivePower = activePower;
             SetPoint = setPoint;
-            PowerStatusMessage = "Wind turbine is not generating power now";
         }
 
         public double WindSpeed { get; private set; }  // km/h
         public double ActivePower { get; private set; } // kW
         public double SetPoint { get; private set; } // Determines operation status
-        public string PowerStatusMessage { get; set; }
 
         public static WindTurbine Create(WindTurbineConfig turbineConfig)
             => new WindTurbine(turbineConfig.WindSpeed, turbineConfig.ActivePower, turbineConfig.SetPoint);
-        public void Start()
+        public bool Start()
         {
-            if (WindSpeed == 0.0 || SetPoint == 0.0)
+            if (WindSpeed != 0.0 && SetPoint != 0.0)
             {
-                ActivePower = 0;
-                PowerStatusMessage = "Wind turbine is not generating power";
+                return true;
             }
             else
             {
-                PowerStatusMessage = "Wind turbine is generating power";
+                ActivePower = 0;
+                return false;
             }
-
-
         }
         public void Stop()
         {
@@ -55,18 +52,10 @@ namespace RenewXControl.Domain.Assets
             }
         }
 
-        public void UpdateWindSpeed()
+        public bool UpdateWindSpeed()
         {
             WindSpeed = new Random().NextDouble() * 10;
-            if (WindSpeed == 0.0 || SetPoint == 0.0)
-            {
-                ActivePower = 0;
-                PowerStatusMessage = "Wind turbine is not generating power";
-            }
-            else
-            {
-                PowerStatusMessage = "Wind turbine is generating power";
-            }
+            return WindSpeed != 0.0 || SetPoint != 0.0;
         }
         public void UpdateActivePower()
         {

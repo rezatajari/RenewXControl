@@ -64,7 +64,7 @@ namespace RenewXControl
             System.Console.ForegroundColor = ConsoleColor.Blue;
             System.Console.WriteLine("=== Initial Wind Turbine Status ===");
             System.Console.ResetColor();
-            System.Console.WriteLine($"Status:        {windTurbine.PowerStatusMessage}");
+            ///System.Console.WriteLine($"Status:        {windTurbine.PowerStatusMessage}");
             System.Console.WriteLine($"Name:          {windTurbine.Name}");
             System.Console.WriteLine($"SetPoint:      {windTurbine.SetPoint} kW");
             System.Console.WriteLine($"Wind Speed:    {windTurbine.WindSpeed} km/h");
@@ -74,7 +74,7 @@ namespace RenewXControl
             System.Console.ForegroundColor = ConsoleColor.Yellow;
             System.Console.WriteLine("=== Initial Solar Panel Status ===");
             System.Console.ResetColor();
-            System.Console.WriteLine($"Status:        {solarPanel.PowerStatusMessage}");
+            // System.Console.WriteLine($"Status:        {solarPanel.PowerStatusMessage}");
             System.Console.WriteLine($"Name:          {solarPanel.Name}");
             System.Console.WriteLine($"SetPoint:      {solarPanel.SetPoint} kW");
             System.Console.WriteLine($"Irradiance:    {solarPanel.Irradiance} W/m²");
@@ -118,7 +118,7 @@ namespace RenewXControl
                 System.Console.Write("Status:        "); // Keep "Status:" in the default color
                 System.Console.ForegroundColor =
                     windTurbine.SetPoint == 0 ? ConsoleColor.Red : ConsoleColor.Green;
-                System.Console.WriteLine(windTurbine.PowerStatusMessage); // Change only the value color
+               // System.Console.WriteLine(windTurbine.PowerStatusMessage); // Change only the value color
                 System.Console.ResetColor();
                 System.Console.WriteLine($"Name:          {windTurbine.Name}");
                 System.Console.WriteLine($"SetPoint:      {windTurbine.SetPoint} kW");
@@ -132,7 +132,7 @@ namespace RenewXControl
                 System.Console.Write("Status:        "); // Keep "Status:" in the default color
                 System.Console.ForegroundColor =
                     solarPanel.SetPoint == 0 ? ConsoleColor.Red : ConsoleColor.Green;
-                System.Console.WriteLine(solarPanel.PowerStatusMessage); // Change only the value color
+               // System.Console.WriteLine(solarPanel.PowerStatusMessage); // Change only the value color
                 System.Console.ResetColor();
                 System.Console.WriteLine($"Name:          {solarPanel.Name}");
                 System.Console.WriteLine($"SetPoint:      {solarPanel.SetPoint} kW");

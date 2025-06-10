@@ -3,12 +3,13 @@ using RenewXControl.Domain.Assets;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using RenewXControl.Api.Hubs;
-using RenewXControl.Application.Interfaces;
 using RenewXControl.Application.Services;
-using RenewXControl.Domain.Assets.Implementatons;
-using RenewXControl.Domain.Assets.Interfaces;
 using RenewXControl.Infrastructure.Persistence.MyDbContext;
 using Battery = RenewXControl.Domain.Assets.Battery;
+using RenewXControl.Application.Services.Assets;
+using RenewXControl.Application.Interfaces.Assets;
+using RenewXControl.Domain.Interfaces.Assets;
+using RenewXControl.Domain.Implementatons.Assets;
 
 var builder = WebApplication.CreateBuilder(args);
 

@@ -1,4 +1,4 @@
-﻿namespace RenewXControl.Domain.Assets.Interfaces
+﻿namespace RenewXControl.Domain.Interfaces.Assets
 {
     public interface IBatteryControl
     {

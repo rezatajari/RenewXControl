@@ -24,7 +24,7 @@ connection.On<MonitoringDto>("AssetUpdate", data =>
     }
 
     Console.Write($"[{data.Timestamp:HH:mm:ss}] {data.AssetType} ({data.AssetName}) | ");
-    Console.Write($"Sensor: {data.SensorValue} | ActivePower: {data.ActivePower} | SetPoint: {data.SetPoint}");
+    Console.Write($"Message: {data.Message} Sensor: {data.SensorValue} | ActivePower: {data.ActivePower} | SetPoint: {data.SetPoint}");
 
     if (data.AssetType == "Battery")
     {

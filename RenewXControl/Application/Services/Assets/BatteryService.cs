@@ -1,7 +1,7 @@
-﻿using RenewXControl.Application.Interfaces;
-using RenewXControl.Domain.Assets.Interfaces;
+﻿using RenewXControl.Application.Interfaces.Assets;
+using RenewXControl.Domain.Interfaces.Assets;
 
-namespace RenewXControl.Application.Services
+namespace RenewXControl.Application.Services.Assets
 {
     public class BatteryService:IBatteryService
     {

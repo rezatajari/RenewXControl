@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.SignalR;
 using RenewXControl.Api.DTOs;
 using RenewXControl.Api.Hubs;
-using RenewXControl.Application.Interfaces;
+using RenewXControl.Application.Interfaces.Assets;
 
 namespace RenewXControl.Application.Services
 {
@@ -30,9 +30,11 @@ namespace RenewXControl.Application.Services
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
+            var startSolar = _solarService.StartGenerator();
+            var startTurbine=_solarService.StartGenerator();
+
             while (!stoppingToken.IsCancellationRequested)
             {
-                // Solar
                 _solarService.UpdateIrradiance();
                 _solarService.UpdateActivePower();
 
@@ -40,6 +42,7 @@ namespace RenewXControl.Application.Services
                 {
                     AssetType = "SolarPanel",
                     AssetName = "Main Solar",
+                    Message = startSolar.Message,
                     SensorValue = _solarService.GetIrradiance,
                     ActivePower = _solarService.GetActivePower,
                     SetPoint = 0,
@@ -47,7 +50,6 @@ namespace RenewXControl.Application.Services
                     RateDischarge = null,
                     Timestamp = DateTime.UtcNow
                 };
-
                 // Turbine
                 _turbineService.UpdateWindSpeed();
                 _turbineService.UpdateActivePower();
@@ -55,6 +57,7 @@ namespace RenewXControl.Application.Services
                 {
                     AssetType = "WindTurbine",
                     AssetName = "Main Turbine",
+                    Message = startTurbine.Message,
                     SensorValue = _turbineService.GetWindSpeed,
                     ActivePower = _turbineService.GetActivePower,
                     SetPoint = 0,

@@ -1,5 +1,5 @@
 ﻿using RenewXControl.Configuration.AssetsModel.Assets;
-using RenewXControl.Domain.Assets.Interfaces;
+using RenewXControl.Domain.Interfaces.Assets;
 
 
 namespace RenewXControl.Domain.Assets

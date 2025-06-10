@@ -1,10 +1,11 @@
 ﻿using Microsoft.Extensions.Logging;
+using RenewXControl.Api.Utility;
 using RenewXControl.Configuration.AssetsModel.Assets;
-using RenewXControl.Domain.Assets.Interfaces;
+using RenewXControl.Domain.Interfaces.Assets;
 
 namespace RenewXControl.Domain.Assets
 {
-    public class SolarPanel : Asset, ISolarControl
+    public class SolarPanel : Asset
     {
         private SolarPanel() { }
         private SolarPanel(double irradiance, double activePower, double setPoint)
@@ -13,29 +14,26 @@ namespace RenewXControl.Domain.Assets
             Irradiance = irradiance;
             ActivePower = activePower;
             SetPoint = setPoint;
-            PowerStatusMessage = "Solar panel is not generating power now";
         }
 
         public double Irradiance { get; private set; } // W/m²
         public double ActivePower { get; private set; } // kW
         public double SetPoint { get; private set; }  // Determines operation status
-        public string PowerStatusMessage { get; set; }
 
         public static SolarPanel Create(SolarPanelConfig solarConfig)
             => new SolarPanel(solarConfig.Irradiance, solarConfig.ActivePower, solarConfig.SetPoint);
 
-        public void Start()
+        public bool Start()
         {
-            if (Irradiance == 0.0 || SetPoint == 0.0)
+            if (Irradiance != 0.0 && SetPoint != 0.0)
             {
-                ActivePower = 0;
-                PowerStatusMessage = "Solar panel is not generating power";
+                return true;
             }
             else
             {
-                PowerStatusMessage = "Solar panel is generating power";
+                ActivePower = 0;
+                return false;
             }
-
         }
         public void Stop()
         {
@@ -56,17 +54,10 @@ namespace RenewXControl.Domain.Assets
             }
         }
 
-        public void UpdateIrradiance()
+        public bool UpdateIrradiance()
         {
             Irradiance = new Random().NextDouble() * 10;
-            if (Irradiance == 0.0 || SetPoint == 0.0)
-            {
-                PowerStatusMessage = "Solar panel is not generating power";
-            }
-            else
-            {
-                PowerStatusMessage = "Solar panel is generating power";
-            }
+            return Irradiance != 0.0 || SetPoint != 0.0;
         }
         public void UpdateActivePower()
         {

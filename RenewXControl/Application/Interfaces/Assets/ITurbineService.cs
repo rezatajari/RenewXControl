@@ -1,14 +1,14 @@
-﻿using RenewXControl.Domain.Assets.Interfaces;
+﻿using RenewXControl.Api.Utility;
 
-namespace RenewXControl.Application.Interfaces
+namespace RenewXControl.Application.Interfaces.Assets
 {
     public interface ITurbineService
     {
-        void StartGenerator();
+        GeneralResponse<bool> StartGenerator();
         void TurnOffGenerator();
         void UpdateActivePower();
         double GetActivePower { get; }
-        void UpdateWindSpeed();
+        GeneralResponse<bool> UpdateWindSpeed();
         double GetWindSpeed { get; }
         void UpdateSetPoint(double amount);
     }
