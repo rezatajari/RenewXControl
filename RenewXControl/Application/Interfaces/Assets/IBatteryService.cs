@@ -11,6 +11,6 @@
         string GetChargeStateMessage { get;}
         Task ChargeAsync();
         Task DischargeAsync();
-        void SetTotalPower(double amount);
+        void RecalculateTotalPower(double amount);
     }
 }

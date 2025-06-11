@@ -31,9 +31,9 @@ namespace RenewXControl.Application.Services.Assets
           await _batteryControl.Discharge();
         }
 
-        public void SetTotalPower(double amount)
+        public void RecalculateTotalPower(double amount)
         {
-            _batteryControl.SetTotalPower(amount);
+            _batteryControl.RecalculateTotalPower(amount);
         }
 
         private void RecalculateSetPoint()

@@ -19,12 +19,12 @@ namespace RenewXControl.Application.Services.Assets
             _turbineService = turbineService;
         }
 
-        private void UpdateTotalPower()
+        private void RecalculateTotalPower()
         {
             UpdateGenerators();
 
             var totalPower = _solarService.GetActivePower + _turbineService.GetActivePower;
-            _batteryService.SetTotalPower(totalPower);
+            _batteryService.RecalculateTotalPower(totalPower);
         }
         private void UpdateGenerators()
         {
@@ -50,13 +50,13 @@ namespace RenewXControl.Application.Services.Assets
                 // charging
                 case true when _batteryService.GetIsStartingChargeDischarge == false:
                     StartGenerators();
-                    UpdateTotalPower();
+                    RecalculateTotalPower();
                     await _batteryService.ChargeAsync();
                     break;
 
                 // when battery need to update new total power for charging
                 case true when _batteryService.GetIsStartingChargeDischarge == true:
-                    UpdateTotalPower();
+                    RecalculateTotalPower();
                     break;
 
                 // discharging

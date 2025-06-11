@@ -39,7 +39,7 @@ namespace RenewXControl.Domain.Implementatons.Assets
             _battery.UpdateSetPoint();
         }
 
-        public void SetTotalPower(double amount)
+        public void RecalculateTotalPower(double amount)
         {
             _battery.SetTotalPower(amount);
         }

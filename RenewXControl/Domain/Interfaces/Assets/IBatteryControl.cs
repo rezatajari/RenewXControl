@@ -12,5 +12,5 @@ public interface IBatteryControl
     Task Charge();
     Task Discharge();
     void RecalculateSetPoint();
-    void SetTotalPower(double amount);
+    void RecalculateTotalPower(double amount);
 }
