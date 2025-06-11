@@ -7,9 +7,9 @@ using RenewXControl.Application.Services;
 using RenewXControl.Infrastructure.Persistence.MyDbContext;
 using Battery = RenewXControl.Domain.Assets.Battery;
 using RenewXControl.Application.Services.Assets;
-using RenewXControl.Application.Interfaces.Assets;
 using RenewXControl.Domain.Interfaces.Assets;
 using RenewXControl.Domain.Implementatons.Assets;
+using RenewXControl.Application.Interfaces.Assets;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -49,7 +49,7 @@ builder.Services.AddSingleton<ITurbineService, TurbineService>();
 builder.Services.AddSingleton<ITurbineControl, TurbineControl>();
 builder.Services.AddSingleton<IBatteryControl, BatteryControl>();
 builder.Services.AddSingleton<IBatteryService, BatteryService>();
-builder.Services.AddSingleton<IAssetControl, AssetControl>();
+builder.Services.AddSingleton<IAssetService, AssetService>();
 
 // ✅ 5. Others
 builder.Services.AddDbContext<RxcDbContext>(options =>

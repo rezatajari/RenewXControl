@@ -3,13 +3,13 @@ using Console = System.Console;
 
 namespace RenewXControl.Application.Services.Assets
 {
-    public class AssetControl : IAssetControl
+    public class AssetService : IAssetService
     {
         private readonly IBatteryService _batteryService;
         private readonly ISolarService _solarService;
         private readonly ITurbineService _turbineService;
 
-        public AssetControl(
+        public AssetService(
             IBatteryService batteryService,
             ISolarService solarService,
             ITurbineService turbineService)
@@ -33,8 +33,8 @@ namespace RenewXControl.Application.Services.Assets
         }
         private void UpdateSetPointGenerators()
         {
-            _solarService.UpdateSetPoint();
-            _turbineService.UpdateSetPoint();
+            _solarService.RecalculateSetPoint();
+            _turbineService.RecalculateSetPoint();
         }
 
 

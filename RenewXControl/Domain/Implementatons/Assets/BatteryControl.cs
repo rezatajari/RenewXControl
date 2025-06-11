@@ -34,7 +34,7 @@ namespace RenewXControl.Domain.Implementatons.Assets
             ChargeStateMessage = "Discharge complete.";
         }
 
-        public void UpdateSetPoint()
+        public void RecalculateSetPoint()
         {
             _battery.UpdateSetPoint();
         }

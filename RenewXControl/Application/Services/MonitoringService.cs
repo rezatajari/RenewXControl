@@ -11,14 +11,14 @@ namespace RenewXControl.Application.Services
         private readonly ISolarService _solarService;
         private readonly ITurbineService _turbineService;
         private readonly IBatteryService _batteryService;
-        private readonly IAssetControl _assetControl;
+        private readonly IAssetService _assetControl;
 
 
         public MonitoringService(
             ISolarService solarService,
             ITurbineService turbineService,
             IBatteryService batteryService,
-            IAssetControl assetControl,
+            IAssetService assetControl,
             IHubContext<AssetsHub> hubContext)
         {
             _solarService = solarService;

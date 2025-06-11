@@ -34,9 +34,9 @@ namespace RenewXControl.Application.Services.Assets
             _solarControl.UpdateActivePower();
         }
         public double GetActivePower => _solarControl.ActivePower;
-        public void UpdateSetPoint()
+        public void RecalculateSetPoint()
         {
-            _solarControl.UpdateSetPoint();
+            _solarControl.RecalculateSetPoint();
         }
         public double GetSetPoint => _solarControl.SetPoint;
     }

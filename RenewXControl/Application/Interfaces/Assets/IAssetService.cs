@@ -1,7 +1,6 @@
-﻿
-namespace RenewXControl.Application.Interfaces.Assets
+﻿namespace RenewXControl.Application.Interfaces.Assets
 {
-    public interface IAssetControl
+    public interface IAssetService
     {
         void StartGenerators();
         Task ChargeDischarge();

@@ -45,11 +45,11 @@ namespace RenewXControl.Domain.Implementatons.Assets
             _turbine.UpdateActivePower();
         }
         public double ActivePower => _turbine.ActivePower;
-        public void UpdateSetPoint()
+        public void RecalculateSetPoint()
         {
             _turbine.UpdateSetPoint();
         }
 
-        public double SetPointSpeed => _turbine.SetPoint;
+        public double SetPoint => _turbine.SetPoint;
     }
 }

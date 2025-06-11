@@ -35,10 +35,10 @@ namespace RenewXControl.Application.Services.Assets
             _turbineControl.UpdateActivePower();
         }
         public double GetActivePower => _turbineControl.ActivePower;
-        public void UpdateSetPoint()
+        public void RecalculateSetPoint()
         {
-            _turbineControl.UpdateSetPoint();
+            _turbineControl.RecalculateSetPoint();
         }
-        public double GetSetPoint => _turbineControl.SetPointSpeed;
+        public double GetSetPoint => _turbineControl.SetPoint;
     }
 }

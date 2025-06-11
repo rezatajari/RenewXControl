@@ -44,7 +44,7 @@ namespace RenewXControl.Domain.Implementatons.Assets
            _panel.UpdateActivePower();
         }
         public double ActivePower=> _panel.ActivePower;
-        public void UpdateSetPoint()
+        public void RecalculateSetPoint()
         {
             _panel.UpdateSetPoint();
         }

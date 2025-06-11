@@ -16,14 +16,14 @@ namespace RenewXControl.Application.Services.Assets
         public double GetStateCharge => _batteryControl.StateCharge;
         public double GetSetPoint => _batteryControl.SetPoint;
         public double GetFrequentlyDisCharge => _batteryControl.FrequentlyDisCharge;
-        public bool GetIsNeedToCharge =>_batteryControl.IsNeedToCharge;
+        public bool GetIsNeedToCharge => _batteryControl.IsNeedToCharge;
         public bool GetIsStartingChargeDischarge =>_batteryControl.IsStartingChargeDischarge;
         public string GetChargeStateMessage => _batteryControl.ChargeStateMessage;
 
         public async Task ChargeAsync()
         {
            await  _batteryControl.Charge();
-           UpdateSetPoint();
+           RecalculateSetPoint();
         }
 
         public async Task DischargeAsync()
@@ -36,9 +36,9 @@ namespace RenewXControl.Application.Services.Assets
             _batteryControl.SetTotalPower(amount);
         }
 
-        private void UpdateSetPoint()
+        private void RecalculateSetPoint()
         {
-            _batteryControl.UpdateSetPoint();
+            _batteryControl.RecalculateSetPoint();
         }
     }
 }
