@@ -1,0 +1,76 @@
+﻿@page "/dashboard"
+@using Microsoft.AspNetCore.SignalR.Client
+
+<h3>Live Asset Monitoring</h3>
+
+@if (data is null)
+{
+    <p>Waiting for data...</p>
+}
+else
+{
+    <div class="asset solar">
+        <h4>☀️ Solar</h4>
+        <p><b>Message:</b> @data.Solar?.Message</p>
+        <p><b>Irradiance:</b> @data.Solar?.Irradiance</p>
+        <p><b>Active Power:</b> @data.Solar?.ActivePower</p>
+        <p><b>SetPoint:</b> @data.Solar?.SetPoint</p>
+        <p><b>Timestamp:</b> @data.Solar?.Timestamp</p>
+    </div>
+
+    <div class="asset turbine">
+        <h4>🌪️ Turbine</h4>
+        <p><b>Message:</b> @data.Turbine?.Message</p>
+        <p><b>Wind Speed:</b> @data.Turbine?.WindSpeed</p>
+        <p><b>Active Power:</b> @data.Turbine?.ActivePower</p>
+        <p><b>SetPoint:</b> @data.Turbine?.SetPoint</p>
+        <p><b>Timestamp:</b> @data.Turbine?.Timestamp</p>
+    </div>
+
+    <div class="asset battery">
+        <h4>🔋 Battery</h4>
+        <p><b>Message:</b> @data.Battery?.Message</p>
+        <p><b>Capacity:</b> @data.Battery?.Capacity</p>
+        <p><b>State of Charge:</b> @data.Battery?.StateCharge</p>
+        <p><b>Rate Discharge:</b> @data.Battery?.RateDischarge</p>
+        <p><b>SetPoint:</b> @data.Battery?.SetPoint</p>
+        <p><b>Timestamp:</b> @data.Battery?.Timestamp</p>
+    </div>
+}
+
+@code {
+    private HubConnection? hubConnection;
+    private AssetsMonitoring? data;
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            hubConnection = new HubConnectionBuilder()
+                .WithUrl("http://localhost:61998/assetsHub")
+                .WithAutomaticReconnect()
+                .Build();
+
+            hubConnection.On<AssetsMonitoring>("AssetUpdate", update =>
+            {
+                data = update;
+                InvokeAsync(StateHasChanged);
+            });
+
+            await hubConnection.StartAsync();
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            throw;
+        }
+    }
+
+    public async ValueTask DisposeAsync()
+    {
+        if (hubConnection is not null)
+        {
+            await hubConnection.DisposeAsync();
+        }
+    }
+}

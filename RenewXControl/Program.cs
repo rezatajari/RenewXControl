@@ -2,6 +2,7 @@
 using RenewXControl.Domain.Assets;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
+using Microsoft.AspNetCore.ResponseCompression;
 using RenewXControl.Api.Hubs;
 using RenewXControl.Application.Services;
 using RenewXControl.Infrastructure.Persistence.MyDbContext;
@@ -12,6 +13,18 @@ using RenewXControl.Domain.Implementatons.Assets;
 using RenewXControl.Application.Interfaces.Assets;
 
 var builder = WebApplication.CreateBuilder(args);
+
+// 👇 Add this CORS policy
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowBlazorClient", policy =>
+    {
+        policy.WithOrigins("http://localhost:5187") // URL of your Blazor client
+            .AllowAnyHeader()
+            .AllowAnyMethod()
+            .AllowCredentials(); // Needed for SignalR
+    });
+});
 
 // ✅ 1. load config
 builder.Configuration.SetBasePath(Directory.GetCurrentDirectory())
@@ -60,6 +73,9 @@ builder.Services.AddHostedService<MonitoringService>();
 builder.Services.AddControllers();
 
 var app = builder.Build();
+
+// 👇 Use the CORS policy before endpoints
+app.UseCors("AllowBlazorClient");
 app.MapHub<AssetsHub>("/assetsHub");
 app.MapControllers();
 app.Run();
