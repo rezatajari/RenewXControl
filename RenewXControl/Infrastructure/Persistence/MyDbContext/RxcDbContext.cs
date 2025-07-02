@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using RenewXControl.Domain.Assets;
@@ -10,9 +11,8 @@ using RenewXControl.Domain.Users;
 
 namespace RenewXControl.Infrastructure.Persistence.MyDbContext
 {
-    internal class RxcDbContext:DbContext
+    internal class RxcDbContext:IdentityDbContext<User>
     {
-        public DbSet<User> Users { get; set; }
         public DbSet<Site> Sites { get;set; }
         public DbSet<Asset> Assets { get; set; }
 
@@ -26,11 +26,6 @@ namespace RenewXControl.Infrastructure.Persistence.MyDbContext
             base.OnModelCreating(modelBuilder);
 
             // User
-            modelBuilder.Entity<User>()
-                .Property(u => u.Name)
-                .IsRequired()
-                .HasMaxLength(50);
-
             modelBuilder.Entity<User>()
                 .HasMany(s => s.Sites)
                 .WithOne(u => u.User)

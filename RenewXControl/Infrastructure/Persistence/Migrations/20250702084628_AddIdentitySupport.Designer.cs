@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using RenewXControl.Infrastructure.Persistence.MyDbContext;
 
@@ -11,9 +12,11 @@ using RenewXControl.Infrastructure.Persistence.MyDbContext;
 namespace RenewXControl.Migrations
 {
     [DbContext(typeof(RxcDbContext))]
-    partial class RxcDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250702084628_AddIdentitySupport")]
+    partial class AddIdentitySupport
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

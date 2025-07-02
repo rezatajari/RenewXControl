@@ -18,7 +18,7 @@ namespace RenewXControl.Domain.Users
         public DateTime CreateTime { get; set; } = DateTime.UtcNow;
 
         public ICollection<Asset> Assets { get; private set; } = [];
-        public Guid UserId { get; set; }
+        public string UserId { get; set; }
         public User User { get; set; }
 
         public static Site Create(SiteConfig siteConfig)
