@@ -4,6 +4,6 @@ namespace RenewXControl.Domain.Interfaces.Assets;
 
 public interface ISolarControl:ICommonEnergyControl
 {
-    GeneralResponse<bool> UpdateIrradiance();
+    bool UpdateIrradiance();
     double Irradiance { get; }
 }

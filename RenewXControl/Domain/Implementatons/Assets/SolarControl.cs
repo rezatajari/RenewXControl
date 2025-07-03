@@ -11,31 +11,39 @@ namespace RenewXControl.Domain.Implementatons.Assets
         {
             _panel = panel;
         }
-        public GeneralResponse<bool> Start()
+
+        public string StatusMessage { get; set; }
+
+        public bool Start()
         {
             if (_panel.Start())
             {
-                 return GeneralResponse<bool>.Success(data:true,message: "Solar panel is generating power", isSuccess: true);
+                StatusMessage = "Solar panel is generating power";
+                return true;
             }
             else
             {
-                return GeneralResponse<bool>.Failure(message: "Solar panel is not generating power", isSuccess: false);
+                StatusMessage = "Solar panel is not generating power";
+                return false;
             }
         }
-        public GeneralResponse<bool> Stop()
+        public bool Stop()
         {
             _panel.Stop();
-            return GeneralResponse<bool>.Success(data:true,message: "Solar panel is off",isSuccess:true);
+            StatusMessage = "Solar panel is off";
+            return true;
         }
-        public GeneralResponse<bool> UpdateIrradiance()
+        public bool UpdateIrradiance()
         {
             if (_panel.UpdateIrradiance())
             {
-                return GeneralResponse<bool>.Success(data: true, message: "Solar panel is generating power", isSuccess: true);
+                StatusMessage = "Solar panel is generating power";
+                return true;
             }
             else
             {
-                return GeneralResponse<bool>.Failure(message: "Solar panel is not generating power", isSuccess: false);
+                StatusMessage = "Solar panel is not generating power";
+                return false;
             }
         }
         public double Irradiance => _panel.Irradiance; 

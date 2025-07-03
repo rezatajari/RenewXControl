@@ -23,6 +23,7 @@ namespace RenewXControl.Domain.Implementatons.Assets
             ChargeStateMessage= "Battery is charging";
             await _battery.Charge();
             ChargeStateMessage = "Charge complete.";
+            _battery.UpdateSetPoint();
         }
 
         public async Task  Discharge()
@@ -32,11 +33,6 @@ namespace RenewXControl.Domain.Implementatons.Assets
             var rateOfDischarge = amountToDischarge / FrequentlyDisCharge;
            await   _battery.Discharge(rateOfDischarge);
             ChargeStateMessage = "Discharge complete.";
-        }
-
-        public void RecalculateSetPoint()
-        {
-            _battery.UpdateSetPoint();
         }
 
         public void RecalculateTotalPower(double amount)

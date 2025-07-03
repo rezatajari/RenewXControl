@@ -4,7 +4,6 @@ using RenewXControl.Application.DTOs.Asset;
 using RenewXControl.Application.Interfaces;
 using RenewXControl.Domain.Assets;
 using RenewXControl.Domain.Interfaces;
-using RenewXControl.Domain.Interfaces.Assets;
 using RenewXControl.Infrastructure.Persistence.MyDbContext;
 
 namespace RenewXControl.Application.Services

@@ -1,6 +1,6 @@
 ﻿using RenewXControl.Domain.Users;
 
-namespace RenewXControl.Domain.Interfaces
+namespace RenewXControl.Application.Interfaces
 {
     public interface ISiteRepository
     {

@@ -1,5 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using RenewXControl.Domain.Interfaces;
+using RenewXControl.Application.Interfaces;
 using RenewXControl.Domain.Users;
 using RenewXControl.Infrastructure.Persistence.MyDbContext;
 

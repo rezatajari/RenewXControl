@@ -33,7 +33,7 @@ namespace RenewXControl.Domain.Assets
         public bool IsStartingChargeDischarge { get; private set; }
 
         public static Battery Create(AddBattery addBattery)
-        => new Battery(addBattery.Capacity, addBattery.StateCharge, addBattery.SetPoint, addBattery.FrequentlyDisCharge);
+        => new Battery(addBattery.Capacity, addBattery.StateCharge, addBattery.SetPoint, addBattery.FrequentlyDischarge);
         private bool CheckEmpty()
         {
             return StateCharge < Capacity;

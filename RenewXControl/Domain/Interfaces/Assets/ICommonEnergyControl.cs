@@ -4,8 +4,9 @@ namespace RenewXControl.Domain.Interfaces.Assets
 {
     public interface ICommonEnergyControl
     {
-        GeneralResponse<bool> Start();
-        GeneralResponse<bool> Stop();
+        string StatusMessage { get; set; }
+        bool Start();
+        bool Stop();
         void UpdateActivePower();
         double ActivePower { get; }
         void RecalculateSetPoint();

@@ -2,9 +2,6 @@
 {
     public interface IAssetService
     {
-        void StartGenerators();
         Task ChargeDischarge();
-        void TurnOffGenerators();
-
     }
 }

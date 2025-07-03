@@ -13,7 +13,6 @@ using RenewXControl.Application.Services.Assets;
 using RenewXControl.Domain.Interfaces.Assets;
 using RenewXControl.Domain.Implementatons.Assets;
 using RenewXControl.Application.Interfaces.Assets;
-using RenewXControl.Domain.Interfaces;
 using RenewXControl.Domain.Users;
 using RenewXControl.Infrastructure.Services;
 
@@ -44,29 +43,29 @@ builder.Services.Configure<BatteryConfig>(
     builder.Configuration.GetSection("BatteryConfig"));
 
 // ✅ 3. SolarPanel & Turbine setup
-builder.Services.AddSingleton<SolarPanel>(sp =>
-{
-    var config=sp.GetRequiredService<IOptions<SolarPanelConfig>>().Value;
-    return SolarPanel.Create(config);
-});
-builder.Services.AddSingleton<WindTurbine>(wt =>
-{
-    var config = wt.GetRequiredService<IOptions<WindTurbineConfig>>().Value;
-    return WindTurbine.Create(config);
-});
-builder.Services.AddSingleton<Battery>(b =>
-{
-    var config = b.GetRequiredService<IOptions<BatteryConfig>>().Value;
-    return Battery.Create(config);
-});
+//builder.Services.AddSingleton<SolarPanel>(sp =>
+//{
+//    var config=sp.GetRequiredService<IOptions<SolarPanelConfig>>().Value;
+//    return SolarPanel.Create(config);
+//});
+//builder.Services.AddSingleton<WindTurbine>(wt =>
+//{
+//    var config = wt.GetRequiredService<IOptions<WindTurbineConfig>>().Value;
+//    return WindTurbine.Create(config);
+//});
+//builder.Services.AddSingleton<Battery>(b =>
+//{
+//    var config = b.GetRequiredService<IOptions<BatteryConfig>>().Value;
+//    return Battery.Create(config);
+//});
 
 // ✅ 4. Register solar & turbine services and interfaces
 builder.Services.AddSingleton<ISolarControl, SolarControl>();
-builder.Services.AddSingleton<ISolarService, SolarService>();
-builder.Services.AddSingleton<ITurbineService, TurbineService>();
+//builder.Services.AddSingleton<ISolarService, SolarService>();
+//builder.Services.AddSingleton<ITurbineService, TurbineService>();
 builder.Services.AddSingleton<ITurbineControl, TurbineControl>();
 builder.Services.AddSingleton<IBatteryControl, BatteryControl>();
-builder.Services.AddSingleton<IBatteryService, BatteryService>();
+//builder.Services.AddSingleton<IBatteryService, BatteryService>();
 builder.Services.AddSingleton<IAssetService, AssetService>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IAssetRepository, AssetRepository>();

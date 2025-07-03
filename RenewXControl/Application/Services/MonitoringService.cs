@@ -2,74 +2,75 @@
 using RenewXControl.Api.DTOs;
 using RenewXControl.Api.Hubs;
 using RenewXControl.Application.Interfaces.Assets;
+using RenewXControl.Domain.Interfaces.Assets;
 
 namespace RenewXControl.Application.Services
 {
     public class MonitoringService : BackgroundService
     {
         private readonly IHubContext<AssetsHub> _hub;
-        private readonly ISolarService _solarService;
-        private readonly ITurbineService _turbineService;
-        private readonly IBatteryService _batteryService;
-        private readonly IAssetService _assetControl;
+        private readonly ISolarControl _solarControl;
+        private readonly ITurbineControl _turbineControl;
+        private readonly IBatteryControl _batteryControl;
+        private readonly IAssetService _assetService;
 
 
         public MonitoringService(
-            ISolarService solarService,
-            ITurbineService turbineService,
-            IBatteryService batteryService,
-            IAssetService assetControl,
+            ISolarControl solarControl,
+            ITurbineControl turbineControl,
+            IBatteryControl batteryControl,
+            IAssetService assetService,
             IHubContext<AssetsHub> hubContext)
         {
-            _solarService = solarService;
-            _turbineService = turbineService;
-            _batteryService = batteryService;
-            _assetControl = assetControl;
+            _solarControl = solarControl;
+            _turbineControl= turbineControl;
+            _batteryControl = batteryControl;
+            _assetService = assetService;
             _hub = hubContext;
         }
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
-            _solarService.StartGenerator();
-            _turbineService.StartGenerator();
+            _solarControl.Start();
+            _turbineControl.Start();
 
             while (!stoppingToken.IsCancellationRequested)
             {
 
                 // Solar
-                _solarService.UpdateIrradiance();
+                _solarControl.UpdateIrradiance();
                 var solarDto = new Solar
                 (
                    AssetType: "SolarPanel",
-                   Message: _solarService.StatusMessage,
-                   Irradiance: _solarService.GetIrradiance,
-                   ActivePower: _solarService.GetActivePower,
-                   SetPoint: _solarService.GetSetPoint,
+                   Message: _solarControl.StatusMessage,
+                   Irradiance: _solarControl.Irradiance,
+                   ActivePower: _solarControl.ActivePower,
+                   SetPoint: _solarControl.SetPoint,
                    Timestamp: DateTime.UtcNow
                 );
 
                 // Turbine
-                _turbineService.UpdateWindSpeed();
+                _turbineControl.UpdateWindSpeed();
                 var turbineDto = new Turbine
                 (
                     AssetType: "WindTurbine",
-                    Message: _turbineService.StatusMessage,
-                    WindSpeed: _turbineService.GetWindSpeed,
-                    ActivePower: _turbineService.GetActivePower,
-                    SetPoint: _turbineService.GetSetPoint,
+                    Message: _turbineControl.StatusMessage,
+                    WindSpeed: _turbineControl.WindSpeed,
+                    ActivePower: _turbineControl.ActivePower,
+                    SetPoint: _turbineControl.SetPoint,
                     Timestamp: DateTime.UtcNow
                 );
 
                 // Battery
-                Task.Run(async  ()=>_assetControl.ChargeDischarge());
+                Task.Run(async  ()=>_assetService.ChargeDischarge());
                 var batteryDto = new Battery
                 (
                     AssetType: "Battery",
-                    Message: _batteryService.GetChargeStateMessage,
-                    Capacity: _batteryService.GetCapacity,
-                    SetPoint: _batteryService.GetSetPoint, // set if available
-                    StateCharge: _batteryService.GetStateCharge,
-                    RateDischarge: _batteryService.GetFrequentlyDisCharge,
+                    Message: _batteryControl.ChargeStateMessage,
+                    Capacity: _batteryControl.Capacity,
+                    SetPoint: _batteryControl.SetPoint, // set if available
+                    StateCharge: _batteryControl.StateCharge,
+                    RateDischarge: _batteryControl.FrequentlyDisCharge,
                     Timestamp: DateTime.UtcNow
                 );
 

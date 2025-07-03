@@ -11,6 +11,5 @@ public interface IBatteryControl
     string ChargeStateMessage { get; set; }
     Task Charge();
     Task Discharge();
-    void RecalculateSetPoint();
     void RecalculateTotalPower(double amount);
 }

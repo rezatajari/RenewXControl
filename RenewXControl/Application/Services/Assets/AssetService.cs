@@ -1,76 +1,62 @@
 ﻿using RenewXControl.Application.Interfaces.Assets;
+using RenewXControl.Domain.Interfaces.Assets;
 using Console = System.Console;
 
 namespace RenewXControl.Application.Services.Assets
 {
     public class AssetService : IAssetService
     {
-        private readonly IBatteryService _batteryService;
-        private readonly ISolarService _solarService;
-        private readonly ITurbineService _turbineService;
+        private readonly IBatteryControl _batteryControl;
+        private readonly ISolarControl _solarControl;
+        private readonly ITurbineControl _turbineControl;
 
         public AssetService(
-            IBatteryService batteryService,
-            ISolarService solarService,
-            ITurbineService turbineService)
+            IBatteryControl batteryControl,
+            ISolarControl solarControl,
+            ITurbineControl turbineControl)
         {
-            _batteryService = batteryService;
-            _solarService = solarService;
-            _turbineService = turbineService;
+            _batteryControl = batteryControl;
+            _solarControl=solarControl;
+            _turbineControl = turbineControl;
         }
 
         private void RecalculateTotalPower()
         {
-            UpdateGenerators();
+            _solarControl.UpdateActivePower();
+            _turbineControl.UpdateActivePower();
 
-            var totalPower = _solarService.GetActivePower + _turbineService.GetActivePower;
-            _batteryService.RecalculateTotalPower(totalPower);
-        }
-        private void UpdateGenerators()
-        {
-            _solarService.UpdateActivePower();
-            _turbineService.UpdateActivePower();
-        }
-        private void UpdateSetPointGenerators()
-        {
-            _solarService.RecalculateSetPoint();
-            _turbineService.RecalculateSetPoint();
+            var totalPower = _solarControl.ActivePower + _turbineControl.ActivePower;
+            _batteryControl.RecalculateTotalPower(totalPower);
         }
 
-
-        public void StartGenerators()
-        {
-            _solarService.StartGenerator();
-            _turbineService.StartGenerator();
-        }
         public async Task ChargeDischarge()
         {
-            switch (_batteryService.GetIsNeedToCharge)
+            switch (_batteryControl.IsNeedToCharge)
             {
                 // charging
-                case true when _batteryService.GetIsStartingChargeDischarge == false:
-                    StartGenerators();
+                case true when _batteryControl.IsStartingChargeDischarge == false:
+                    _solarControl.Start();
+                    _turbineControl.Start();
                     RecalculateTotalPower();
-                    await _batteryService.ChargeAsync();
+                    await _batteryControl.Charge();
                     break;
 
                 // when battery need to update new total power for charging
-                case true when _batteryService.GetIsStartingChargeDischarge == true:
+                case true when _batteryControl.IsStartingChargeDischarge == true:
                     RecalculateTotalPower();
                     break;
 
                 // discharging
-                case false when _batteryService.GetIsStartingChargeDischarge == false:
-                     TurnOffGenerators();
-                  await  _batteryService.DischargeAsync();
+                case false when _batteryControl.IsStartingChargeDischarge == false:
+                    // UpdateSetPointGenerators
+                    _solarControl.RecalculateSetPoint();
+                    _turbineControl.RecalculateSetPoint();
+
+                    _solarControl.Stop();
+                    _turbineControl.Stop();
+                    await _batteryControl.Discharge();
                     break;
             }
-        }
-        public void TurnOffGenerators()
-        {
-            UpdateSetPointGenerators();
-            _solarService.TurnOffGenerator();
-            _turbineService.TurnOffGenerator();
         }
     }
 }

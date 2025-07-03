@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using RenewXControl.Api.DTOs;
-using RenewXControl.Domain.Interfaces.Assets;
+using RenewXControl.Application.Interfaces;
 using RenewXControl.Infrastructure.Persistence.MyDbContext;
 using Asset = RenewXControl.Domain.Assets.Asset;
 

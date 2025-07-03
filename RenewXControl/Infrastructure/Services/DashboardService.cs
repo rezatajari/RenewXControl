@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using RenewXControl.Application.DTOs;
 using RenewXControl.Application.Interfaces;
-using RenewXControl.Domain.Interfaces.Assets;
 using RenewXControl.Domain.Users;
 
 namespace RenewXControl.Infrastructure.Services;

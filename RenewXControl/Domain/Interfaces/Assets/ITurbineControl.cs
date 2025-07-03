@@ -4,6 +4,6 @@ namespace RenewXControl.Domain.Interfaces.Assets;
 
 public interface ITurbineControl:ICommonEnergyControl
 {
-    GeneralResponse<bool> UpdateWindSpeed();
+    bool UpdateWindSpeed();
     double WindSpeed { get; }
 }
