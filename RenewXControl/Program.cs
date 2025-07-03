@@ -1,9 +1,11 @@
-﻿using RenewXControl.Configuration.AssetsModel.Assets;
+﻿using Microsoft.AspNetCore.Identity;
+using RenewXControl.Configuration.AssetsModel.Assets;
 using RenewXControl.Domain.Assets;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using Microsoft.AspNetCore.ResponseCompression;
 using RenewXControl.Api.Hubs;
+using RenewXControl.Application.Interfaces;
 using RenewXControl.Application.Services;
 using RenewXControl.Infrastructure.Persistence.MyDbContext;
 using Battery = RenewXControl.Domain.Assets.Battery;
@@ -11,6 +13,9 @@ using RenewXControl.Application.Services.Assets;
 using RenewXControl.Domain.Interfaces.Assets;
 using RenewXControl.Domain.Implementatons.Assets;
 using RenewXControl.Application.Interfaces.Assets;
+using RenewXControl.Domain.Interfaces;
+using RenewXControl.Domain.Users;
+using RenewXControl.Infrastructure.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -63,10 +68,17 @@ builder.Services.AddSingleton<ITurbineControl, TurbineControl>();
 builder.Services.AddSingleton<IBatteryControl, BatteryControl>();
 builder.Services.AddSingleton<IBatteryService, BatteryService>();
 builder.Services.AddSingleton<IAssetService, AssetService>();
+builder.Services.AddScoped<IAuthService, AuthService>();
+builder.Services.AddScoped<IAssetRepository, AssetRepository>();
+builder.Services.AddScoped<IDashboardService, DashboardService>();
+builder.Services.AddScoped<ISiteRepository, SiteRepository>();
 
 // ✅ 5. Others
 builder.Services.AddDbContext<RxcDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+builder.Services.AddIdentity<User, IdentityRole>()
+    .AddEntityFrameworkStores<RxcDbContext>()
+    .AddDefaultTokenProviders();
 
 builder.Services.AddSignalR();
 builder.Services.AddHostedService<MonitoringService>();
@@ -76,27 +88,10 @@ var app = builder.Build();
 
 // 👇 Use the CORS policy before endpoints
 app.UseCors("AllowBlazorClient");
+
 app.MapHub<AssetsHub>("/assetsHub");
 app.MapControllers();
 app.Run();
-
-// var userConfig = builder.Configuration.GetSection("UserConfig").Get<UserConfig>();
-// var siteConfig = builder.Configuration.GetSection("SiteConfig").Get<SiteConfig>();
-
-// Factory pattern to create each our models
-// var user = User.Create(userConfig.Name);
-// var site = Site.Create(siteConfig);
-
-// Add assets to the site
-// site.AddAsset(windTurbine);
-// site.AddAsset(solarPanel);
-// site.AddAsset(battery);
-
-// user.AddSite(site); // Add site to the user
-
-//var rxc = new RXCApp();
-// Run the RXCApp
-// await rxc.Run(user, site);
 
 
 

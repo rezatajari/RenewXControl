@@ -1,4 +1,5 @@
 ﻿using RenewXControl.Api.Utility;
+using RenewXControl.Application.DTOs.Asset;
 using RenewXControl.Configuration.AssetsModel.Assets;
 using RenewXControl.Domain.Interfaces.Assets;
 
@@ -19,8 +20,8 @@ namespace RenewXControl.Domain.Assets
         public double ActivePower { get; private set; } // kW
         public double SetPoint { get; private set; } // Determines operation status
 
-        public static WindTurbine Create(WindTurbineConfig turbineConfig)
-            => new WindTurbine(turbineConfig.WindSpeed, turbineConfig.ActivePower, turbineConfig.SetPoint);
+        public static WindTurbine Create(AddTurbine addTurbine)
+            => new WindTurbine(addTurbine.WindSpeed, addTurbine.ActivePower, addTurbine.SetPoint);
         public bool Start()
         {
             SetPoint = 10;

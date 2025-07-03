@@ -6,9 +6,10 @@ namespace RenewXControl.Domain.Users
     public sealed class User:IdentityUser
     {
         private User(){}
-        private User(string username)
+        private User(string username, string email)
         {
             UserName = username;
+            Email=email;
             CreateTime = DateTime.UtcNow;
         }
 
@@ -16,9 +17,9 @@ namespace RenewXControl.Domain.Users
 
         public ICollection<Site> Sites { get; private set; } = [];
    
-        public static User Create(string name)
+        public static User Create(string username,string email)
         {
-            return new User(name);
+            return new User(username,email);
         }
 
         public void ChangeName(string newUsername)

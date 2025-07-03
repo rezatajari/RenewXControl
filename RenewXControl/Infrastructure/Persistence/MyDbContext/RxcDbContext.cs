@@ -11,7 +11,7 @@ using RenewXControl.Domain.Users;
 
 namespace RenewXControl.Infrastructure.Persistence.MyDbContext
 {
-    internal class RxcDbContext:IdentityDbContext<User>
+    public class RxcDbContext:IdentityDbContext<User>
     {
         public DbSet<Site> Sites { get;set; }
         public DbSet<Asset> Assets { get; set; }

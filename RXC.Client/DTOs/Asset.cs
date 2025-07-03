@@ -1,4 +1,5 @@
-﻿public record Asset(
+﻿
+public record Asset(
     string AssetType,
     string Message,
     double SetPoint,

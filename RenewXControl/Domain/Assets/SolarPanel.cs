@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.Logging;
 using RenewXControl.Api.Utility;
+using RenewXControl.Application.DTOs.Asset;
 using RenewXControl.Configuration.AssetsModel.Assets;
 using RenewXControl.Domain.Interfaces.Assets;
 
@@ -20,8 +21,8 @@ namespace RenewXControl.Domain.Assets
         public double ActivePower { get; private set; } // kW
         public double SetPoint { get; private set; }  // Determines operation status
 
-        public static SolarPanel Create(SolarPanelConfig solarConfig)
-            => new SolarPanel(solarConfig.Irradiance, solarConfig.ActivePower, solarConfig.SetPoint);
+        public static SolarPanel Create(AddSolar addSolar)
+            => new SolarPanel(addSolar.Irradiance, addSolar.ActivePower, addSolar.SetPoint);
 
         public bool Start()
         {

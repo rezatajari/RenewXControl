@@ -1,0 +1,41 @@
+﻿@page "/register"
+@inject HttpClient Http
+
+<h3>Register</h3>
+
+<EditForm Model="@register" OnValidSubmit="@HandleRegister">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+
+    <InputText @bind-Value="register.UserName" placeholder="Username" />
+    <InputText @bind-Value="register.Email" placeholder="Email" />
+    <InputText @bind-Value="register.Password" placeholder="Password" type="password" />
+    <InputText @bind-Value="register.ConfirmPassword" placeholder="Confirm Password" type="password" />
+    <button type="submit">Register</button>
+</EditForm>
+
+@if (!string.IsNullOrEmpty(message))
+{
+    <p>@message</p>
+}
+
+@code {
+    private RXC.Client.DTOs.User.Register register = new();
+    private string message;
+
+    private async Task HandleRegister()
+    {
+        var response = await Http.PostAsJsonAsync("http://localhost:61998/api/auth/register", register);
+
+        if (response.IsSuccessStatusCode)
+        {
+            message = "Registration successful!";
+            // Optional: redirect to login
+        }
+        else
+        {
+            var error = await response.Content.ReadAsStringAsync();
+            message = $"Error: {error}";
+        }
+    }
+}

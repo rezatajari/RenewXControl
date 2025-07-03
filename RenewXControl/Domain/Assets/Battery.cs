@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Http.Metadata;
+using RenewXControl.Application.DTOs.Asset;
 using RenewXControl.Configuration.AssetsModel.Assets;
 using RenewXControl.Domain.Interfaces.Assets;
 
@@ -31,8 +32,8 @@ namespace RenewXControl.Domain.Assets
         public bool IsNeedToCharge { get; private set; }
         public bool IsStartingChargeDischarge { get; private set; }
 
-        public static Battery Create(BatteryConfig batteryConfig)
-        => new Battery(batteryConfig.Capacity, batteryConfig.StateCharge, batteryConfig.SetPoint, batteryConfig.FrequentlyDisCharge);
+        public static Battery Create(AddBattery addBattery)
+        => new Battery(addBattery.Capacity, addBattery.StateCharge, addBattery.SetPoint, addBattery.FrequentlyDisCharge);
         private bool CheckEmpty()
         {
             return StateCharge < Capacity;
