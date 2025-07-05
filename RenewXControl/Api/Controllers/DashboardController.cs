@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using System.Security.Claims;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using RenewXControl.Application.User;
@@ -17,10 +18,17 @@ namespace RenewXControl.Api.Controllers
             _dashboardService = dashboardService;
         }
 
-        [HttpGet("dashboard")]
-        public async Task<IActionResult> Dashboard(string userId)
+        [HttpGet("profile")]
+        public async Task<IActionResult> Profile()
         {
-            return Ok(await _dashboardService.GetDashboardDataAsync(userId));
+            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+            if (string.IsNullOrEmpty(userId))
+                return Unauthorized();
+
+            var data = await _dashboardService.GetDashboardDataAsync(userId);
+
+            return Ok(data);
         }
     }
 }

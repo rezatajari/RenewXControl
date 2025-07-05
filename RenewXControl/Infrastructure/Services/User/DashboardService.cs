@@ -17,12 +17,12 @@ public class DashboardService:IDashboardService
         _assetRepository=assetRepository;
     }
 
-    public async Task<Dashboard> GetDashboardDataAsync(string userId)
+    public async Task<Profile> GetDashboardDataAsync(string userId)
     {
         var user = await _userManager.FindByIdAsync(userId);
         var role = await _userManager.GetRolesAsync(user);
         var totalAssets = await _assetRepository.CountByUserIdAsync(userId);
 
-        return new Dashboard(totalAssets, user.UserName , role);
+        return new Profile(totalAssets, user.UserName , role);
     }
 }
