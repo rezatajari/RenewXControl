@@ -1,9 +1,12 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using System.Text;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Identity;
 using RenewXControl.Configuration.AssetsModel.Assets;
 using RenewXControl.Domain.Assets;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using Microsoft.AspNetCore.ResponseCompression;
+using Microsoft.IdentityModel.Tokens;
 using Battery = RenewXControl.Domain.Assets.Battery;
 using RenewXControl.Domain.Interfaces.Assets;
 using RenewXControl.Domain.Implementatons.Assets;
@@ -35,6 +38,30 @@ builder.Services.AddCors(options =>
 // ✅ 1. load config
 builder.Configuration.SetBasePath(Directory.GetCurrentDirectory())
     .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true);
+
+// JWT
+builder.Services.AddAuthentication(options =>
+    {
+        options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+        options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+    })
+    .AddJwtBearer(options =>
+    {
+        options.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateIssuer = true,
+            ValidateAudience = true,
+            ValidateLifetime = true,
+            ValidateIssuerSigningKey = true,
+
+            ValidIssuer = "RxcService",
+            ValidAudience = "Users",
+            IssuerSigningKey = new SymmetricSecurityKey(
+                Encoding.UTF8.GetBytes("5aS*Qm#_^P+zm\\\"c<+g2wk>iOfEm38{BHmG!QG)"))
+        };
+    });
+
+builder.Services.AddAuthorization();
 
 // ✅ 2. Bind it
 builder.Services.Configure<SolarPanelConfig>(
@@ -95,7 +122,4 @@ app.UseAuthorization();
 app.MapHub<AssetsHub>("/assetsHub").RequireAuthorization();
 app.MapControllers();
 app.Run();
-
-
-
 

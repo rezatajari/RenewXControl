@@ -1,7 +1,9 @@
-﻿using Microsoft.AspNetCore.SignalR;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.SignalR;
 
 namespace RenewXControl.Infrastructure.Hubs
 {
+    [Authorize]
     public class AssetsHub:Hub
     {
         // No need to define SendSolarData here if only the server sends data.

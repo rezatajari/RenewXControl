@@ -1,4 +1,8 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using System.Text;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.IdentityModel.Tokens;
 using RenewXControl.Api.Utility;
 using RenewXControl.Application.DTOs.User.Auth;
 using RenewXControl.Application.User;
@@ -8,11 +12,11 @@ namespace RenewXControl.Infrastructure.Services.User;
 
 public class AuthService:IAuthService
 {
-    private readonly UserManager<User> _userManager;
-    private readonly SignInManager<User> _signInManager;
+    private readonly UserManager<Domain.Users.User> _userManager;
+    private readonly SignInManager<Domain.Users.User> _signInManager;
     private readonly RoleManager<IdentityRole> _roleManager;
 
-    public AuthService(UserManager<User> userManager,SignInManager<User> signInManager,RoleManager<IdentityRole> roleManager)
+    public AuthService(UserManager<Domain.Users.User> userManager,SignInManager<Domain.Users.User> signInManager,RoleManager<IdentityRole> roleManager)
     {
         _userManager= userManager;
         _signInManager= signInManager;
@@ -24,7 +28,7 @@ public class AuthService:IAuthService
         if (register.Password != register.ConfirmPassword)
             return GeneralResponse<string>.Failure("Password do not match");
 
-        var user = User.Create(register.UserName, register.Email);
+        var user = Domain.Users.User.Create(register.UserName, register.Email);
         var result=await _userManager.CreateAsync(user,register.Password);
 
         if (!result.Succeeded)
@@ -48,6 +52,36 @@ public class AuthService:IAuthService
         if (!result.Succeeded)
             return GeneralResponse<string>.Failure("Invalid credentials");
 
-        return GeneralResponse<string>.Success(null, "Login successful");
+        var roles = await _userManager.GetRolesAsync(user);
+        var token = GenerateToken(user, roles);
+
+        return GeneralResponse<string>.Success(token, "Login successful");
+    }
+
+    public string GenerateToken(Domain.Users.User user, IList<string> roles)
+    {
+        var claims = new List<Claim>
+        {
+            new Claim(ClaimTypes.NameIdentifier, user.Id),
+            new Claim(ClaimTypes.Name, user.UserName),
+            new Claim(ClaimTypes.Email, user.Email)
+        };
+
+        foreach (var role in roles)
+        {
+            claims.Add(new Claim(ClaimTypes.Role,role));
+        }
+
+        var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("5aS*Qm#_^P+zm\\\"c<+g2wk>iOfEm38{BHmG!QG)"));
+        var credentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
+
+        var token = new JwtSecurityToken(
+            issuer: "RxcService",
+            audience: "Users",
+            claims = claims,
+            expires: DateTime.Now.AddHours(1),
+            signingCredentials: credentials);
+
+        return new JwtSecurityTokenHandler().WriteToken(token);
     }
 }
