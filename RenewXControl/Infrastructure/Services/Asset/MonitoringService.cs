@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.SignalR;
-using RenewXControl.Api.DTOs;
 using RenewXControl.Application.Asset.Interfaces;
+using RenewXControl.Application.DTOs.AssetMonitoring;
 using RenewXControl.Domain.Interfaces.Assets;
 using RenewXControl.Infrastructure.Hubs;
 

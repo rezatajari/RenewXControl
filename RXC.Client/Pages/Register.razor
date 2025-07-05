@@ -1,41 +1,45 @@
 ﻿@page "/register"
-@inject HttpClient Http
+@using RXC.Client.Services
+@inject AuthService AuthService
 
-<h3>Register</h3>
+<PageTitle>Register</PageTitle>
 
-<EditForm Model="@register" OnValidSubmit="@HandleRegister">
-    <DataAnnotationsValidator />
-    <ValidationSummary />
+<div class="max-w-md mx-auto mt-20 p-6 shadow-xl rounded-xl bg-white">
+    <h2 class="text-2xl font-bold mb-4 text-center">Register</h2>
 
-    <InputText @bind-Value="register.UserName" placeholder="Username" />
-    <InputText @bind-Value="register.Email" placeholder="Email" />
-    <InputText @bind-Value="register.Password" placeholder="Password" type="password" />
-    <InputText @bind-Value="register.ConfirmPassword" placeholder="Confirm Password" type="password" />
-    <button type="submit">Register</button>
-</EditForm>
+    <EditForm Model="@model" OnValidSubmit="@RegisterUser">
+        <DataAnnotationsValidator />
+        <ValidationSummary />
+        
+        <div class="mb-4">
+            <InputText @bind-value="model.UserName" class="input" placeholder="Username"/>
+        </div>
 
-@if (!string.IsNullOrEmpty(message))
-{
-    <p>@message</p>
-}
+        <div class="mb-4">
+            <InputText @bind-Value="model.Email" class="input" placeholder="Email" />
+        </div>
+
+        <div class="mb-4">
+            <InputText @bind-Value="model.Password" type="password" class="input" placeholder="Password" />
+        </div>
+
+        <div class="mb-4">
+            <InputText @bind-Value="model.ConfirmPassword" type="password" class="input" placeholder="Confirm Password" />
+        </div>
+
+        <button type="submit" class="btn-primary w-full">Register</button>
+    </EditForm>
+</div>
 
 @code {
-    private RXC.Client.DTOs.User.Register register = new();
-    private string message;
+    private DTOs.User.Register model = new();
 
-    private async Task HandleRegister()
+    private async Task RegisterUser()
     {
-        var response = await Http.PostAsJsonAsync("http://localhost:61998/api/auth/register", register);
-
-        if (response.IsSuccessStatusCode)
-        {
-            message = "Registration successful!";
-            // Optional: redirect to login
-        }
+        var result = await AuthService.RegisterAsync(model);
+        if (!result)
+            Console.WriteLine("Register failed.");
         else
-        {
-            var error = await response.Content.ReadAsStringAsync();
-            message = $"Error: {error}";
-        }
+            Console.WriteLine("Register successful.");
     }
 }

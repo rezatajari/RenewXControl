@@ -1,0 +1,35 @@
+﻿@page "/login"
+@using RXC.Client.Services
+@inject AuthService AuthService
+
+<PageTitle>Login</PageTitle>
+
+<div class="max-w-md mx-auto mt-20 p-6 shadow-xl rounded-xl bg-white">
+    <h2 class="text-2xl font-bold mb-4 text-center">Login</h2>
+
+    <EditForm Model="@model" OnValidSubmit="@LoginUser">
+        <DataAnnotationsValidator />
+        <ValidationSummary />
+
+        <div class="mb-4">
+            <InputText @bind-Value="model.Email" class="input" placeholder="Email" />
+        </div>
+
+        <div class="mb-4">
+            <InputText @bind-Value="model.Password" type="password" class="input" placeholder="Password" />
+        </div>
+
+        <button type="submit" class="btn-primary w-full">Login</button>
+    </EditForm>
+</div>
+
+@code {
+    private DTOs.User.Login model = new();
+
+    private async Task LoginUser()
+    {
+        var result = await AuthService.LoginAsync(model);
+        if (!result)
+            Console.WriteLine("Login failed.");
+    }
+}

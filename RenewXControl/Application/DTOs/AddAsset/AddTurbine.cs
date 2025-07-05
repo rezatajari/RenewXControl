@@ -4,4 +4,4 @@
         double SetPoint,
         double ActivePower
     );
-}
+

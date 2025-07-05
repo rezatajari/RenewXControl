@@ -1,12 +1,18 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.SignalR;
+using System.Security.Claims;
 
 namespace RenewXControl.Infrastructure.Hubs
 {
     [Authorize]
     public class AssetsHub:Hub
     {
-        // No need to define SendSolarData here if only the server sends data.
-        // Keep this class empty unless you want to allow clients to call hub methods.
+        public override Task OnConnectedAsync()
+        {
+            var userId = Context.User?.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            Console.WriteLine($"User connected: {userId}");
+
+            return base.OnConnectedAsync();
+        }
     }
 }

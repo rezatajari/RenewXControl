@@ -19,7 +19,7 @@ namespace RenewXControl.Application.Asset.Implementation
 
         public AssetService(
             IBatteryControl batteryControl,
-        ISolarControl solarControl,
+            ISolarControl solarControl,
             ITurbineControl turbineControl,
             IAssetRepository assetRepository, 
             RxcDbContext context)

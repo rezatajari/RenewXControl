@@ -19,14 +19,14 @@ namespace RenewXControl.Api.Controllers
         }
 
         [HttpPost("register")]
-        public async Task<IActionResult> Register(Register register)
+        public async Task<IActionResult> Register([FromBody] Register register)
         {
             var result = await _authService.RegisterAsync(register);
             return result.IsSuccess ? Ok(result) : BadRequest(result);
         }
 
         [HttpPost("login")]
-        public async Task<IActionResult> Login(Login login)
+        public async Task<IActionResult> Login([FromBody] Login login)
         {
             var result = await _authService.LoginAsync(login);
             return result.IsSuccess? Ok(result) : BadRequest(result);

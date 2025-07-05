@@ -1,8 +1,4 @@
-﻿using Microsoft.AspNetCore.Http.Metadata;
-using RenewXControl.Application.DTOs.AddAsset;
-using RenewXControl.Application.DTOs.AssetMonitoring.Asset;
-using RenewXControl.Configuration.AssetsModel.Assets;
-using RenewXControl.Domain.Interfaces.Assets;
+﻿using RenewXControl.Application.DTOs.AddAsset;
 
 
 namespace RenewXControl.Domain.Assets

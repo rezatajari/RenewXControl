@@ -1,4 +1,5 @@
 ﻿@page "/dashboard"
+@using Microsoft.AspNetCore.Components.WebAssembly.Authentication
 @using Microsoft.AspNetCore.SignalR.Client
 
 <h3>Live Asset Monitoring</h3>
@@ -46,8 +47,13 @@ else
     {
         try
         {
+            var token = await GetToken();
+
             hubConnection = new HubConnectionBuilder()
-                .WithUrl("http://localhost:61998/assetsHub")
+                .WithUrl("http://localhost:61998/assetsHub",options =>
+                {
+                    options.AccessTokenProvider = async () => token;
+                })
                 .WithAutomaticReconnect()
                 .Build();
 
@@ -72,5 +78,17 @@ else
         {
             await hubConnection.DisposeAsync();
         }
+    }
+
+    [Inject] public IAccessTokenProvider TokenProvider { get; set; }
+
+    private async Task<string?> GetToken()
+    {
+        var result = await TokenProvider.RequestAccessToken();
+
+        if (result.TryGetToken(out var token))
+            return token.Value;
+
+        return null;
     }
 }
