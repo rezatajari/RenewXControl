@@ -8,16 +8,16 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using RenewXControl.Domain.Interfaces.Assets;
 using RenewXControl.Domain.Implementatons.Assets;
-using RenewXControl.Domain.Users;
 using RenewXControl.Infrastructure.Services;
 using RenewXControl.Infrastructure.Persistence;
 using RenewXControl.Infrastructure.Hubs;
 using RenewXControl.Application.User;
 using RenewXControl.Application.Asset.Interfaces;
 using RenewXControl.Application.Asset.Implementation;
-using RenewXControl.Application.Common;
 using RenewXControl.Infrastructure.Services.User;
 using RenewXControl.Infrastructure.Services.Asset;
+using RenewXControl.Application;
+using RenewXControl.Domain;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -37,6 +37,8 @@ builder.Services.AddScoped<IAssetRepository, AssetRepository>();
 builder.Services.AddScoped<IDashboardService, DashboardService>();
 builder.Services.AddScoped<ISiteRepository, SiteRepository>();
 builder.Services.AddScoped<IAssetFactory, AssetFactory>();
+builder.Services.AddScoped<IAssetService, AssetService>();
+
 
 // ✅ 5. Others
 builder.Services.AddDbContext<RxcDbContext>(options =>

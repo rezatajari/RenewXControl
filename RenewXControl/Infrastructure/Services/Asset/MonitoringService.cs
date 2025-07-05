@@ -12,20 +12,20 @@ namespace RenewXControl.Infrastructure.Services.Asset
         private readonly ISolarControl _solarControl;
         private readonly ITurbineControl _turbineControl;
         private readonly IBatteryControl _batteryControl;
-        private readonly IAssetService _assetService;
+        private readonly IAssetRuntimeOperation _assetRuntimeOperation;
 
 
         public MonitoringService(
             ISolarControl solarControl,
             ITurbineControl turbineControl,
             IBatteryControl batteryControl,
-            IAssetService assetService,
+            IAssetRuntimeOperation assetRuntimeOperation,
             IHubContext<AssetsHub> hubContext)
         {
             _solarControl = solarControl;
             _turbineControl= turbineControl;
             _batteryControl = batteryControl;
-            _assetService = assetService;
+            _assetRuntimeOperation = assetRuntimeOperation;
             _hub = hubContext;
         }
 
@@ -62,7 +62,7 @@ namespace RenewXControl.Infrastructure.Services.Asset
                 );
 
                 // Battery
-                Task.Run(async  ()=>_assetService.ChargeDischarge());
+                Task.Run(async  ()=> _assetRuntimeOperation.ChargeDischarge());
                 var batteryDto = new Battery
                 (
                     AssetType: "Battery",

@@ -1,100 +1,64 @@
 ﻿using RenewXControl.Api.Utility;
 using RenewXControl.Application.Asset.Interfaces;
 using RenewXControl.Application.DTOs.AddAsset;
+using RenewXControl.Application.DTOs.AssetMonitoring;
 using RenewXControl.Domain.Assets;
 using RenewXControl.Domain.Interfaces.Assets;
 using RenewXControl.Infrastructure.Persistence;
 using RenewXControl.Infrastructure.Services.Asset;
+using Battery = RenewXControl.Domain.Assets.Battery;
 using Console = System.Console;
 
 namespace RenewXControl.Application.Asset.Implementation
 {
     public class AssetService : IAssetService
     {
-        private readonly IBatteryControl _batteryControl;
-        private readonly ISolarControl _solarControl;
-        private readonly ITurbineControl _turbineControl;
         private readonly IAssetRepository _assetRepository;
         private readonly RxcDbContext _context;
 
         public AssetService(
-            IBatteryControl batteryControl,
-            ISolarControl solarControl,
-            ITurbineControl turbineControl,
             IAssetRepository assetRepository, 
             RxcDbContext context)
         {
-            _batteryControl = batteryControl;
-            _solarControl=solarControl;
-            _turbineControl = turbineControl;
             _assetRepository = assetRepository;
             _context = context;
         }
 
-        private void RecalculateTotalPower()
+        public async Task<GeneralResponse<Guid>> AddSiteAsync(AddSite addSite, string userId)
         {
-            _solarControl.UpdateActivePower();
-            _turbineControl.UpdateActivePower();
+            var site = Site.Create(addSite,userId);
+            await _assetRepository.AddSite(site);
 
-            var totalPower = _solarControl.ActivePower + _turbineControl.ActivePower;
-            _batteryControl.RecalculateTotalPower(totalPower);
+            await _context.SaveChangesAsync();
+
+            return GeneralResponse<Guid>.Success(data: site.Id, "Site added successfully");
         }
 
-        public async Task ChargeDischarge()
+        public async Task<GeneralResponse<Guid>> AddBatteryAsync(AddBattery addBattery, Guid siteId)
         {
-            switch (_batteryControl.IsNeedToCharge)
-            {
-                // charging
-                case true when _batteryControl.IsStartingChargeDischarge == false:
-                    _solarControl.Start();
-                    _turbineControl.Start();
-                    RecalculateTotalPower();
-                    await _batteryControl.Charge();
-                    break;
 
-                // when battery need to update new total power for charging
-                case true when _batteryControl.IsStartingChargeDischarge == true:
-                    RecalculateTotalPower();
-                    break;
-
-                // discharging
-                case false when _batteryControl.IsStartingChargeDischarge == false:
-                    // UpdateSetPointGenerators
-                    _solarControl.RecalculateSetPoint();
-                    _turbineControl.RecalculateSetPoint();
-
-                    _solarControl.Stop();
-                    _turbineControl.Stop();
-                    await _batteryControl.Discharge();
-                    break;
-            }
-        }
-
-
-        public async Task<GeneralResponse<Guid>> AddBatteryAsync(AddBattery addBattery, string userId)
-        {
-            var battery = Battery.Create(addBattery);
-            await _assetRepository.AddAsync(battery);
+            var battery = Battery.Create(addBattery,siteId);
+            await _assetRepository.AddAssetAsync(battery);
 
             await _context.SaveChangesAsync();
 
             return GeneralResponse<Guid>.Success(data: battery.Id, "Battery added successfully");
         }
 
-        public async Task<GeneralResponse<Guid>> AddSolarAsync(AddSolar addSolar, string userId)
+        public async Task<GeneralResponse<Guid>> AddSolarAsync(AddSolar addSolar, Guid siteId)
         {
-            var solar = SolarPanel.Create(addSolar);
-            await _assetRepository.AddAsync(solar);
+            var solar = SolarPanel.Create(addSolar, siteId);
+            await _assetRepository.AddAssetAsync(solar);
 
             await _context.SaveChangesAsync();
 
             return GeneralResponse<Guid>.Success(solar.Id, "Solar added successfully");
         }
 
-        public async Task<GeneralResponse<Guid>> AddTurbineAsync(AddTurbine addTurbine, string userId)
+        public async Task<GeneralResponse<Guid>> AddTurbineAsync(AddTurbine addTurbine, Guid siteId)
         {
-            var turbine = WindTurbine.Create(addTurbine);
-            await _assetRepository.AddAsync(turbine);
+            var turbine = WindTurbine.Create(addTurbine, siteId);
+            await _assetRepository.AddAssetAsync(turbine);
 
             await _context.SaveChangesAsync();
 

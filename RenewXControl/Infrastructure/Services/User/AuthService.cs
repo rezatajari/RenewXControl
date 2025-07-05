@@ -6,17 +6,16 @@ using Microsoft.IdentityModel.Tokens;
 using RenewXControl.Api.Utility;
 using RenewXControl.Application.DTOs.User.Auth;
 using RenewXControl.Application.User;
-using RenewXControl.Domain.Users;
 
 namespace RenewXControl.Infrastructure.Services.User;
 
 public class AuthService:IAuthService
 {
-    private readonly UserManager<Domain.Users.User> _userManager;
-    private readonly SignInManager<Domain.Users.User> _signInManager;
+    private readonly UserManager<Domain.User> _userManager;
+    private readonly SignInManager<Domain.User> _signInManager;
     private readonly RoleManager<IdentityRole> _roleManager;
 
-    public AuthService(UserManager<Domain.Users.User> userManager,SignInManager<Domain.Users.User> signInManager,RoleManager<IdentityRole> roleManager)
+    public AuthService(UserManager<Domain.User> userManager,SignInManager<Domain.User> signInManager,RoleManager<IdentityRole> roleManager)
     {
         _userManager= userManager;
         _signInManager= signInManager;
@@ -28,7 +27,7 @@ public class AuthService:IAuthService
         if (register.Password != register.ConfirmPassword)
             return GeneralResponse<string>.Failure("Password do not match");
 
-        var user = Domain.Users.User.Create(register.UserName, register.Email);
+        var user = Domain.User.Create(register.UserName, register.Email);
         var result=await _userManager.CreateAsync(user,register.Password);
 
         if (!result.Succeeded)
@@ -58,7 +57,7 @@ public class AuthService:IAuthService
         return GeneralResponse<string>.Success(token, "Login successful");
     }
 
-    public string GenerateToken(Domain.Users.User user, IList<string> roles)
+    public string GenerateToken(Domain.User user, IList<string> roles)
     {
         var claims = new List<Claim>
         {

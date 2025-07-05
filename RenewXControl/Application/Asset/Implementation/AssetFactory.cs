@@ -43,5 +43,15 @@ namespace RenewXControl.Application.Asset.Implementation
 
             return new BatteryControl(battery);
         }
+
+        public async Task<ISiteControl> CreateSiteControlAsync(Guid siteId)
+        {
+            var site = await _assetRepository.GetSiteById(siteId);
+
+            if (site == null)
+                throw new InvalidOperationException("Invalid or missing site asset.");
+
+            return new SiteControl(site);
+        }
     }
 }

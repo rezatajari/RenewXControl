@@ -1,11 +1,11 @@
-﻿using RenewXControl.Domain.Users;
+﻿using RenewXControl.Domain.Assets;
 
-namespace RenewXControl.Application.Common
+namespace RenewXControl.Application
 {
     public interface ISiteRepository
     {
         Task<Site?> GetByIdAsync(Guid siteId);
-        Task<List<Site>> GetSitesByUserIdAsync(string userId);
+        Task<Guid> GetSiteIdByUserIdAsync(string userId);
         Task AddAsync(Site site);
         Task<bool> ExistAsync(Guid siteId);
     }

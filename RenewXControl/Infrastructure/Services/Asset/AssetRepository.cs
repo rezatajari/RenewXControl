@@ -22,9 +22,19 @@ namespace RenewXControl.Infrastructure.Services.Asset
                             .CountAsync();
         }
 
-        public async Task AddAsync(Domain.Assets.Asset asset)
+        public async Task AddAssetAsync(Domain.Assets.Asset asset)
         {
             await _context.Assets.AddAsync(asset);
+        }
+
+        public async Task AddSite(Site site)
+        {
+            await _context.Sites.AddAsync(site);
+        }
+
+        public async Task<Site> GetSiteById(Guid siteId)
+        {
+           return await _context.Sites.FirstOrDefaultAsync(s => s.Id == siteId);
         }
 
         public async Task<SolarPanel> GetSolarById(Guid solarId)

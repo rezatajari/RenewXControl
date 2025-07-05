@@ -6,7 +6,7 @@ namespace RenewXControl.Domain.Assets
     public class Battery : Asset
     {
         private Battery() { }
-        private Battery(double capacity, double stateCharge, double setPoint, double frequentlyDisCharge)
+        private Battery(double capacity, double stateCharge, double setPoint, double frequentlyDisCharge, Guid siteId)
         {
             FrequentlyDisCharge = frequentlyDisCharge;
             Name = $"Battery{Id}";
@@ -15,6 +15,7 @@ namespace RenewXControl.Domain.Assets
             SetPoint = setPoint;
             FrequentlyDisCharge = frequentlyDisCharge;
             TotalPower = 0;
+            SiteId= siteId;
 
             if (!CheckEmpty()) return;
             IsNeedToCharge = true;
@@ -29,8 +30,8 @@ namespace RenewXControl.Domain.Assets
         public bool IsNeedToCharge { get; private set; }
         public bool IsStartingChargeDischarge { get; private set; }
 
-        public static Battery Create(AddBattery addBattery)
-        => new Battery(addBattery.Capacity, addBattery.StateCharge, addBattery.SetPoint, addBattery.FrequentlyDischarge);
+        public static Battery Create(AddBattery addBattery, Guid siteId)
+        => new Battery(addBattery.Capacity, addBattery.StateCharge, addBattery.SetPoint, addBattery.FrequentlyDischarge,siteId);
         private bool CheckEmpty()
         {
             return StateCharge < Capacity;

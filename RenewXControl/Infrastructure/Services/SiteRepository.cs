@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using RenewXControl.Application.Common;
-using RenewXControl.Domain.Users;
+using RenewXControl.Application;
+using RenewXControl.Domain.Assets;
 using RenewXControl.Infrastructure.Persistence;
 
 namespace RenewXControl.Infrastructure.Services
@@ -18,11 +18,12 @@ namespace RenewXControl.Infrastructure.Services
             return await _context.Sites.FindAsync(siteId);
         }
 
-        public async Task<List<Site>> GetSitesByUserIdAsync(string userId)
+        public async Task<Guid> GetSiteIdByUserIdAsync(string userId)
         {
             return await _context.Sites
-                .Where(s => s.UserId== userId)
-                .ToListAsync();
+                .Where(s => s.UserId == userId)
+                .Select(s => (Guid)s.Id)
+                .FirstOrDefaultAsync();
         }
 
         public async Task AddAsync(Site site)

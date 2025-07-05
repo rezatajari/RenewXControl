@@ -1,6 +1,4 @@
-﻿using RenewXControl.Domain.Users;
-
-namespace RenewXControl.Domain.Assets
+﻿namespace RenewXControl.Domain.Assets
 {
     public  class Asset
     {

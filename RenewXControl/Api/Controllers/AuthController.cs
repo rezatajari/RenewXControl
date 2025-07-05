@@ -3,7 +3,6 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using RenewXControl.Application.DTOs.User.Auth;
 using RenewXControl.Application.User;
-using RenewXControl.Domain.Users;
 
 namespace RenewXControl.Api.Controllers
 {

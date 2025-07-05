@@ -5,20 +5,21 @@ namespace RenewXControl.Domain.Assets
     public class WindTurbine : Asset
     {
         private WindTurbine() { }
-        private WindTurbine(double windSpeed, double activePower, double setPoint)
+        private WindTurbine(double windSpeed, double activePower, double setPoint, Guid siteId)
         {
             Name = $"WT{Id}";
             WindSpeed = windSpeed;
             ActivePower = activePower;
             SetPoint = setPoint;
+            SiteId = siteId;
         }
 
         public double WindSpeed { get; private set; }  // km/h
         public double ActivePower { get; private set; } // kW
         public double SetPoint { get; private set; } // Determines operation status
 
-        public static WindTurbine Create(AddTurbine addTurbine)
-            => new WindTurbine(addTurbine.WindSpeed, addTurbine.ActivePower, addTurbine.SetPoint);
+        public static WindTurbine Create(AddTurbine addTurbine, Guid siteId)
+            => new WindTurbine(addTurbine.WindSpeed, addTurbine.ActivePower, addTurbine.SetPoint,siteId);
         public bool Start()
         {
             SetPoint = 10;

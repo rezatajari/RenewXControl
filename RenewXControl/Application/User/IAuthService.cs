@@ -7,6 +7,6 @@ namespace RenewXControl.Application.User
     {
         Task<GeneralResponse<string>> RegisterAsync(Register register);
         Task<GeneralResponse<string>> LoginAsync(Login login);
-        string GenerateToken(Domain.Users.User  user, IList<string> roles);
+        string GenerateToken(Domain.User  user, IList<string> roles);
     }
 }

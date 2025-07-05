@@ -7,6 +7,6 @@ namespace RenewXControl.Application.Asset.Interfaces
         Task<ISolarControl?> CreateSolarControlAsync(Guid assetId);
         Task<ITurbineControl> CreateTurbineControlAsync(Guid turbineId);
         Task<IBatteryControl> CreateBatteryControlAsync(Guid batteryId);
+        Task<ISiteControl> CreateSiteControlAsync(Guid siteId);
     }
-
 }
