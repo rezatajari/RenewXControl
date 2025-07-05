@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.Logging;
 using RenewXControl.Api.Utility;
-using RenewXControl.Application.DTOs.Asset;
+using RenewXControl.Application.DTOs.AddAsset;
+using RenewXControl.Application.DTOs.AssetMonitoring.Asset;
 using RenewXControl.Configuration.AssetsModel.Assets;
 using RenewXControl.Domain.Interfaces.Assets;
 

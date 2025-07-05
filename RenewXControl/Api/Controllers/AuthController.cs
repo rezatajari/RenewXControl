@@ -1,8 +1,8 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using RenewXControl.Api.DTOs.Auth;
-using RenewXControl.Application.Interfaces;
+using RenewXControl.Application.DTOs.User.Auth;
+using RenewXControl.Application.User;
 using RenewXControl.Domain.Users;
 
 namespace RenewXControl.Api.Controllers

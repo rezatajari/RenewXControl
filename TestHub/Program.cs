@@ -1,5 +1,5 @@
 ﻿using Microsoft.AspNetCore.SignalR.Client;
-using RenewXControl.Api.DTOs;
+using RenewXControl.Application.DTOs.AssetMonitoring;
 using RenewXControl.Domain.Assets;
 
 var connection = new HubConnectionBuilder()

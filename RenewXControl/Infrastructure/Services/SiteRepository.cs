@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using RenewXControl.Application.Interfaces;
+using RenewXControl.Application.Common;
 using RenewXControl.Domain.Users;
-using RenewXControl.Infrastructure.Persistence.MyDbContext;
+using RenewXControl.Infrastructure.Persistence;
 
 namespace RenewXControl.Infrastructure.Services
 {

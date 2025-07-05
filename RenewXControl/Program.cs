@@ -4,17 +4,19 @@ using RenewXControl.Domain.Assets;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using Microsoft.AspNetCore.ResponseCompression;
-using RenewXControl.Api.Hubs;
-using RenewXControl.Application.Interfaces;
-using RenewXControl.Application.Services;
-using RenewXControl.Infrastructure.Persistence.MyDbContext;
 using Battery = RenewXControl.Domain.Assets.Battery;
-using RenewXControl.Application.Services.Assets;
 using RenewXControl.Domain.Interfaces.Assets;
 using RenewXControl.Domain.Implementatons.Assets;
-using RenewXControl.Application.Interfaces.Assets;
 using RenewXControl.Domain.Users;
 using RenewXControl.Infrastructure.Services;
+using RenewXControl.Infrastructure.Persistence;
+using RenewXControl.Infrastructure.Hubs;
+using RenewXControl.Application.User;
+using RenewXControl.Application.Asset.Interfaces;
+using RenewXControl.Application.Asset.Implementation;
+using RenewXControl.Application.Common;
+using RenewXControl.Infrastructure.Services.User;
+using RenewXControl.Infrastructure.Services.Asset;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -88,7 +90,9 @@ var app = builder.Build();
 // 👇 Use the CORS policy before endpoints
 app.UseCors("AllowBlazorClient");
 
-app.MapHub<AssetsHub>("/assetsHub");
+app.UseAuthentication();
+app.UseAuthorization();
+app.MapHub<AssetsHub>("/assetsHub").RequireAuthorization();
 app.MapControllers();
 app.Run();
 
