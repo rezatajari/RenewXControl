@@ -14,20 +14,29 @@ namespace RenewXControl.Application.Asset.Implementation
     public class AssetService : IAssetService
     {
         private readonly IAssetRepository _assetRepository;
+        private readonly ISiteRepository _siteRepository;
+        private readonly IAssetControlFactory _assetControlFactory;
+        private readonly IMonitoringRegistry _monitoringRegistry;
         private readonly RxcDbContext _context;
 
         public AssetService(
             IAssetRepository assetRepository, 
-            RxcDbContext context)
+            ISiteRepository siteRepository,
+            IAssetControlFactory assetControlFactory,
+            RxcDbContext context,
+            IMonitoringRegistry monitoringRegistry)
         {
             _assetRepository = assetRepository;
+            _siteRepository = siteRepository;
+            _assetControlFactory = assetControlFactory;
             _context = context;
+            _monitoringRegistry = monitoringRegistry;
         }
 
         public async Task<GeneralResponse<Guid>> AddSiteAsync(AddSite addSite, string userId)
         {
             var site = Site.Create(addSite,userId);
-            await _assetRepository.AddSite(site);
+            await _siteRepository.AddSite(site);
 
             await _context.SaveChangesAsync();
 
@@ -63,6 +72,24 @@ namespace RenewXControl.Application.Asset.Implementation
             await _context.SaveChangesAsync();
 
             return GeneralResponse<Guid>.Success(turbine.Id, "Turbine added successfully");
+        }
+
+        public async Task MonitoringData(string userId)
+        {
+            // Get user assets from DB
+            var solar = await _assetRepository.GetSolarByUserId(userId);
+            var turbine = await _assetRepository.GetTurbineByUserId(userId);
+            var battery = await _assetRepository.GetBatteryByUserId(userId);
+
+            // Create runtime controls
+            var solarControl =  _assetControlFactory.CreateSolarControlAsync(solar);
+            var turbineControl=  _assetControlFactory.CreateTurbineControlAsync(turbine);
+            var batteryControl=  _assetControlFactory.CreateBatteryControlAsync(battery);
+
+            var assetControl =
+                _assetControlFactory.CreateAssetRuntimeOperationAsync(solarControl, turbineControl, batteryControl);
+
+            _monitoringRegistry.RegisterUser(userId,solarControl,turbineControl,batteryControl,assetControl);
         }
     }
 }

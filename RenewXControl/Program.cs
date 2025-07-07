@@ -1,13 +1,9 @@
 ﻿using System.Security.Claims;
 using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
-using RenewXControl.Configuration.AssetsModel.Assets;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
-using RenewXControl.Domain.Interfaces.Assets;
-using RenewXControl.Domain.Implementatons.Assets;
 using RenewXControl.Infrastructure.Services;
 using RenewXControl.Infrastructure.Persistence;
 using RenewXControl.Infrastructure.Hubs;
@@ -32,13 +28,14 @@ builder.Services.AddCors(options =>
     });
 });
 
+builder.Services.AddSwaggerGen();
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IAssetRepository, AssetRepository>();
 builder.Services.AddScoped<IDashboardService, DashboardService>();
 builder.Services.AddScoped<ISiteRepository, SiteRepository>();
-builder.Services.AddScoped<IAssetFactory, AssetFactory>();
+builder.Services.AddScoped<IAssetControlFactory, AssetControlFactory>();
 builder.Services.AddScoped<IAssetService, AssetService>();
-
+builder.Services.AddSingleton<IMonitoringRegistry, MonitoringRegistry>();
 
 // ✅ 5. Others
 builder.Services.AddDbContext<RxcDbContext>(options =>
@@ -100,7 +97,8 @@ builder.Services.AddControllers();
 
 var app = builder.Build();
 
-// 👇 Use the CORS policy before endpoints
+app.UseSwagger();
+app.UseSwaggerUI();
 app.UseRouting();
 app.UseCors("AllowBlazorClient");
 app.UseAuthentication();

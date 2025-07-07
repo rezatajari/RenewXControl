@@ -22,7 +22,7 @@ namespace RenewXControl.Domain.Assets
             IsStartingChargeDischarge = false;
         }
 
-        public double Capacity { get; } // kW
+        public double Capacity { get; private set; } // kW
         public double StateCharge { get; private set; } // KW
         public double SetPoint { get; private set; } // Charge/Discharge control
         public double TotalPower { get;private set; }

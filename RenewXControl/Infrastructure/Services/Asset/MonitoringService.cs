@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.SignalR;
+using RenewXControl.Application.Asset.Implementation;
 using RenewXControl.Application.Asset.Interfaces;
 using RenewXControl.Application.DTOs.AssetMonitoring;
 using RenewXControl.Domain.Interfaces.Assets;
@@ -9,75 +10,66 @@ namespace RenewXControl.Infrastructure.Services.Asset
     public class MonitoringService : BackgroundService
     {
         private readonly IHubContext<AssetsHub> _hub;
-        private readonly ISolarControl _solarControl;
-        private readonly ITurbineControl _turbineControl;
-        private readonly IBatteryControl _batteryControl;
-        private readonly IAssetRuntimeOperation _assetRuntimeOperation;
-
+        private readonly MonitoringRegistry _registry;
 
         public MonitoringService(
-            ISolarControl solarControl,
-            ITurbineControl turbineControl,
-            IBatteryControl batteryControl,
-            IAssetRuntimeOperation assetRuntimeOperation,
-            IHubContext<AssetsHub> hubContext)
+            IHubContext<AssetsHub> hubContext,
+            MonitoringRegistry registry)
         {
-            _solarControl = solarControl;
-            _turbineControl= turbineControl;
-            _batteryControl = batteryControl;
-            _assetRuntimeOperation = assetRuntimeOperation;
             _hub = hubContext;
+            _registry = registry;
         }
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
-            _solarControl.Start();
-            _turbineControl.Start();
-
             while (!stoppingToken.IsCancellationRequested)
             {
+                foreach (var session in _registry.GetAllSessions())
+                {
+                    // Start asset simulation if not already running
+                    session.SolarControl?.Start();
+                    session.TurbineControl?.Start();
 
-                // Solar
-                _solarControl.UpdateIrradiance();
-                var solarDto = new Solar
-                (
-                   AssetType: "SolarPanel",
-                   Message: _solarControl.StatusMessage,
-                   Irradiance: _solarControl.Irradiance,
-                   ActivePower: _solarControl.ActivePower,
-                   SetPoint: _solarControl.SetPoint,
-                   Timestamp: DateTime.UtcNow
-                );
+                    // Update simulation values
+                    session.SolarControl?.UpdateIrradiance();
+                    session.TurbineControl?.UpdateWindSpeed();
+                    _ = Task.Run(() => session.AssetRuntimeOperation?.ChargeDischarge());
 
-                // Turbine
-                _turbineControl.UpdateWindSpeed();
-                var turbineDto = new Turbine
-                (
-                    AssetType: "WindTurbine",
-                    Message: _turbineControl.StatusMessage,
-                    WindSpeed: _turbineControl.WindSpeed,
-                    ActivePower: _turbineControl.ActivePower,
-                    SetPoint: _turbineControl.SetPoint,
-                    Timestamp: DateTime.UtcNow
-                );
+                    // Build DTOs
+                    var solarDto = new Solar(
+                        AssetType: "Solar Panel",
+                        Message: session.SolarControl?.StatusMessage,
+                        Irradiance: session.SolarControl?.Irradiance ?? 0,
+                        ActivePower: session.SolarControl?.ActivePower ?? 0,
+                        SetPoint: session.SolarControl?.SetPoint ?? 0,
+                        Timestamp: DateTime.UtcNow
+                    );
 
-                // Battery
-                Task.Run(async  ()=> _assetRuntimeOperation.ChargeDischarge());
-                var batteryDto = new Battery
-                (
-                    AssetType: "Battery",
-                    Message: _batteryControl.ChargeStateMessage,
-                    Capacity: _batteryControl.Capacity,
-                    SetPoint: _batteryControl.SetPoint, // set if available
-                    StateCharge: _batteryControl.StateCharge,
-                    RateDischarge: _batteryControl.FrequentlyDisCharge,
-                    Timestamp: DateTime.UtcNow
-                );
+                    var turbineDto = new Turbine(
+                        AssetType: "Wind Turbine",
+                        Message: session.TurbineControl?.StatusMessage,
+                        WindSpeed: session.TurbineControl?.WindSpeed ?? 0,
+                        ActivePower: session.TurbineControl?.ActivePower ?? 0,
+                        SetPoint: session.TurbineControl?.SetPoint ?? 0,
+                        Timestamp: DateTime.UtcNow
+                    );
 
-                var model = new AssetsMonitoring(solarDto, turbineDto, batteryDto);
+                    var batteryDto = new Battery(
+                        AssetType: "Battery",
+                        Message: session.BatteryControl?.ChargeStateMessage,
+                        Capacity: session.BatteryControl?.Capacity ?? 0,
+                        SetPoint: session.BatteryControl?.SetPoint ?? 0,
+                        StateCharge: session.BatteryControl?.StateCharge ?? 0,
+                        RateDischarge: session.BatteryControl?.FrequentlyDisCharge ?? 0,
+                        Timestamp: DateTime.UtcNow
+                    );
 
-                // Send both DTOs to all clients
-                await _hub.Clients.All.SendAsync("AssetUpdate", model, stoppingToken);
+                    var model = new AssetsMonitoring(solarDto, turbineDto, batteryDto);
+
+                    // Send only to that user's group
+                    await _hub.Clients.Group(session.UserId).SendAsync("AssetUpdate", model, stoppingToken);
+                }
+
                 await Task.Delay(1000, stoppingToken);
             }
         }

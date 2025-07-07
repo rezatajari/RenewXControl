@@ -4,6 +4,7 @@ namespace RenewXControl.Application
 {
     public interface ISiteRepository
     {
+        Task AddSite(Site site);
         Task<Site?> GetByIdAsync(Guid siteId);
         Task<Guid> GetSiteIdByUserIdAsync(string userId);
         Task AddAsync(Site site);

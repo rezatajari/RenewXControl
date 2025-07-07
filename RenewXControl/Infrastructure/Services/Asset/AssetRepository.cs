@@ -27,12 +27,7 @@ namespace RenewXControl.Infrastructure.Services.Asset
             await _context.Assets.AddAsync(asset);
         }
 
-        public async Task AddSite(Site site)
-        {
-            await _context.Sites.AddAsync(site);
-        }
-
-        public async Task<Site> GetSiteById(Guid siteId)
+       public async Task<Site> GetSiteById(Guid siteId)
         {
            return await _context.Sites.FirstOrDefaultAsync(s => s.Id == siteId);
         }
@@ -56,6 +51,30 @@ namespace RenewXControl.Infrastructure.Services.Asset
             return await _context.Assets
             .OfType<Battery>()
                 .FirstOrDefaultAsync(a => a.Id == batteryId);
+        }
+
+        public async Task<SolarPanel> GetSolarByUserId(string userId)
+        {
+           return  await _context.Assets.Include(s => s.Site)
+                .OfType<SolarPanel>()
+                .Where(u => u.Site != null && u.Site.UserId == userId)
+                .FirstOrDefaultAsync();
+        }
+
+        public async Task<WindTurbine> GetTurbineByUserId(string userId)
+        {
+            return await _context.Assets.Include(s => s.Site)
+                .OfType<WindTurbine>()
+                .Where(u =>u.Site!=null&& u.Site.UserId == userId)
+                .FirstOrDefaultAsync();
+        }
+
+        public async Task<Battery> GetBatteryByUserId(string userId)
+        {
+            return await _context.Assets.Include(s => s.Site)
+                .OfType<Battery>()
+                .Where(u => u.Site != null && u.Site.UserId == userId)
+                .FirstOrDefaultAsync();
         }
     }
 }

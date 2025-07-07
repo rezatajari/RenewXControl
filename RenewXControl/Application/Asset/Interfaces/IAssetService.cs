@@ -1,5 +1,6 @@
 ﻿using RenewXControl.Api.Utility;
 using RenewXControl.Application.DTOs.AddAsset;
+using RenewXControl.Application.DTOs.AssetMonitoring;
 
 namespace RenewXControl.Application.Asset.Interfaces
 {
@@ -9,5 +10,6 @@ namespace RenewXControl.Application.Asset.Interfaces
         Task<GeneralResponse<Guid>> AddBatteryAsync(AddBattery addBattery,Guid siteId);
         Task<GeneralResponse<Guid>> AddSolarAsync(AddSolar addSolar, Guid siteId);
         Task<GeneralResponse<Guid>> AddTurbineAsync(AddTurbine addTurbine, Guid siteId);
+        Task MonitoringData(string userId);
     }
 }
