@@ -1,0 +1,69 @@
+﻿@page "/asset/add-solar"
+@layout DashboardLayout
+@inject HttpClient Http
+@inject NavigationManager Nav
+@inject IJSRuntime JS
+
+<div class="main-content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header bg-primary text-white">
+                        <h3>Add Solar Asset</h3>
+                    </div>
+
+                    <div class="card-body">
+                        <EditForm Model="@solarModel" OnValidSubmit="@HandleSubmit">
+                            <div class="row mb-3">
+                                <div class="col-md-4">
+                                    <label class="form-label">Irradiance (W/m²)</label>
+                                    <InputNumber class="form-control" @bind-Value="@solarModel.Irradiance" />
+                                </div>
+
+                                <div class="col-md-4">
+                                    <label class="form-label">Set Point (kW)</label>
+                                    <InputNumber class="form-control" @bind-Value="@solarModel.SetPoint" />
+                                </div>
+
+                                <div class="col-md-4">
+                                    <label class="form-label">Active Power (kW)</label>
+                                    <InputNumber class="form-control" @bind-Value="@solarModel.ActivePower" />
+                                </div>
+                            </div>
+
+                            <button type="submit" class="btn btn-primary">Submit</button>
+                        </EditForm>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@code {
+    private SolarModel solarModel = new();
+
+    public class SolarModel
+    {
+        public double Irradiance { get; set; }
+        public double SetPoint { get; set; }
+        public double ActivePower { get; set; }
+    }
+
+    private async Task HandleSubmit()
+    {
+        try
+        {
+            var response = await Http.PostAsJsonAsync("api/asset/add/solar", solarModel);
+            if (response.IsSuccessStatusCode)
+            {
+                Nav.NavigateTo("/asset/add-solar");
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error: {ex.Message}");
+        }
+    }
+}

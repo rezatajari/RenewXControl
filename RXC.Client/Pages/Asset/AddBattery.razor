@@ -1,0 +1,111 @@
+﻿@page "/asset/add-battery"
+@using System.Net.Http.Headers
+@layout DashboardLayout
+@inject HttpClient Http
+@inject NavigationManager Nav
+@inject IJSRuntime JS
+
+<div class="container mt-4">
+    <div class="card shadow">
+        <div class="card-header bg-primary text-white">
+            <h3><i class="bi bi-battery-charging me-2"></i> Add Battery System</h3>
+        </div>
+        <div class="card-body">
+            <EditForm Model="@batteryModel" OnValidSubmit="@HandleSubmit">
+                <DataAnnotationsValidator />
+                <ValidationSummary />
+
+                <div class="row mb-3">
+                    <div class="col-md-3">
+                        <label class="form-label">Capacity (kWh)</label>
+                        <InputNumber class="form-control" @bind-Value="@batteryModel.Capacity" />
+                        <ValidationMessage For="@(() => batteryModel.Capacity)" />
+                    </div>
+
+                    <div class="col-md-3">
+                        <label class="form-label">State of Charge (%)</label>
+                        <InputNumber class="form-control" @bind-Value="@batteryModel.StateCharge" />
+                        <ValidationMessage For="@(() => batteryModel.StateCharge)" />
+                    </div>
+
+                    <div class="col-md-3">
+                        <label class="form-label">Set Point (kW)</label>
+                        <InputNumber class="form-control" @bind-Value="@batteryModel.SetPoint" />
+                        <ValidationMessage For="@(() => batteryModel.SetPoint)" />
+                    </div>
+
+                    <div class="col-md-3">
+                        <label class="form-label">Frequent Discharge (cycles/day)</label>
+                        <InputNumber class="form-control" @bind-Value="@batteryModel.FrequentlyDischarge" />
+                        <ValidationMessage For="@(() => batteryModel.FrequentlyDischarge)" />
+                    </div>
+                </div>
+
+                <div class="d-flex justify-content-end gap-2">
+                    <button type="button" class="btn btn-secondary" @onclick="Cancel">
+                        <i class="bi bi-x-circle me-1"></i> Cancel
+                    </button>
+                    <button type="submit" class="btn btn-primary" disabled="@isLoading">
+                        @if (isLoading)
+                        {
+                            <span class="spinner-border spinner-border-sm me-1" role="status"></span>
+                        }
+                        else
+                        {
+                            <i class="bi bi-save me-1"></i>
+                        }
+                        Save Battery
+                    </button>
+                </div>
+            </EditForm>
+        </div>
+    </div>
+</div>
+
+@code {
+    private BatteryModel batteryModel = new();
+    private bool isLoading = false;
+
+    public class BatteryModel
+    {
+        public double Capacity { get; set; }
+        public double StateCharge { get; set; }
+        public double SetPoint { get; set; }
+        public double FrequentlyDischarge { get; set; }
+    }
+
+    private async Task HandleSubmit()
+    {
+        isLoading = true;
+        try
+        {
+            var token = await JS.InvokeAsync<string>("localStorage.getItem", "authToken");
+            if (string.IsNullOrEmpty(token))
+            {
+                Nav.NavigateTo("/login");
+                return;
+            }
+
+            Http.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+            var response = await Http.PostAsJsonAsync("api/asset/add/battery", batteryModel);
+
+            if (response.IsSuccessStatusCode)
+            {
+                Nav.NavigateTo("/asset/add-battery", forceLoad: true);
+            }
+        }
+        catch (Exception ex)
+        {
+            await JS.InvokeVoidAsync("alert", $"Error: {ex.Message}");
+        }
+        finally
+        {
+            isLoading = false;
+        }
+    }
+
+    private void Cancel()
+    {
+        Nav.NavigateTo("/dashboard");
+    }
+}

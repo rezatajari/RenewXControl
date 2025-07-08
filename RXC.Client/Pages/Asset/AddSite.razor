@@ -1,0 +1,119 @@
+﻿@page "/asset/add-site"
+@using System.Net.Http.Headers
+@layout DashboardLayout
+@inject HttpClient Http
+@inject NavigationManager Nav
+@inject IJSRuntime JS
+
+<div class="container mt-4">
+    <div class="card shadow">
+        <div class="card-header bg-primary text-white">
+            <h3><i class="bi bi-pin-map me-2"></i> Add New Site</h3>
+        </div>
+        <div class="card-body">
+            <EditForm Model="@siteModel" OnValidSubmit="@HandleSubmit">
+                <DataAnnotationsValidator />
+                <ValidationSummary />
+
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <label class="form-label">Site Name</label>
+                        <InputText class="form-control" @bind-Value="@siteModel.Name" />
+                        <ValidationMessage For="@(() => siteModel.Name)" />
+                    </div>
+
+                    <div class="col-md-6">
+                        <label class="form-label">Location</label>
+                        <InputText class="form-control" @bind-Value="@siteModel.Location" />
+                        <ValidationMessage For="@(() => siteModel.Location)" />
+                    </div>
+                </div>
+
+                <div class="d-flex justify-content-end gap-2">
+                    <button type="button" class="btn btn-secondary" @onclick="Cancel">
+                        <i class="bi bi-x-circle me-1"></i> Cancel
+                    </button>
+                    <button type="submit" class="btn btn-primary" disabled="@isLoading">
+                        @if (isLoading)
+                        {
+                            <span class="spinner-border spinner-border-sm me-1" role="status"></span>
+                        }
+                        else
+                        {
+                            <i class="bi bi-save me-1"></i>
+                        }
+                        Save Site
+                    </button>
+                </div>
+            </EditForm>
+        </div>
+    </div>
+</div>
+
+@if (showSuccess)
+{
+    <div class="position-fixed bottom-0 end-0 p-3" style="z-index: 11">
+        <div class="toast show" role="alert" aria-live="assertive" aria-atomic="true">
+            <div class="toast-header bg-success text-white">
+                <strong class="me-auto">Success</strong>
+                <button type="button" class="btn-close btn-close-white" @onclick="() => showSuccess = false"></button>
+            </div>
+            <div class="toast-body">
+                Site added successfully!
+            </div>
+        </div>
+    </div>
+}
+
+@code {
+    private SiteModel siteModel = new();
+    private bool isLoading = false;
+    private bool showSuccess = false;
+
+    public class SiteModel
+    {
+        public string Name { get; set; }
+        public string Location { get; set; }
+    }
+
+    private async Task HandleSubmit()
+    {
+        isLoading = true;
+        try
+        {
+            var token = await JS.InvokeAsync<string>("localStorage.getItem", "authToken");
+            if (string.IsNullOrEmpty(token))
+            {
+                Nav.NavigateTo("/login");
+                return;
+            }
+
+            Http.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+            var response = await Http.PostAsJsonAsync("api/asset/add/site", siteModel);
+
+            if (response.IsSuccessStatusCode)
+            {
+                showSuccess = true;
+                await Task.Delay(3000);
+                Nav.NavigateTo("/asset/add-site");
+            }
+            else
+            {
+                await JS.InvokeVoidAsync("alert", $"Error: {response.ReasonPhrase}");
+            }
+        }
+        catch (Exception ex)
+        {
+            await JS.InvokeVoidAsync("alert", $"Error: {ex.Message}");
+        }
+        finally
+        {
+            isLoading = false;
+        }
+    }
+
+    private void Cancel()
+    {
+        Nav.NavigateTo("/asset/add-site");
+    }
+}
