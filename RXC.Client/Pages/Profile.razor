@@ -1,0 +1,47 @@
+﻿@page "/dashboard/profile"
+@using System.Net.Http.Headers
+@inject HttpClient Http
+@inject IJSRuntime JS
+@inject NavigationManager Nav
+
+<h3>Profile</h3>
+@if (profile == null)
+{
+    <p>Loading...</p>
+}
+else
+{
+    <div>
+        <p><strong>Username:</strong> @profile.UserName</p>
+        <p><strong>Total Assets</strong> @profile.TotalAssets</p>
+        @foreach (var role in profile.Role)
+        {
+            <p><strong>Role:</strong> @role</p>
+        }
+    </div>
+}
+@code {
+    private DTOs.User.Profile? profile;
+    protected override async Task OnInitializedAsync()
+    {
+        var token = await JS.InvokeAsync<string>("localStorage.getItem", "authToken");
+
+        if (string.IsNullOrEmpty(token))
+        {
+            Nav.NavigateTo("/login");
+            return;
+        }
+        try
+        {
+            Http.DefaultRequestHeaders.Authorization =
+                new AuthenticationHeaderValue("Bearer", token);
+
+            profile = await Http.GetFromJsonAsync<DTOs.User.Profile>("api/Dashboard/profile");
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine("API Error: " + ex.Message);
+        }
+    }
+
+}

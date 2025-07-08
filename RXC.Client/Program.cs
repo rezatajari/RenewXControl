@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using Microsoft.AspNetCore.SignalR.Client;
@@ -14,5 +15,5 @@ builder.Services.AddScoped(sp => new HttpClient
 });
 
 builder.Services.AddScoped<AuthService>();
-
+builder.Services.AddAuthorizationCore();
 await builder.Build().RunAsync();

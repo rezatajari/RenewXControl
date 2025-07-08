@@ -2,6 +2,8 @@
 using Microsoft.JSInterop;
 using System.Net.Http.Headers;
 using System.Net.Http.Json;
+using System.Runtime.CompilerServices;
+using RenewXControl.Api.Utility;
 using RXC.Client.DTOs.User;
 
 namespace RXC.Client.Services
@@ -25,10 +27,14 @@ namespace RXC.Client.Services
             if (!response.IsSuccessStatusCode)
                 return false;
 
-            var token = await response.Content.ReadAsStringAsync();
+            var generalResponse = await response.Content.ReadFromJsonAsync<GeneralResponse<string>>();
+            if (generalResponse == null || string.IsNullOrEmpty(generalResponse.Data))
+                return false;
+
+            var token = generalResponse.Data;
             await _js.InvokeVoidAsync("localStorage.setItem", "authToken", token);
             _http.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
-            _nav.NavigateTo("/dashboard");
+            _nav.NavigateTo("/dashboard/profile");
             return true;
         }
 
