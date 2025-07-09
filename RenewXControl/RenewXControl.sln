@@ -4,8 +4,6 @@ VisualStudioVersion = 17.5.2.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RenewXControl", "RenewXControl.csproj", "{EEF99C7E-DFCA-AC56-28C5-FBE7CE3798BF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestHub", "..\TestHub\TestHub.csproj", "{6DBD941A-044E-4AA1-801E-CA22DBBA7C2E}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RXC.Client", "..\RXC.Client\RXC.Client.csproj", "{26EE0694-1703-4083-B8E4-FDF6D3013E97}"
 EndProject
 Global
@@ -18,10 +16,6 @@ Global
 		{EEF99C7E-DFCA-AC56-28C5-FBE7CE3798BF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{EEF99C7E-DFCA-AC56-28C5-FBE7CE3798BF}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{EEF99C7E-DFCA-AC56-28C5-FBE7CE3798BF}.Release|Any CPU.Build.0 = Release|Any CPU
-		{6DBD941A-044E-4AA1-801E-CA22DBBA7C2E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{6DBD941A-044E-4AA1-801E-CA22DBBA7C2E}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{6DBD941A-044E-4AA1-801E-CA22DBBA7C2E}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{6DBD941A-044E-4AA1-801E-CA22DBBA7C2E}.Release|Any CPU.Build.0 = Release|Any CPU
 		{26EE0694-1703-4083-B8E4-FDF6D3013E97}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{26EE0694-1703-4083-B8E4-FDF6D3013E97}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{26EE0694-1703-4083-B8E4-FDF6D3013E97}.Release|Any CPU.ActiveCfg = Release|Any CPU
