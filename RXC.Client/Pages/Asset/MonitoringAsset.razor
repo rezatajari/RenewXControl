@@ -1,0 +1,111 @@
+﻿@page "/dashboard/monitoring"
+@inject HttpClient Http
+@inject NavigationManager Nav
+@inject IJSRuntime JS
+
+<h3 class="mb-4">Live Asset Monitoring</h3>
+
+@if (!isConnected)
+{
+    <p>Connecting to server...</p>
+}
+else if (assetsMonitoring is null)
+{
+    <p>Waiting for data...</p>
+}
+else
+{
+    <div class="row">
+        <!-- Solar Panel -->
+        <div class="col-md-4 mb-3">
+            <div class="card shadow-sm p-3">
+                <h5>☀️ Solar</h5>
+                <p><strong>Power:</strong> @assetsMonitoring.Solar.ActivePower kW</p>
+                <p><strong>Irradiance:</strong> @assetsMonitoring.Solar.Irradiance W/m²</p>
+                <p><strong>SetPoint:</strong> @assetsMonitoring.Solar.SetPoint</p>
+                <p><strong>Message:</strong> @assetsMonitoring.Solar.Message</p>
+                <p><small>@assetsMonitoring.Solar.TimeStamp.ToLocalTime()</small></p>
+            </div>
+        </div>
+
+        <!-- Turbine Panel -->
+        <div class="col-md-4 mb-3">
+            <div class="card shadow-sm p-3">
+                <h5>🌪️ Turbine</h5>
+                <p><strong>Power:</strong> @assetsMonitoring.Turbine.ActivePower kW</p>
+                <p><strong>Wind Speed:</strong> @assetsMonitoring.Turbine.WindSpeed m/s</p>
+                <p><strong>SetPoint:</strong> @assetsMonitoring.Turbine.SetPoint</p>
+                <p><strong>Message:</strong> @assetsMonitoring.Turbine.Message</p>
+                <p><small>@assetsMonitoring.Turbine.TimeStamp.ToLocalTime()</small></p>
+            </div>
+        </div>
+
+        <!-- Battery Panel -->
+        <div class="col-md-4 mb-3">
+            <div class="card shadow-sm p-3">
+                <h5>🔋 Battery</h5>
+                <p><strong>Capacity:</strong> @assetsMonitoring.Battery.Capacity kWh</p>
+                <p><strong>State of Charge:</strong> @assetsMonitoring.Battery.StateCharge%</p>
+                <p><strong>Rate Discharge:</strong> @assetsMonitoring.Battery.RateDischarge kW</p>
+                <p><strong>SetPoint:</strong> @assetsMonitoring.Battery.SetPoint</p>
+                <p><strong>Message:</strong> @assetsMonitoring.Battery.Message</p>
+                <p><small>@assetsMonitoring.Battery.TimeStamp.ToLocalTime()</small></p>
+            </div>
+        </div>
+    </div>
+}
+
+@code {
+    private HubConnection? _hubConnection;
+    private bool isConnected = false;
+    private AssetsMonitoring? assetsMonitoring;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var token = await JS.InvokeAsync<string>("localStorage.getItem", "authToken");
+        if (string.IsNullOrEmpty(token))
+        {
+            Nav.NavigateTo("/login");
+            return;
+        }
+
+        Http.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
+
+        var response = await Http.PostAsync("api/monitoring/register-assets", null);
+        if (!response.IsSuccessStatusCode)
+        {
+            Console.Error.WriteLine("Failed to register assets");
+            return;
+        }
+
+        _hubConnection = new HubConnectionBuilder()
+            .WithUrl(Nav.ToAbsoluteUri("http://localhost:61998/assetsHub"), options =>
+            {
+                options.AccessTokenProvider = async () => await JS.InvokeAsync<string>("localStorage.getItem", "authToken");
+            })
+            .WithAutomaticReconnect()
+            .Build();
+
+        _hubConnection.On<AssetsMonitoring>("AssetUpdate", updatedAssets =>
+        {
+            assetsMonitoring = updatedAssets;
+            InvokeAsync(StateHasChanged);
+        });
+
+        await _hubConnection.StartAsync();
+        isConnected = true;
+    }
+
+    public async ValueTask DisposeAsync()
+    {
+        if (_hubConnection is not null)
+            await _hubConnection.DisposeAsync();
+    }
+
+    private class AssetsMonitoring
+    {
+        public Solar Solar { get; set; } = default!;
+        public Turbine Turbine { get; set; } = default!;
+        public Battery Battery { get; set; } = default!;
+    }
+}

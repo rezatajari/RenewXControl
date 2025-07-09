@@ -1,4 +1,4 @@
-﻿namespace RenewXControl.Api.Utility
+﻿namespace RXC.Client.DTOs
 {
     public class GeneralResponse<T> 
     {

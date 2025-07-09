@@ -3,7 +3,7 @@ using Microsoft.JSInterop;
 using System.Net.Http.Headers;
 using System.Net.Http.Json;
 using System.Runtime.CompilerServices;
-using RenewXControl.Api.Utility;
+using RXC.Client.DTOs;
 using RXC.Client.DTOs.User;
 
 namespace RXC.Client.Services

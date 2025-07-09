@@ -22,9 +22,10 @@ builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowBlazorClient", policy =>
     {
-        policy.AllowAnyOrigin()
+        policy.WithOrigins("http://localhost:5187")
             .AllowAnyHeader()
-            .AllowAnyMethod();
+            .AllowAnyMethod()
+            .AllowCredentials();
     });
 });
 
@@ -36,6 +37,7 @@ builder.Services.AddScoped<ISiteRepository, SiteRepository>();
 builder.Services.AddScoped<IAssetControlFactory, AssetControlFactory>();
 builder.Services.AddScoped<IAssetService, AssetService>();
 builder.Services.AddSingleton<IMonitoringRegistry, MonitoringRegistry>();
+builder.Services.AddHostedService<MonitoringService>();
 
 // ✅ 5. Others
 builder.Services.AddDbContext<RxcDbContext>(options =>
@@ -92,7 +94,7 @@ builder.Services.AddAuthentication(options =>
 builder.Services.AddAuthorization();
 
 builder.Services.AddSignalR();
-//builder.Services.AddHostedService<MonitoringService>();
+
 builder.Services.AddControllers();
 
 var app = builder.Build();

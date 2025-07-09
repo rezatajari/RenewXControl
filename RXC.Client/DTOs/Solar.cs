@@ -1,8 +1,10 @@
-﻿public record Solar(
-    string AssetType, 
-    double Irradiance, 
-    double ActivePower,
-    string Message,
-    double SetPoint,
-    DateTime Timestamp)
-    :Asset(AssetType,  Message, SetPoint, Timestamp);
+﻿using RXC.Client.DTOs;
+
+
+public record Solar:Asset
+{
+    public double Irradiance { get; set; }
+    public double ActivePower { get; set; }
+}
+    
+    

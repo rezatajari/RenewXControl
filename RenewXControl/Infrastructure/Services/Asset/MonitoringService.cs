@@ -10,11 +10,11 @@ namespace RenewXControl.Infrastructure.Services.Asset
     public class MonitoringService : BackgroundService
     {
         private readonly IHubContext<AssetsHub> _hub;
-        private readonly MonitoringRegistry _registry;
+        private readonly IMonitoringRegistry _registry;
 
         public MonitoringService(
             IHubContext<AssetsHub> hubContext,
-            MonitoringRegistry registry)
+            IMonitoringRegistry registry)
         {
             _hub = hubContext;
             _registry = registry;

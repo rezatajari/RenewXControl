@@ -7,12 +7,16 @@ namespace RenewXControl.Infrastructure.Hubs
     [Authorize]
     public class AssetsHub:Hub
     {
-        public override Task OnConnectedAsync()
+        public override async Task OnConnectedAsync()
         {
             var userId = Context.User?.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-            Console.WriteLine($"User connected: {userId}");
+            if (!string.IsNullOrEmpty(userId))
+            {
+                await Groups.AddToGroupAsync(Context.ConnectionId, userId);
+                Console.WriteLine($"User connected and added to group: {userId}");
+            }
 
-            return base.OnConnectedAsync();
+            await base.OnConnectedAsync();
         }
     }
 }
