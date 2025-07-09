@@ -1,48 +1,64 @@
 ﻿@page "/asset/add-solar"
+@using System.Net.Http.Headers
 @layout DashboardLayout
 @inject HttpClient Http
 @inject NavigationManager Nav
 @inject IJSRuntime JS
 
-<div class="main-content">
-    <div class="container-fluid">
-        <div class="row">
-            <div class="col-12">
-                <div class="card">
-                    <div class="card-header bg-primary text-white">
-                        <h3>Add Solar Asset</h3>
+<div class="container mt-4">
+    <div class="card shadow">
+        <div class="card-header bg-primary text-white">
+            <h3><i class="bi bi-fan me-2"></i> Add Solar Panel</h3>
+        </div>
+        <div class="card-body">
+            <EditForm Model="@solarModel" OnValidSubmit="@HandleSubmit">
+                <DataAnnotationsValidator />
+                <ValidationSummary />
+
+                <div class="row mb-3">
+                    <div class="col-md-4">
+                        <label class="form-label">Irradiance (m/s)</label>
+                        <InputNumber class="form-control" @bind-Value="@solarModel.Irradiance" />
+                        <ValidationMessage For="@(() => solarModel.Irradiance)" />
                     </div>
 
-                    <div class="card-body">
-                        <EditForm Model="@solarModel" OnValidSubmit="@HandleSubmit">
-                            <div class="row mb-3">
-                                <div class="col-md-4">
-                                    <label class="form-label">Irradiance (W/m²)</label>
-                                    <InputNumber class="form-control" @bind-Value="@solarModel.Irradiance" />
-                                </div>
+                    <div class="col-md-4">
+                        <label class="form-label">Set Point (kW)</label>
+                        <InputNumber class="form-control" @bind-Value="@solarModel.SetPoint" />
+                        <ValidationMessage For="@(() => solarModel.SetPoint)" />
+                    </div>
 
-                                <div class="col-md-4">
-                                    <label class="form-label">Set Point (kW)</label>
-                                    <InputNumber class="form-control" @bind-Value="@solarModel.SetPoint" />
-                                </div>
-
-                                <div class="col-md-4">
-                                    <label class="form-label">Active Power (kW)</label>
-                                    <InputNumber class="form-control" @bind-Value="@solarModel.ActivePower" />
-                                </div>
-                            </div>
-
-                            <button type="submit" class="btn btn-primary">Submit</button>
-                        </EditForm>
+                    <div class="col-md-4">
+                        <label class="form-label">Active Power (kW)</label>
+                        <InputNumber class="form-control" @bind-Value="@solarModel.ActivePower" />
+                        <ValidationMessage For="@(() => solarModel.ActivePower)" />
                     </div>
                 </div>
-            </div>
+
+                <div class="d-flex justify-content-end gap-2">
+                    <button type="button" class="btn btn-secondary" @onclick="Cancel">
+                        <i class="bi bi-x-circle me-1"></i> Cancel
+                    </button>
+                    <button type="submit" class="btn btn-primary" disabled="@isLoading">
+                        @if (isLoading)
+                        {
+                            <span class="spinner-border spinner-border-sm me-1" role="status"></span>
+                        }
+                        else
+                        {
+                            <i class="bi bi-save me-1"></i>
+                        }
+                        Save Solar
+                    </button>
+                </div>
+            </EditForm>
         </div>
     </div>
 </div>
 
 @code {
     private SolarModel solarModel = new();
+    private bool isLoading = false;
 
     public class SolarModel
     {
@@ -53,17 +69,36 @@
 
     private async Task HandleSubmit()
     {
+        isLoading = true;
         try
         {
+            var token = await JS.InvokeAsync<string>("localStorage.getItem", "authToken");
+            if (string.IsNullOrEmpty(token))
+            {
+                Nav.NavigateTo("/login");
+                return;
+            }
+
+            Http.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
             var response = await Http.PostAsJsonAsync("api/asset/add/solar", solarModel);
+
             if (response.IsSuccessStatusCode)
             {
-                Nav.NavigateTo("/asset/add-solar");
+                Nav.NavigateTo("/asset/add-solar", forceLoad: true);
             }
         }
         catch (Exception ex)
         {
-            Console.WriteLine($"Error: {ex.Message}");
+            await JS.InvokeVoidAsync("alert", $"Error: {ex.Message}");
         }
+        finally
+        {
+            isLoading = false;
+        }
+    }
+
+    private void Cancel()
+    {
+        Nav.NavigateTo("/api/Dashboard/profile");
     }
 }
