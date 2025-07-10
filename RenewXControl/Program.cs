@@ -2,6 +2,7 @@
 using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using RenewXControl.Infrastructure.Services;
@@ -14,8 +15,15 @@ using RenewXControl.Infrastructure.Services.User;
 using RenewXControl.Infrastructure.Services.Asset;
 using RenewXControl.Application;
 using RenewXControl.Domain;
+using RenewXControl.Api;
+using RenewXControl.Api.Utility;
 
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Services.Configure<ApiBehaviorOptions>(options =>
+{
+    options.SuppressModelStateInvalidFilter = true;
+});
 
 // 👇 Add this CORS policy
 builder.Services.AddCors(options =>
@@ -51,6 +59,11 @@ builder.Services.AddIdentity<User, IdentityRole>(options =>
     .AddDefaultTokenProviders();
 
 // jwt
+var jwtSection = builder.Configuration.GetSection(key: "JwtSettings");
+builder.Services.Configure<JwtSettings>(jwtSection);
+var jwtSettings = jwtSection.Get<JwtSettings>();
+var key = Encoding.UTF8.GetBytes(jwtSettings.SecretKey);
+
 builder.Services.AddAuthentication(options =>
     {
         options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -66,11 +79,9 @@ builder.Services.AddAuthentication(options =>
             ValidateIssuerSigningKey = true,
             RoleClaimType = ClaimTypes.Role,
 
-            ValidIssuer = "RxcService",
-            ValidAudience = "Users",
-            IssuerSigningKey = new SymmetricSecurityKey(
-                Encoding.UTF8.GetBytes("5aS*Qm#_^P+zm\\\"c<+g2wk>iOfEm38{BHmG!QG)")
-            )
+            ValidIssuer =jwtSettings.Issuer,
+            ValidAudience = jwtSettings.Audience,
+            IssuerSigningKey = new SymmetricSecurityKey(key)
         };
 
         options.Events = new JwtBearerEvents
@@ -95,7 +106,10 @@ builder.Services.AddAuthorization();
 
 builder.Services.AddSignalR();
 
-builder.Services.AddControllers();
+builder.Services.AddControllers(options =>
+{
+    options.Filters.Add<ValidateModelAttribute>();
+});
 
 var app = builder.Build();
 
