@@ -32,42 +32,28 @@ namespace RenewXControl.Infrastructure.Persistence
                 .HasForeignKey(s => s.UserId);
 
             // Site
-            modelBuilder.Entity<Site>()
-                .Property(s => s.Name)
-                .IsRequired()
-                .HasMaxLength(50);
-
-            modelBuilder.Entity<Site>()
-                .Property(s => s.Location)
-                .IsRequired()
-                .HasMaxLength(100);
-
-            modelBuilder.Entity<Site>()
-                .HasMany(a => a.Assets)
-                .WithOne(a => a.Site)
-                .HasForeignKey(a => a.SiteId);
+            modelBuilder.Entity<Site>(site =>
+            {
+                site.Property(s => s.Name).IsRequired().HasMaxLength(50);
+                site.Property(s => s.Location).IsRequired().HasMaxLength(100);
+                site.HasMany(s => s.Assets).WithOne(s => s.Site).HasForeignKey(s => s.SiteId);
+            });
 
             // Asset
-            modelBuilder.Entity<Asset>()
-                .Property(a => a.Name)
-                .IsRequired()
-                .HasMaxLength(50);
-
-            modelBuilder.Entity<Asset>()
-                .HasDiscriminator<string>("AssetType")
-                .HasValue<Battery>("Battery")
-                .HasValue<SolarPanel>("Solar")
-                .HasValue<WindTurbine>("Wind");
+            modelBuilder.Entity<Asset>(asset =>
+            {
+                asset.Property(a => a.Name).IsRequired().HasMaxLength(50);
+                asset.HasDiscriminator<string>(name: "AssetType").HasValue<Battery>("Battery")
+                    .HasValue<SolarPanel>("Solar").HasValue<WindTurbine>("Wind");
+            });
 
             // Battery
-            modelBuilder.Entity<Battery>()
-                .Ignore(b => b.IsNeedToCharge);
-
-            modelBuilder.Entity<Battery>()
-                .Ignore(b => b.IsStartingChargeDischarge);
-
-            modelBuilder.Entity<Battery>()
-                .Ignore(b => b.TotalPower);
+            modelBuilder.Entity<Battery>(battery =>
+            {
+                battery.Ignore(b => b.IsNeedToCharge);
+                battery.Ignore(b => b.IsStartingChargeDischarge);
+                battery.Ignore(b => b.TotalPower);
+            });
         }
     }
 }
