@@ -47,17 +47,6 @@ builder.Services.AddScoped<IAssetService, AssetService>();
 builder.Services.AddSingleton<IMonitoringRegistry, MonitoringRegistry>();
 builder.Services.AddHostedService<MonitoringService>();
 
-// ✅ 5. Others
-builder.Services.AddDbContext<RxcDbContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
-
-builder.Services.AddIdentity<User, IdentityRole>(options =>
-    {
-        options.User.AllowedUserNameCharacters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789 -_.";
-    })
-    .AddEntityFrameworkStores<RxcDbContext>()
-    .AddDefaultTokenProviders();
-
 // jwt
 var jwtSection = builder.Configuration.GetSection(key: "JwtSettings");
 builder.Services.Configure<JwtSettings>(jwtSection);
@@ -79,7 +68,7 @@ builder.Services.AddAuthentication(options =>
             ValidateIssuerSigningKey = true,
             RoleClaimType = ClaimTypes.Role,
 
-            ValidIssuer =jwtSettings.Issuer,
+            ValidIssuer = jwtSettings.Issuer,
             ValidAudience = jwtSettings.Audience,
             IssuerSigningKey = new SymmetricSecurityKey(key)
         };
@@ -101,6 +90,20 @@ builder.Services.AddAuthentication(options =>
             }
         };
     });
+
+
+
+
+// ✅ 5. Others
+builder.Services.AddDbContext<RxcDbContext>(options =>
+    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+
+builder.Services.AddIdentity<User, IdentityRole>(options =>
+    {
+        options.User.AllowedUserNameCharacters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789 -_.";
+    })
+    .AddEntityFrameworkStores<RxcDbContext>()
+    .AddDefaultTokenProviders();
 
 builder.Services.AddAuthorization();
 

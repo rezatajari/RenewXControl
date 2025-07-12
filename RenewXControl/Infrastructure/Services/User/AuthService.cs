@@ -2,6 +2,7 @@
 using System.Security.Claims;
 using System.Text;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using RenewXControl.Api.Utility;
 using RenewXControl.Application.DTOs.User.Auth;
@@ -16,12 +17,16 @@ public class AuthService : IAuthService
     private readonly RoleManager<IdentityRole> _roleManager;
     private readonly JwtSettings _jwtSettings;
 
-    public AuthService(UserManager<Domain.User> userManager, SignInManager<Domain.User> signInManager, RoleManager<IdentityRole> roleManager, JwtSettings jwtSettings)
+    public AuthService(
+        UserManager<Domain.User> userManager,
+        SignInManager<Domain.User> signInManager, 
+        RoleManager<IdentityRole> roleManager,
+        IOptions<JwtSettings> jwtSettings)
     {
         _userManager = userManager;
         _signInManager = signInManager;
         _roleManager = roleManager;
-        _jwtSettings = jwtSettings;
+        _jwtSettings = jwtSettings.Value;
     }
 
     public async Task<GeneralResponse<string>> RegisterAsync(Register register)

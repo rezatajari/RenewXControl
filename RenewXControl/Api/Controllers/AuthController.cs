@@ -4,7 +4,7 @@ using RenewXControl.Application.User;
 
 namespace RenewXControl.Api.Controllers
 {
-    [Route("api/[controller]")]
+    [Route(template:"api/[controller]")]
     [ApiController]
     public class AuthController : ControllerBase
     {
@@ -15,14 +15,14 @@ namespace RenewXControl.Api.Controllers
             _authService = authService;
         }
 
-        [HttpPost("register")]
+        [HttpPost(template:"register")]
         public async Task<IActionResult> Register([FromBody] Register register)
         {
             var result = await _authService.RegisterAsync(register);
             return result.IsSuccess ? Ok(result) : BadRequest(result);
         }
 
-        [HttpPost("login")]
+        [HttpPost(template:"login")]
         public async Task<IActionResult> Login([FromBody] Login login)
         {
             var result = await _authService.LoginAsync(login);

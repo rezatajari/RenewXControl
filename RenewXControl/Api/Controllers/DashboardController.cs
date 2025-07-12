@@ -7,9 +7,9 @@ using RenewXControl.Application.User;
 namespace RenewXControl.Api.Controllers
 {
     [Authorize]
-    [Route("api/[controller]")]
+    [Route(template:"api/[controller]")]
     [ApiController]
-    public class DashboardController : ControllerBase
+    public class DashboardController : BaseController
     {
         private readonly IDashboardService _dashboardService;
 
@@ -21,13 +21,7 @@ namespace RenewXControl.Api.Controllers
         [HttpGet("profile")]
         public async Task<IActionResult> Profile()
         {
-            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-
-            if (string.IsNullOrEmpty(userId))
-                return Unauthorized();
-
-            var data = await _dashboardService.GetDashboardDataAsync(userId);
-
+            var data = await _dashboardService.GetDashboardDataAsync(UserId);
             return Ok(data);
         }
     }

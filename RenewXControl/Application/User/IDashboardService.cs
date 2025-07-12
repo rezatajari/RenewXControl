@@ -1,9 +1,10 @@
-﻿using RenewXControl.Application.DTOs.User;
+﻿using RenewXControl.Api.Utility;
+using RenewXControl.Application.DTOs.User;
 
 namespace RenewXControl.Application.User
 {
     public interface IDashboardService
     {
-        Task<Profile> GetDashboardDataAsync(string userId);
+        Task<GeneralResponse<Profile>> GetDashboardDataAsync(string userId);
     }
 }
