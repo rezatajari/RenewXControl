@@ -1,4 +1,4 @@
-﻿using RenewXControl.Application.Asset.Interfaces;
+﻿using RenewXControl.Application.Asset.Interfaces.Asset;
 using RenewXControl.Domain.Interfaces.Assets;
 
 namespace RenewXControl.Application.DTOs;
@@ -8,5 +8,5 @@ public record MonitoringSession(
     ISolarControl SolarControl,
     ITurbineControl TurbineControl,
     IBatteryControl BatteryControl,
-    IAssetRuntimeOperation AssetRuntimeOperation
+    IAssetOperations AssetRuntimeOperation
 );

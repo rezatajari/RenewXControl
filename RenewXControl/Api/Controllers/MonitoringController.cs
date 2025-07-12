@@ -2,27 +2,26 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using RenewXControl.Application.Asset.Interfaces;
+using RenewXControl.Application.Asset.Interfaces.Monitoring;
 
 namespace RenewXControl.Api.Controllers
 {
     [Authorize]
-    [Route("api/[controller]")]
+    [Route(template:"api/[controller]")]
     [ApiController]
-    public class MonitoringController : ControllerBase
+    public class MonitoringController : BaseController
     {
-        private readonly IAssetService _assetService;
+        private readonly IMonitoringService _monitoringService;
 
-        public MonitoringController(IAssetService assetService)
+        public MonitoringController(IMonitoringService monitoringService)
         {
-                _assetService=assetService;
+                _monitoringService= monitoringService;
         }
 
-        [HttpPost("register-assets")]
-        public async Task<IActionResult> DataAsset()
+        [HttpPost(template:"register")]
+        public async Task<IActionResult> Register()
         {
-            var userId= User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-           await _assetService.MonitoringData(userId);
+           await _monitoringService.RegisterMonitoringSession(UserId);
 
            return Ok();
         }

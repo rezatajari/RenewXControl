@@ -1,15 +1,16 @@
 ﻿using System.Collections.Concurrent;
-using RenewXControl.Application.Asset.Interfaces;
+using RenewXControl.Application.Asset.Interfaces.Asset;
+using RenewXControl.Application.Asset.Interfaces.Monitoring;
 using RenewXControl.Application.DTOs;
 using RenewXControl.Domain.Interfaces.Assets;
 
-namespace RenewXControl.Application.Asset.Implementation
+namespace RenewXControl.Application.Asset.Implementation.Monitoring
 {
     public class MonitoringRegistry : IMonitoringRegistry
     {
         private readonly Dictionary<string, MonitoringSession> _activeUsers = new();
 
-        public void RegisterUser(string userId, ISolarControl solar, ITurbineControl turbine, IBatteryControl battery,IAssetRuntimeOperation assetRuntimeOperation)
+        public void RegisterUser(string userId, ISolarControl solar, ITurbineControl turbine, IBatteryControl battery,IAssetOperations assetRuntimeOperation)
         {
             _activeUsers[userId] = new MonitoringSession(userId, solar, turbine, battery,assetRuntimeOperation);
         }

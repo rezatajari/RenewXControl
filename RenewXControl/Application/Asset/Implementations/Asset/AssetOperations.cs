@@ -1,16 +1,16 @@
-﻿using RenewXControl.Application.Asset.Interfaces;
+﻿using RenewXControl.Application.Asset.Interfaces.Asset;
 using RenewXControl.Domain.Interfaces.Assets;
 using RenewXControl.Infrastructure.Persistence;
 
-namespace RenewXControl.Application.Asset.Implementation
+namespace RenewXControl.Application.Asset.Implementation.Asset
 {
-    public class AssetRuntimeOperation:IAssetRuntimeOperation
+    public class AssetOperations:IAssetOperations
     {
         private readonly IBatteryControl _batteryControl;
         private readonly ISolarControl _solarControl;
         private readonly ITurbineControl _turbineControl;
 
-        public AssetRuntimeOperation(
+        public AssetOperations(
             IBatteryControl batteryControl,
             ISolarControl solarControl,
             ITurbineControl turbineControl)

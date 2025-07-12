@@ -1,9 +1,9 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using RenewXControl.Application;
-using RenewXControl.Domain.Assets;
+using RenewXControl.Domain;
 using RenewXControl.Infrastructure.Persistence;
 
-namespace RenewXControl.Infrastructure.Services
+namespace RenewXControl.Infrastructure.Services.Site
 {
     public class SiteRepository:ISiteRepository
     {
@@ -27,7 +27,7 @@ namespace RenewXControl.Infrastructure.Services
         {
             return await _context.Sites
                 .Where(s => s.UserId == userId)
-                .Select(s => (Guid)s.Id)
+                .Select(s => s.Id)
                 .FirstOrDefaultAsync();
         }
     }

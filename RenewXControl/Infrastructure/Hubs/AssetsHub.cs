@@ -13,7 +13,6 @@ namespace RenewXControl.Infrastructure.Hubs
             if (!string.IsNullOrEmpty(userId))
             {
                 await Groups.AddToGroupAsync(Context.ConnectionId, userId);
-                Console.WriteLine($"User connected and added to group: {userId}");
             }
 
             await base.OnConnectedAsync();

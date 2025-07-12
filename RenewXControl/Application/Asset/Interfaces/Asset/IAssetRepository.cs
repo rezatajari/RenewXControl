@@ -1,7 +1,7 @@
 ﻿using RenewXControl.Api.Utility;
 using RenewXControl.Domain.Assets;
 
-namespace RenewXControl.Application.Asset.Interfaces
+namespace RenewXControl.Application.Asset.Interfaces.Asset
 {
     public interface IAssetRepository
     {

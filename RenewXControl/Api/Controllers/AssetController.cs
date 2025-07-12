@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using RenewXControl.Application;
-using RenewXControl.Application.Asset.Interfaces;
+using RenewXControl.Application.Asset.Interfaces.Asset;
 using RenewXControl.Application.DTOs.AddAsset;
 
 namespace RenewXControl.Api.Controllers

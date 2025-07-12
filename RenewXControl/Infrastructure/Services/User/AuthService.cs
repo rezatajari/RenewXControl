@@ -6,20 +6,20 @@ using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using RenewXControl.Api.Utility;
 using RenewXControl.Application.DTOs.User.Auth;
-using RenewXControl.Application.User;
+using RenewXControl.Application.User.Interfaces;
 
 namespace RenewXControl.Infrastructure.Services.User;
 
 public class AuthService : IAuthService
 {
-    private readonly UserManager<Domain.User> _userManager;
-    private readonly SignInManager<Domain.User> _signInManager;
+    private readonly UserManager<Domain.User.User> _userManager;
+    private readonly SignInManager<Domain.User.User> _signInManager;
     private readonly RoleManager<IdentityRole> _roleManager;
     private readonly JwtSettings _jwtSettings;
 
     public AuthService(
-        UserManager<Domain.User> userManager,
-        SignInManager<Domain.User> signInManager, 
+        UserManager<Domain.User.User> userManager,
+        SignInManager<Domain.User.User> signInManager, 
         RoleManager<IdentityRole> roleManager,
         IOptions<JwtSettings> jwtSettings)
     {
@@ -46,7 +46,7 @@ public class AuthService : IAuthService
                 ]);
         }
 
-        var user = Domain.User.Create(register.UserName, register.Email);
+        var user = Domain.User.User.Create(register.UserName, register.Email);
         var result = await _userManager.CreateAsync(user, register.Password);
 
         if (!result.Succeeded)
@@ -103,7 +103,7 @@ public class AuthService : IAuthService
         return GeneralResponse<string>.Success(data:token, message:"Login successful");
     }
 
-    public string GenerateToken(Domain.User user, IList<string> roles)
+    public string GenerateToken(Domain.User.User user, IList<string> roles)
     {
         var claims = new List<Claim>
         {

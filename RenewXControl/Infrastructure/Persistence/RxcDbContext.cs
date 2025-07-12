@@ -6,8 +6,9 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
-using RenewXControl.Domain;
 using RenewXControl.Domain.Assets;
+using RenewXControl.Domain.Site;
+using RenewXControl.Domain.User;
 
 namespace RenewXControl.Infrastructure.Persistence
 {

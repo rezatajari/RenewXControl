@@ -1,4 +1,4 @@
-﻿using RenewXControl.Domain.Assets;
+﻿using RenewXControl.Domain.Site;
 
 namespace RenewXControl.Application
 {

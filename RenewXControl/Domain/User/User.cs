@@ -1,8 +1,7 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using RenewXControl.Configuration.AssetsModel.Users;
-using RenewXControl.Domain.Assets;
 
-namespace RenewXControl.Domain
+namespace RenewXControl.Domain.User
 {
     public sealed class User:IdentityUser
     {

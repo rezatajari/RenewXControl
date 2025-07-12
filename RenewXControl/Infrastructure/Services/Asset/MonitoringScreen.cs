@@ -1,18 +1,16 @@
 ﻿using Microsoft.AspNetCore.SignalR;
-using RenewXControl.Application.Asset.Implementation;
-using RenewXControl.Application.Asset.Interfaces;
+using RenewXControl.Application.Asset.Interfaces.Monitoring;
 using RenewXControl.Application.DTOs.AssetMonitoring;
-using RenewXControl.Domain.Interfaces.Assets;
 using RenewXControl.Infrastructure.Hubs;
 
 namespace RenewXControl.Infrastructure.Services.Asset
 {
-    public class MonitoringService : BackgroundService
+    public class MonitoringScreen : BackgroundService
     {
         private readonly IHubContext<AssetsHub> _hub;
         private readonly IMonitoringRegistry _registry;
 
-        public MonitoringService(
+        public MonitoringScreen(
             IHubContext<AssetsHub> hubContext,
             IMonitoringRegistry registry)
         {
@@ -67,7 +65,7 @@ namespace RenewXControl.Infrastructure.Services.Asset
                     var model = new AssetsMonitoring(solarDto, turbineDto, batteryDto);
 
                     // Send only to that user's group
-                    await _hub.Clients.Group(session.UserId).SendAsync("AssetUpdate", model, stoppingToken);
+                    await _hub.Clients.Group(session.UserId).SendAsync(method:"AssetUpdate", model, stoppingToken);
                 }
 
                 await Task.Delay(1000, stoppingToken);

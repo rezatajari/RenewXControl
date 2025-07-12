@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using RenewXControl.Application.User;
+using RenewXControl.Application.User.Interfaces;
 
 namespace RenewXControl.Api.Controllers
 {

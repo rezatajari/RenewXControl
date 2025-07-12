@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using RenewXControl.Application.DTOs.User.Auth;
-using RenewXControl.Application.User;
+using RenewXControl.Application.User.Interfaces;
 
 namespace RenewXControl.Api.Controllers
 {

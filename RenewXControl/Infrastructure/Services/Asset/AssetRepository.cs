@@ -1,5 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using RenewXControl.Application.Asset.Interfaces;
+using RenewXControl.Application.Asset.Interfaces.Asset;
 using RenewXControl.Application.DTOs.AssetMonitoring;
 using RenewXControl.Domain.Assets;
 using RenewXControl.Infrastructure.Persistence;

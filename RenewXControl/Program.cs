@@ -5,18 +5,21 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
-using RenewXControl.Infrastructure.Services;
 using RenewXControl.Infrastructure.Persistence;
 using RenewXControl.Infrastructure.Hubs;
-using RenewXControl.Application.User;
 using RenewXControl.Application.Asset.Interfaces;
 using RenewXControl.Application.Asset.Implementation;
 using RenewXControl.Infrastructure.Services.User;
 using RenewXControl.Infrastructure.Services.Asset;
-using RenewXControl.Application;
-using RenewXControl.Domain;
 using RenewXControl.Api;
 using RenewXControl.Api.Utility;
+using RenewXControl.Application.Asset.Interfaces.Asset;
+using RenewXControl.Application.Asset.Interfaces.Monitoring;
+using RenewXControl.Application.Asset.Implementation.Monitoring;
+using RenewXControl.Application.Asset.Implementation.Asset;
+using RenewXControl.Application.User.Interfaces;
+using RenewXControl.Application.User.Implementations;
+using RenewXControl.Domain.User;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -39,13 +42,15 @@ builder.Services.AddCors(options =>
 
 builder.Services.AddSwaggerGen();
 builder.Services.AddScoped<IAuthService, AuthService>();
-builder.Services.AddScoped<IAssetRepository, AssetRepository>();
 builder.Services.AddScoped<IDashboardService, DashboardService>();
+builder.Services.AddScoped<IUserValidator, UserValidator>();
 builder.Services.AddScoped<ISiteService, SiteService>();
-builder.Services.AddScoped<IAssetControlFactory, AssetControlFactory>();
 builder.Services.AddScoped<IAssetService, AssetService>();
+builder.Services.AddScoped<IAssetRepository, AssetRepository>();
+builder.Services.AddScoped<IAssetControlFactory, AssetControlFactory>();
 builder.Services.AddSingleton<IMonitoringRegistry, MonitoringRegistry>();
-builder.Services.AddHostedService<MonitoringService>();
+builder.Services.AddScoped<IMonitoringService, MonitoringService>();
+builder.Services.AddHostedService<MonitoringScreen>();
 
 // jwt
 var jwtSection = builder.Configuration.GetSection(key: "JwtSettings");
