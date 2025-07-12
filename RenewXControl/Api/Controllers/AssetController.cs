@@ -9,55 +9,36 @@ using RenewXControl.Application.DTOs.AddAsset;
 namespace RenewXControl.Api.Controllers
 {
     [Authorize]
-    [Route("api/[controller]")]
+    [Route(template:"api/[controller]")]
     [ApiController]
-    public class AssetController : ControllerBase
+    public class AssetController : BaseController
     {
         private readonly IAssetService _assetService;
-        private readonly ISiteRepository _siteRepository;
 
-        public AssetController(IAssetService assetService,ISiteRepository siteRepository)
+        public AssetController(IAssetService assetService)
         {
-            _assetService=assetService; 
-            _siteRepository=siteRepository;
+            _assetService = assetService;
         }
 
-        [HttpPost("add/site")]
-        public async Task<IActionResult> AddSite([FromBody] AddSite addSite)
-        {
-            var userId=User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-            var result = await _assetService.AddSiteAsync(addSite, userId);
-            return (result.IsSuccess)? Ok(result) : BadRequest(result);
-        }
-
-        [HttpPost("add/battery")]
+        [HttpPost(template:"add/battery")]
         public async Task<IActionResult> AddBattery([FromBody]AddBattery addBattery)
         {
-            var userId=User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-            var siteId = await _siteRepository.GetSiteIdByUserIdAsync(userId);
-
-            var result = await _assetService.AddBatteryAsync(addBattery,siteId);
-            return (result.IsSuccess) ? Ok(result) : BadRequest(result);
+            var response = await _assetService.AddBatteryAsync(addBattery,UserId);
+            return (response.IsSuccess) ? Ok(response) : BadRequest(response);
         }
 
-        [HttpPost("add/solar")]
+        [HttpPost(template:"add/solar")]
         public async Task<IActionResult> AddSolar([FromBody] AddSolar addSolar)
         {
-            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-            var siteId = await _siteRepository.GetSiteIdByUserIdAsync(userId);
-
-            var result = await _assetService.AddSolarAsync(addSolar, siteId);
-            return (result.IsSuccess) ? Ok(result):BadRequest(result);
+            var response = await _assetService.AddSolarAsync(addSolar, UserId);
+            return (response.IsSuccess) ? Ok(response):BadRequest(response);
         }
 
-        [HttpPost("add/turbine")]
+        [HttpPost(template:"add/turbine")]
         public async Task<IActionResult> AddTurbine([FromBody] AddTurbine addTurbine)
         {
-            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-            var siteId = await _siteRepository.GetSiteIdByUserIdAsync(userId);
-
-            var result = await _assetService.AddTurbineAsync(addTurbine, siteId);
-            return (result.IsSuccess) ? Ok(result) : BadRequest(result);
+            var response = await _assetService.AddTurbineAsync(addTurbine, UserId);
+            return (response.IsSuccess) ? Ok(response) : BadRequest(response);
         }
     }
 }

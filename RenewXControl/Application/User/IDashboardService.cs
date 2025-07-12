@@ -5,6 +5,6 @@ namespace RenewXControl.Application.User
 {
     public interface IDashboardService
     {
-        Task<GeneralResponse<Profile>> GetDashboardDataAsync(string userId);
+        Task<GeneralResponse<Profile>> GetProfile(string userId);
     }
 }

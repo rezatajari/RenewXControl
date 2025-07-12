@@ -17,7 +17,7 @@ public class DashboardService:IDashboardService
         _assetRepository=assetRepository;
     }
 
-    public async Task<GeneralResponse<Profile>> GetDashboardDataAsync(string userId)
+    public async Task<GeneralResponse<Profile>> GetProfile(string userId)
     {
         if (string.IsNullOrWhiteSpace(userId))
             return  GeneralResponse<Profile>.Failure(
@@ -45,7 +45,7 @@ public class DashboardService:IDashboardService
                     ]);
 
         var role = await _userManager.GetRolesAsync(user);
-        var totalAssets = await _assetRepository.CountByUserIdAsync(userId);
+        var totalAssets = await _assetRepository.GetTotalAssets(userId);
         var profile = new Profile(totalAssets, user.UserName, role);
 
         return GeneralResponse<Profile>.Success(

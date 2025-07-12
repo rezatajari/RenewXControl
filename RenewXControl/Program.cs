@@ -41,7 +41,7 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IAssetRepository, AssetRepository>();
 builder.Services.AddScoped<IDashboardService, DashboardService>();
-builder.Services.AddScoped<ISiteRepository, SiteRepository>();
+builder.Services.AddScoped<ISiteService, SiteService>();
 builder.Services.AddScoped<IAssetControlFactory, AssetControlFactory>();
 builder.Services.AddScoped<IAssetService, AssetService>();
 builder.Services.AddSingleton<IMonitoringRegistry, MonitoringRegistry>();

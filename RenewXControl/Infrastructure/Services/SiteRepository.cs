@@ -13,7 +13,7 @@ namespace RenewXControl.Infrastructure.Services
         {
             _context= context;
         }
-        public async Task AddSite(Site site)
+        public async Task AddAsync(Site site)
         {
             await _context.Sites.AddAsync(site);
         }
@@ -23,22 +23,12 @@ namespace RenewXControl.Infrastructure.Services
             return await _context.Sites.FindAsync(siteId);
         }
 
-        public async Task<Guid> GetSiteIdByUserIdAsync(string userId)
+        public async Task<Guid> GetIdAsync(string userId)
         {
             return await _context.Sites
                 .Where(s => s.UserId == userId)
                 .Select(s => (Guid)s.Id)
                 .FirstOrDefaultAsync();
-        }
-
-        public async Task AddAsync(Site site)
-        {
-            await _context.Sites.AddAsync(site);
-        }
-
-        public async Task<bool> ExistAsync(Guid siteId)
-        {
-            return await _context.Sites.AnyAsync(s => s.Id == siteId);
         }
     }
 }

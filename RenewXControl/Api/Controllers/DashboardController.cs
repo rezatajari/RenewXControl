@@ -21,8 +21,8 @@ namespace RenewXControl.Api.Controllers
         [HttpGet("profile")]
         public async Task<IActionResult> Profile()
         {
-            var data = await _dashboardService.GetDashboardDataAsync(UserId);
-            return Ok(data);
+            var response = await _dashboardService.GetProfile(UserId);
+            return Ok(response);
         }
     }
 }
