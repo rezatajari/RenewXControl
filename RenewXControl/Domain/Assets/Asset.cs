@@ -9,7 +9,7 @@
         public DateTime CreateTime { get; set; } = DateTime.UtcNow;
 
         public Guid SiteId { get; set; }
-        public Site Site { get; set; }
+        public Site.Site Site { get; set; }
 
     }
 }

@@ -20,6 +20,10 @@ using RenewXControl.Application.Asset.Implementation.Asset;
 using RenewXControl.Application.User.Interfaces;
 using RenewXControl.Application.User.Implementations;
 using RenewXControl.Domain.User;
+using System.Reflection;
+using RenewXControl.Application;
+using RenewXControl.Infrastructure.Services.Site;
+using Microsoft.OpenApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -40,11 +44,19 @@ builder.Services.AddCors(options =>
     });
 });
 
-builder.Services.AddSwaggerGen();
+builder.Services.AddSwaggerGen(options =>
+{
+    options.SwaggerDoc("v1", new OpenApiInfo { Title = "RenewXControl API", Version = "v1" });
+
+    var xmlFilename = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+    options.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, xmlFilename));
+});
+
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IDashboardService, DashboardService>();
 builder.Services.AddScoped<IUserValidator, UserValidator>();
 builder.Services.AddScoped<ISiteService, SiteService>();
+builder.Services.AddScoped<ISiteRepository,SiteRepository>();
 builder.Services.AddScoped<IAssetService, AssetService>();
 builder.Services.AddScoped<IAssetRepository, AssetRepository>();
 builder.Services.AddScoped<IAssetControlFactory, AssetControlFactory>();
@@ -95,8 +107,6 @@ builder.Services.AddAuthentication(options =>
             }
         };
     });
-
-
 
 
 // ✅ 5. Others

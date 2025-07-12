@@ -15,7 +15,7 @@ namespace RenewXControl.Domain.User
 
         public DateTime CreateTime { get; set; } 
 
-        public ICollection<Site> Sites { get; private set; } = [];
+        public ICollection<Site.Site> Sites { get; private set; } = [];
    
         public static User Create(string username,string email)
         {
@@ -27,6 +27,6 @@ namespace RenewXControl.Domain.User
             UserName = newUsername;
         }
 
-        public void AddSite(Site site) => Sites.Add(site);
+        public void AddSite(Site.Site site) => Sites.Add(site);
     }
 }

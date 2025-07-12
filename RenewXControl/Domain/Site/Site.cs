@@ -21,7 +21,7 @@ namespace RenewXControl.Domain.Site
 
         public ICollection<Asset> Assets { get; private set; } = [];
         public string UserId { get; set; }
-        public User User { get; set; }
+        public User.User User { get; set; }
 
         public static Site Create(AddSite addSite,string userId)
         => new Site(addSite.Name, addSite.Location,userId);

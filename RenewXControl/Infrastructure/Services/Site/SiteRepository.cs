@@ -13,12 +13,12 @@ namespace RenewXControl.Infrastructure.Services.Site
         {
             _context= context;
         }
-        public async Task AddAsync(Site site)
+        public async Task AddAsync(Domain.Site.Site site)
         {
             await _context.Sites.AddAsync(site);
         }
 
-        public async Task<Site?> GetByIdAsync(Guid siteId)
+        public async Task<Domain.Site.Site?> GetByIdAsync(Guid siteId)
         {
             return await _context.Sites.FindAsync(siteId);
         }

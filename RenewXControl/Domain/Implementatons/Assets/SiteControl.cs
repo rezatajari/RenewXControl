@@ -5,9 +5,9 @@ namespace RenewXControl.Domain.Implementatons.Assets
 {
     public class SiteControl:ISiteControl
     {
-        private readonly Site _site;
+        private readonly Site.Site _site;
 
-        public SiteControl(Site site)
+        public SiteControl(Site.Site site)
         {
             _site= site; ;
         }
