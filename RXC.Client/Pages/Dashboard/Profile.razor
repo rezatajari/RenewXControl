@@ -7,6 +7,11 @@
 
 <h3>Profile</h3>
 
+@if (!string.IsNullOrEmpty(successMessage))
+{
+    <div class="alert alert-success text-center mb-4">@successMessage</div>
+}
+
 @if (profile == null)
 {
     <p>Loading...</p>
@@ -24,13 +29,21 @@ else
 }
 @code {
     private DTOs.User.Profile? profile;
+    private string? successMessage;
+
     protected override async Task OnInitializedAsync()
     {
-        var token = await JS.InvokeAsync<string>("localStorage.getItem", "authToken");
+        successMessage = await JS.InvokeAsync<string>(identifier:"localStorage.getItem", "loginSuccess");
+        if (!string.IsNullOrEmpty(successMessage))
+        {
+            await JS.InvokeVoidAsync(identifier: "localStorage.removeItem", "loginSuccess");
+        }
+
+        var token = await JS.InvokeAsync<string>(identifier:"localStorage.getItem", "authToken");
 
         if (string.IsNullOrEmpty(token))
         {
-            Nav.NavigateTo("/login");
+            Nav.NavigateTo(uri:"/login");
             return;
         }
         try
@@ -38,7 +51,7 @@ else
             Http.DefaultRequestHeaders.Authorization =
                 new AuthenticationHeaderValue("Bearer", token);
 
-            profile = await Http.GetFromJsonAsync<DTOs.User.Profile>("api/Dashboard/profile");
+            profile = await Http.GetFromJsonAsync<DTOs.User.Profile>(requestUri:"api/Dashboard/profile");
         }
         catch (Exception ex)
         {

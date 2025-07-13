@@ -23,9 +23,12 @@ public record Register
     /// <summary>
     /// The password for the new user account.
     /// </summary>
-    [Required]
-    [MinLength(6)]
-    public string Password { get; init; }
+    [Required(ErrorMessage = "Password is required.")]
+    [StringLength(100, ErrorMessage = "The {0} must be at least {2} and at most {1} characters long.", MinimumLength = 6)]
+    [DataType(DataType.Password)]
+    [RegularExpression(@"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).+$",
+        ErrorMessage = "Password must include uppercase, lowercase, number, and special character.")]
+    public string Password { get; set; }
 
     /// <summary>
     /// The confirmation of the password for validation.

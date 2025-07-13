@@ -6,10 +6,10 @@ namespace RXC.Client.DTOs.User.Auth
     {
         [Required]
         [EmailAddress]
-        public string Email { get; init; }
+        public string Email { get; set; }
 
         [Required]
-        public string Password { get; init; }
+        public string Password { get; set; }
 
     }
 }

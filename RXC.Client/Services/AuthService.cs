@@ -21,26 +21,24 @@ namespace RXC.Client.Services
             _js = js;
         }
 
-        public async Task<bool> LoginAsync(Login model)
+        public async Task<GeneralResponse<string>> LoginAsync(Login model)
         {
-            var response = await _http.PostAsJsonAsync("api/auth/login", model);
-            if (!response.IsSuccessStatusCode)
-                return false;
+            var result = await _http.PostAsJsonAsync(requestUri:"api/auth/login", model);
+            var response = await result.Content.ReadFromJsonAsync<GeneralResponse<string>>();
 
-            var generalResponse = await response.Content.ReadFromJsonAsync<GeneralResponse<string>>();
-            if (generalResponse == null || string.IsNullOrEmpty(generalResponse.Data))
-                return false;
+            if (!result.IsSuccessStatusCode)
+                return response;
 
-            var token = generalResponse.Data;
-            await _js.InvokeVoidAsync("localStorage.setItem", "authToken", token);
+            var token = response.Data;
+            await _js.InvokeVoidAsync(identifier:"localStorage.setItem", "authToken", token);
             _http.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
-            _nav.NavigateTo("/dashboard/profile");
-            return true;
+            _nav.NavigateTo(uri:"/dashboard/profile");
+            return response;
         }
 
         public async Task<bool> RegisterAsync(Register model)
         {
-            var response = await _http.PostAsJsonAsync("api/auth/register", model);
+            var response = await _http.PostAsJsonAsync(requestUri:"api/auth/register", model);
             return response.IsSuccessStatusCode;
         }
     }

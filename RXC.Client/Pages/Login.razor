@@ -1,11 +1,26 @@
 ﻿@page "/login"
 @using RXC.Client.Services
 @inject AuthService AuthService
+@inject NavigationManager Navigation
+@inject IJSRuntime JS
 
 <PageTitle>Login</PageTitle>
 
 <div class="max-w-md mx-auto mt-20 p-6 shadow-xl rounded-xl bg-white">
     <h2 class="text-2xl font-bold mb-4 text-center">Login</h2>
+
+    @if (!string.IsNullOrEmpty(errorMessage))
+    {
+        <div class="mb-4 text-bg-warning text-center">@errorMessage</div>
+    }
+
+    @if (isLoading)
+    {
+        <div class="mb-4 text-center">
+            <span class="loader"></span> <!-- Replace with your spinner if you have one -->
+            Loading...
+        </div>
+    }
 
     <EditForm Model="@model" OnValidSubmit="@LoginUser">
         <DataAnnotationsValidator />
@@ -19,17 +34,35 @@
             <InputText @bind-Value="model.Password" type="password" class="input" placeholder="Password" />
         </div>
 
-        <button type="submit" class="btn-primary w-full">Login</button>
+        <button type="submit" class="btn-primary w-full" disabled="@isLoading">Login</button>
     </EditForm>
 </div>
 
 @code {
     private DTOs.User.Auth.Login model = new();
+    private string errorMessage;
+    private bool isLoading = false;
 
     private async Task LoginUser()
     {
-        var result = await AuthService.LoginAsync(model);
-        if (!result)
-            Console.WriteLine("Login failed.");
+        isLoading = true;
+        errorMessage = null;
+        try
+        {
+            var result = await AuthService.LoginAsync(model);
+            if (!result.IsSuccess)
+            {
+                errorMessage = result.Message;
+            }
+            else
+            {
+                await JS.InvokeVoidAsync(identifier:"localStorage.setItem","loginSuccess",$"{result.Message}");
+                Navigation.NavigateTo(uri:"/Dashboard/profile");
+            }
+        }
+        finally
+        {
+            isLoading = false;
+        }
     }
 }
