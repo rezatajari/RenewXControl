@@ -14,6 +14,11 @@
         <div class="mb-4 text-bg-warning text-center">@errorMessage</div>
     }
 
+    @if (!string.IsNullOrEmpty(successMessage))
+    {
+        <div class="alert alert-success text-center mb-4">@successMessage</div>
+    }
+
     @if (isLoading)
     {
         <div class="mb-4 text-center">
@@ -40,11 +45,25 @@
 
 @code {
     private DTOs.User.Auth.Login model = new();
-    private string errorMessage;
+    private string? errorMessage;
+    private string? successMessage;
     private bool isLoading = false;
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        successMessage = await JS.InvokeAsync<string>(identifier: "localStorage.getItem", "RegisterSuccess");
+        if (!string.IsNullOrEmpty(successMessage))
+        {
+            await JS.InvokeVoidAsync(identifier: "localStorage.removeItem", "RegisterSuccess");
+        }
+    }
 
     private async Task LoginUser()
     {
+
+        successMessage = null;
+
         isLoading = true;
         errorMessage = null;
         try

@@ -1,8 +1,24 @@
 ﻿@page "/register"
 @using RXC.Client.Services
 @inject AuthService AuthService
+@inject NavigationManager Navigation
+@inject IJSRuntime JS
 
 <PageTitle>Register</PageTitle>
+
+@if (!string.IsNullOrEmpty(errorMessage))
+{
+    <div class="alert alert-danger text-center mb-4">@errorMessage</div>
+}
+
+@if (isLoading)
+{
+    <div class="mb-4 text-center">
+        <span class="loader"></span> <!-- Replace with your spinner if you have one -->
+        Loading...
+    </div>
+}
+
 
 <div class="max-w-md mx-auto mt-20 p-6 shadow-xl rounded-xl bg-white">
     <h2 class="text-2xl font-bold mb-4 text-center">Register</h2>
@@ -10,7 +26,7 @@
     <EditForm Model="@model" OnValidSubmit="@RegisterUser">
         <DataAnnotationsValidator />
         <ValidationSummary />
-        
+
         <div class="mb-4">
             <InputText @bind-value="model.UserName" class="input" placeholder="Username"/>
         </div>
@@ -33,13 +49,30 @@
 
 @code {
     private DTOs.User.Auth.Register model = new();
+    private string? errorMessage;
+    private bool isLoading = false;
 
     private async Task RegisterUser()
     {
-        var result = await AuthService.RegisterAsync(model);
-        if (!result)
-            Console.WriteLine("Register failed.");
-        else
-            Console.WriteLine("Register successful.");
+        isLoading = true;
+        try
+        {
+            var response = await AuthService.RegisterAsync(model);
+            if (!response.IsSuccess)
+            {
+                errorMessage = response.Message;
+            }
+            else
+            {
+                await JS.InvokeVoidAsync(identifier: "localStorage.setItem", "RegisterSuccess", $"{response.Message}");
+                Navigation.NavigateTo(uri: "/login");
+            }
+        }
+       finally
+        {
+            isLoading = false;
+        }
+
     }
+
 }

@@ -36,10 +36,10 @@ namespace RXC.Client.Services
             return response;
         }
 
-        public async Task<bool> RegisterAsync(Register model)
+        public async Task<GeneralResponse<string>> RegisterAsync(Register model)
         {
-            var response = await _http.PostAsJsonAsync(requestUri:"api/auth/register", model);
-            return response.IsSuccessStatusCode;
+            var result= await _http.PostAsJsonAsync(requestUri:"api/auth/register", model);
+            return await  result.Content.ReadFromJsonAsync<GeneralResponse<string>>();
         }
     }
 }
