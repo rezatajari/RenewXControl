@@ -64,6 +64,17 @@ builder.Services.AddSingleton<IMonitoringRegistry, MonitoringRegistry>();
 builder.Services.AddScoped<IMonitoringService, MonitoringService>();
 builder.Services.AddHostedService<MonitoringScreen>();
 
+// ✅ 5. Others
+builder.Services.AddDbContext<RxcDbContext>(options =>
+    options.UseSqlServer(builder.Configuration.GetConnectionString(name:"DefaultConnection")));
+
+builder.Services.AddIdentity<User, IdentityRole>(options =>
+    {
+        options.User.AllowedUserNameCharacters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789 -_.";
+    })
+    .AddEntityFrameworkStores<RxcDbContext>()
+    .AddDefaultTokenProviders();
+
 // jwt
 var jwtSection = builder.Configuration.GetSection(key: "JwtSettings");
 builder.Services.Configure<JwtSettings>(jwtSection);
@@ -109,16 +120,6 @@ builder.Services.AddAuthentication(options =>
     });
 
 
-// ✅ 5. Others
-builder.Services.AddDbContext<RxcDbContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
-
-builder.Services.AddIdentity<User, IdentityRole>(options =>
-    {
-        options.User.AllowedUserNameCharacters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789 -_.";
-    })
-    .AddEntityFrameworkStores<RxcDbContext>()
-    .AddDefaultTokenProviders();
 
 builder.Services.AddAuthorization();
 

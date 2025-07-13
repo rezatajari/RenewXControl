@@ -1,6 +1,7 @@
 ﻿@page "/dashboard/profile"
 @layout DashboardLayout
 @using System.Net.Http.Headers
+@using RXC.Client.DTOs
 @inject HttpClient Http
 @inject IJSRuntime JS
 @inject NavigationManager Nav
@@ -12,9 +13,9 @@
     <div class="alert alert-success text-center mb-4">@successMessage</div>
 }
 
-@if (profile == null)
+@if (!string.IsNullOrEmpty(errorMessage) || profile==null)
 {
-    <p>Loading...</p>
+    <div class="alert alert-success text-center mb-4">@errorMessage</div>
 }
 else
 {
@@ -30,6 +31,7 @@ else
 @code {
     private DTOs.User.Profile? profile;
     private string? successMessage;
+    private string? errorMessage;
 
     protected override async Task OnInitializedAsync()
     {
@@ -49,9 +51,18 @@ else
         try
         {
             Http.DefaultRequestHeaders.Authorization =
-                new AuthenticationHeaderValue("Bearer", token);
+                new AuthenticationHeaderValue(scheme:"Bearer", token);
 
-            profile = await Http.GetFromJsonAsync<DTOs.User.Profile>(requestUri:"api/Dashboard/profile");
+            var response = await Http.GetFromJsonAsync<GeneralResponse<DTOs.User.Profile>>(requestUri: "api/Dashboard/profile");
+            if (!response.IsSuccess){
+                errorMessage = response.Message;
+            }
+            else
+            {
+                successMessage = response.Message;
+                profile = response.Data;
+            }
+
         }
         catch (Exception ex)
         {

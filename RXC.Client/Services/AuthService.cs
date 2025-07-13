@@ -31,7 +31,7 @@ namespace RXC.Client.Services
 
             var token = response.Data;
             await _js.InvokeVoidAsync(identifier:"localStorage.setItem", "authToken", token);
-            _http.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+            _http.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(scheme:"Bearer", token);
             _nav.NavigateTo(uri:"/dashboard/profile");
             return response;
         }
