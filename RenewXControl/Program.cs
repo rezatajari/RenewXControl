@@ -134,10 +134,11 @@ var app = builder.Build();
 app.UseSwagger();
 app.UseSwaggerUI();
 app.UseRouting();
+app.UseMiddleware<GlobalErrorException>();
 app.UseCors("AllowBlazorClient");
 app.UseAuthentication();
 app.UseAuthorization();
-app.MapHub<AssetsHub>("/assetsHub").RequireAuthorization();
+app.MapHub<AssetsHub>(pattern:"/assetsHub").RequireAuthorization();
 app.MapControllers();
 app.Run();
 
