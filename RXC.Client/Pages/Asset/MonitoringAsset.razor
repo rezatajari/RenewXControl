@@ -62,7 +62,7 @@ else
 
     protected override async Task OnInitializedAsync()
     {
-        var token = await JS.InvokeAsync<string>("localStorage.getItem", "authToken");
+        var token = await JS.InvokeAsync<string>(identifier:"localStorage.getItem", "authToken");
         if (string.IsNullOrEmpty(token))
         {
             Nav.NavigateTo("/login");
@@ -71,7 +71,7 @@ else
 
         Http.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
 
-        var response = await Http.PostAsync("api/monitoring/register-assets", null);
+        var response = await Http.PostAsync("api/monitoring/register", null);
         if (!response.IsSuccessStatusCode)
         {
             Console.Error.WriteLine("Failed to register assets");
