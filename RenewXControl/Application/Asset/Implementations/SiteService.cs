@@ -57,5 +57,23 @@ namespace RenewXControl.Application.Asset.Implementation
 
             return GeneralResponse<Guid>.Success(siteId);
         }
+
+        public async Task<GeneralResponse<bool>> HasSiteAsync(string userId)
+        {
+            var response =await _siteRepository.HasSite(userId);
+            if (response)
+                return GeneralResponse<bool>.Success(data: true, message: "Has site operation is successful");
+
+            return GeneralResponse<bool>.Failure(
+                message:"Site NotFound",
+                errors: [
+                    new ErrorResponse
+                    {
+                        Name = "HasSite",
+                        Message = "Your site is not created until now"
+                    }
+                    ]);
+
+        }
     }
 }

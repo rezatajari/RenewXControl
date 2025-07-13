@@ -1,9 +1,11 @@
 ﻿@page "/asset/add-site"
 @using System.Net.Http.Headers
+@using RXC.Client.Services
 @layout DashboardLayout
 @inject HttpClient Http
 @inject NavigationManager Nav
 @inject IJSRuntime JS
+@inject DashboardState DashboardState
 
 <div class="container mt-4">
     <div class="card shadow">
@@ -85,12 +87,13 @@
             }
 
             Http.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
-            var response = await Http.PostAsJsonAsync("api/asset/add/site", siteModel);
+            var response = await Http.PostAsJsonAsync("api/site/add", siteModel);
 
             if (response.IsSuccessStatusCode)
             {
                 showSuccess = true;
                 await Task.Delay(3000);
+                DashboardState.SetHasSite(true);
                 Nav.NavigateTo("/asset/add-site");
             }
             else

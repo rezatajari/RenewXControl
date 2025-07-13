@@ -30,5 +30,11 @@ namespace RenewXControl.Infrastructure.Services.Site
                 .Select(s => s.Id)
                 .FirstOrDefaultAsync();
         }
+
+        public async Task<bool> HasSite(string userId)
+        {
+           return await _context.Sites
+                .AnyAsync(s => s.UserId == userId);
+        }
     }
 }

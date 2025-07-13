@@ -7,5 +7,6 @@ namespace RenewXControl.Application
         Task AddAsync(Site site);
         Task<Site?> GetByIdAsync(Guid siteId);
         Task<Guid> GetIdAsync(string userId);
+        Task<bool> HasSite(string userId);
      }
 }

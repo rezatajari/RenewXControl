@@ -1,5 +1,6 @@
 ﻿@page "/asset/add-solar"
 @using System.Net.Http.Headers
+@using RXC.Client.DTOs
 @layout DashboardLayout
 @inject HttpClient Http
 @inject NavigationManager Nav
@@ -7,31 +8,35 @@
 
 <div class="container mt-4">
     <div class="card shadow">
+        @if (!string.IsNullOrEmpty(errorMessage))
+        {
+            <div class="mb-4 text-bg-danger text-center">@errorMessage</div>
+        }
         <div class="card-header bg-primary text-white">
             <h3><i class="bi bi-fan me-2"></i> Add Solar Panel</h3>
         </div>
         <div class="card-body">
             <EditForm Model="@solarModel" OnValidSubmit="@HandleSubmit">
-                <DataAnnotationsValidator />
-                <ValidationSummary />
+                <DataAnnotationsValidator/>
+                <ValidationSummary/>
 
                 <div class="row mb-3">
                     <div class="col-md-4">
                         <label class="form-label">Irradiance (m/s)</label>
-                        <InputNumber class="form-control" @bind-Value="@solarModel.Irradiance" />
-                        <ValidationMessage For="@(() => solarModel.Irradiance)" />
+                        <InputNumber class="form-control" @bind-Value="@solarModel.Irradiance"/>
+                        <ValidationMessage For="@(() => solarModel.Irradiance)"/>
                     </div>
 
                     <div class="col-md-4">
                         <label class="form-label">Set Point (kW)</label>
-                        <InputNumber class="form-control" @bind-Value="@solarModel.SetPoint" />
-                        <ValidationMessage For="@(() => solarModel.SetPoint)" />
+                        <InputNumber class="form-control" @bind-Value="@solarModel.SetPoint"/>
+                        <ValidationMessage For="@(() => solarModel.SetPoint)"/>
                     </div>
 
                     <div class="col-md-4">
                         <label class="form-label">Active Power (kW)</label>
-                        <InputNumber class="form-control" @bind-Value="@solarModel.ActivePower" />
-                        <ValidationMessage For="@(() => solarModel.ActivePower)" />
+                        <InputNumber class="form-control" @bind-Value="@solarModel.ActivePower"/>
+                        <ValidationMessage For="@(() => solarModel.ActivePower)"/>
                     </div>
                 </div>
 
@@ -56,13 +61,36 @@
     </div>
 </div>
 
+@if (showSuccess)
+{
+    <div class="position-fixed bottom-0 end-0 p-3" style="z-index: 11">
+        <div class="toast show" role="alert" aria-live="assertive" aria-atomic="true">
+            <div class="toast-header bg-success text-white">
+                <strong class="me-auto">Success</strong>
+                <button type="button" class="btn-close btn-close-white" @onclick="() => showSuccess = false"></button>
+            </div>
+            <div class="toast-body">
+                Solar added successfully!
+            </div>
+        </div>
+    </div>
+}
+
 @code {
     private DTOs.AddAsset.AddSolar solarModel = new();
     private bool isLoading = false;
+    private bool showSuccess = false;
+    private string? errorMessage;
+
+    protected override async Task OnInitializedAsync()
+    {
+        errorMessage = null;
+    }
 
 
     private async Task HandleSubmit()
     {
+        errorMessage = null;
         isLoading = true;
         try
         {
@@ -73,12 +101,16 @@
                 return;
             }
 
-            Http.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
-            var response = await Http.PostAsJsonAsync("api/asset/add/solar", solarModel);
-
-            if (response.IsSuccessStatusCode)
+            Http.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(scheme:"Bearer", token);
+            var result = await Http.PostAsJsonAsync(requestUri:"api/asset/add/solar", solarModel);
+            var response = await result.Content.ReadFromJsonAsync<GeneralResponse<Guid>>();
+            if (response.IsSuccess)
             {
-                Nav.NavigateTo("/asset/add-solar", forceLoad: true);
+                showSuccess = true;
+            }
+            else
+            {
+                errorMessage = response.Message;
             }
         }
         catch (Exception ex)

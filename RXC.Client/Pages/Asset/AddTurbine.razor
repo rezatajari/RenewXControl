@@ -1,5 +1,6 @@
 ﻿@page "/asset/add-turbine"
 @using System.Net.Http.Headers
+@using RXC.Client.DTOs
 @layout DashboardLayout
 @inject HttpClient Http
 @inject NavigationManager Nav
@@ -7,31 +8,35 @@
 
 <div class="container mt-4">
     <div class="card shadow">
+        @if (!string.IsNullOrEmpty(errorMessage))
+        {
+            <div class="mb-4 text-bg-danger text-center">@errorMessage</div>
+        }
         <div class="card-header bg-primary text-white">
             <h3><i class="bi bi-fan me-2"></i> Add Wind Turbine</h3>
         </div>
         <div class="card-body">
             <EditForm Model="@turbineModel" OnValidSubmit="@HandleSubmit">
-                <DataAnnotationsValidator />
-                <ValidationSummary />
+                <DataAnnotationsValidator/>
+                <ValidationSummary/>
 
                 <div class="row mb-3">
                     <div class="col-md-4">
                         <label class="form-label">Wind Speed (m/s)</label>
-                        <InputNumber class="form-control" @bind-Value="@turbineModel.WindSpeed" />
-                        <ValidationMessage For="@(() => turbineModel.WindSpeed)" />
+                        <InputNumber class="form-control" @bind-Value="@turbineModel.WindSpeed"/>
+                        <ValidationMessage For="@(() => turbineModel.WindSpeed)"/>
                     </div>
 
                     <div class="col-md-4">
                         <label class="form-label">Set Point (kW)</label>
-                        <InputNumber class="form-control" @bind-Value="@turbineModel.SetPoint" />
-                        <ValidationMessage For="@(() => turbineModel.SetPoint)" />
+                        <InputNumber class="form-control" @bind-Value="@turbineModel.SetPoint"/>
+                        <ValidationMessage For="@(() => turbineModel.SetPoint)"/>
                     </div>
 
                     <div class="col-md-4">
                         <label class="form-label">Active Power (kW)</label>
-                        <InputNumber class="form-control" @bind-Value="@turbineModel.ActivePower" />
-                        <ValidationMessage For="@(() => turbineModel.ActivePower)" />
+                        <InputNumber class="form-control" @bind-Value="@turbineModel.ActivePower"/>
+                        <ValidationMessage For="@(() => turbineModel.ActivePower)"/>
                     </div>
                 </div>
 
@@ -56,10 +61,31 @@
     </div>
 </div>
 
+@if (showSuccess)
+{
+    <div class="position-fixed bottom-0 end-0 p-3" style="z-index: 11">
+        <div class="toast show" role="alert" aria-live="assertive" aria-atomic="true">
+            <div class="toast-header bg-success text-white">
+                <strong class="me-auto">Success</strong>
+                <button type="button" class="btn-close btn-close-white" @onclick="() => showSuccess = false"></button>
+            </div>
+            <div class="toast-body">
+                Turbine added successfully!
+            </div>
+        </div>
+    </div>
+}
+
 @code {
     private DTOs.AddAsset.AddTurbine turbineModel = new();
     private bool isLoading = false;
+    private bool showSuccess = false;
+    private string? errorMessage;
 
+    protected override async Task OnInitializedAsync()
+    {
+        errorMessage = null;
+    }
 
     private async Task HandleSubmit()
     {
@@ -73,12 +99,16 @@
                 return;
             }
 
-            Http.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
-            var response = await Http.PostAsJsonAsync("api/asset/add/turbine", turbineModel);
-
-            if (response.IsSuccessStatusCode)
+            Http.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(scheme: "Bearer", token);
+            var result = await Http.PostAsJsonAsync(requestUri: "api/asset/add/turbine", turbineModel);
+            var response = await result.Content.ReadFromJsonAsync<GeneralResponse<Guid>>();
+            if (response.IsSuccess)
             {
-                Nav.NavigateTo("/asset/add-turbine", forceLoad: true);
+                showSuccess = true;
+            }
+            else
+            {
+                errorMessage = response.Message;
             }
         }
         catch (Exception ex)

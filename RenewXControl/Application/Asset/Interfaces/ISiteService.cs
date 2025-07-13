@@ -7,5 +7,6 @@ namespace RenewXControl.Application.Asset.Interfaces
     {
         Task<GeneralResponse<Guid>> AddSiteAsync(AddSite addSite,string userId);
         Task<GeneralResponse<Guid>> GetSiteId(string userId);
+        Task<GeneralResponse<bool>> HasSiteAsync(string userId);
     }
 }

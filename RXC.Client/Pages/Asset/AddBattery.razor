@@ -1,5 +1,6 @@
 ﻿@page "/asset/add-battery"
 @using System.Net.Http.Headers
+@using RXC.Client.DTOs
 @layout DashboardLayout
 @inject HttpClient Http
 @inject NavigationManager Nav
@@ -7,37 +8,43 @@
 
 <div class="container mt-4">
     <div class="card shadow">
+        @if (!string.IsNullOrEmpty(errorMessage))
+        {
+            <div class="mb-4 text-bg-danger text-center">@errorMessage</div>
+        }
+        
+  
         <div class="card-header bg-primary text-white">
             <h3><i class="bi bi-battery-charging me-2"></i> Add Battery System</h3>
         </div>
         <div class="card-body">
             <EditForm Model="@batteryModel" OnValidSubmit="@HandleSubmit">
-                <DataAnnotationsValidator />
-                <ValidationSummary />
+                <DataAnnotationsValidator/>
+                <ValidationSummary/>
 
                 <div class="row mb-3">
                     <div class="col-md-3">
                         <label class="form-label">Capacity (kWh)</label>
-                        <InputNumber class="form-control" @bind-Value="@batteryModel.Capacity" />
-                        <ValidationMessage For="@(() => batteryModel.Capacity)" />
+                        <InputNumber class="form-control" @bind-Value="@batteryModel.Capacity"/>
+                        <ValidationMessage For="@(() => batteryModel.Capacity)"/>
                     </div>
 
                     <div class="col-md-3">
                         <label class="form-label">State of Charge (%)</label>
-                        <InputNumber class="form-control" @bind-Value="@batteryModel.StateCharge" />
-                        <ValidationMessage For="@(() => batteryModel.StateCharge)" />
+                        <InputNumber class="form-control" @bind-Value="@batteryModel.StateCharge"/>
+                        <ValidationMessage For="@(() => batteryModel.StateCharge)"/>
                     </div>
 
                     <div class="col-md-3">
                         <label class="form-label">Set Point (kW)</label>
-                        <InputNumber class="form-control" @bind-Value="@batteryModel.SetPoint" />
-                        <ValidationMessage For="@(() => batteryModel.SetPoint)" />
+                        <InputNumber class="form-control" @bind-Value="@batteryModel.SetPoint"/>
+                        <ValidationMessage For="@(() => batteryModel.SetPoint)"/>
                     </div>
 
                     <div class="col-md-3">
                         <label class="form-label">Frequent Discharge (cycles/day)</label>
-                        <InputNumber class="form-control" @bind-Value="@batteryModel.FrequentlyDischarge" />
-                        <ValidationMessage For="@(() => batteryModel.FrequentlyDischarge)" />
+                        <InputNumber class="form-control" @bind-Value="@batteryModel.FrequentlyDischarge"/>
+                        <ValidationMessage For="@(() => batteryModel.FrequentlyDischarge)"/>
                     </div>
                 </div>
 
@@ -62,28 +69,56 @@
     </div>
 </div>
 
+
+@if (showSuccess)
+{
+    <div class="position-fixed bottom-0 end-0 p-3" style="z-index: 11">
+        <div class="toast show" role="alert" aria-live="assertive" aria-atomic="true">
+            <div class="toast-header bg-success text-white">
+                <strong class="me-auto">Success</strong>
+                <button type="button" class="btn-close btn-close-white" @onclick="() => showSuccess = false"></button>
+            </div>
+            <div class="toast-body">
+                Battery added successfully!
+            </div>
+        </div>
+    </div>
+}
+
 @code {
     private DTOs.AddAsset.AddBattery batteryModel = new();
     private bool isLoading = false;
+    private bool showSuccess = false;
+    private string? errorMessage;
+
+    protected override async Task OnInitializedAsync()
+    {
+        errorMessage = null;
+    }
 
     private async Task HandleSubmit()
     {
+        errorMessage = null;
         isLoading = true;
         try
         {
-            var token = await JS.InvokeAsync<string>("localStorage.getItem", "authToken");
+            var token = await JS.InvokeAsync<string>(identifier:"localStorage.getItem", "authToken");
             if (string.IsNullOrEmpty(token))
             {
                 Nav.NavigateTo("/login");
                 return;
             }
 
-            Http.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
-            var response = await Http.PostAsJsonAsync("api/asset/add/battery", batteryModel);
-
-            if (response.IsSuccessStatusCode)
+            Http.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(scheme:"Bearer", token);
+            var result = await Http.PostAsJsonAsync(requestUri:"api/asset/add/battery", batteryModel);
+            var response = await result.Content.ReadFromJsonAsync<GeneralResponse<Guid>>();
+            if (response.IsSuccess)
             {
-                Nav.NavigateTo("/asset/add-battery", forceLoad: true);
+                showSuccess = true;
+            }
+            else
+            {
+                errorMessage = response.Message;
             }
         }
         catch (Exception ex)

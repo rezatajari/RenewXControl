@@ -35,6 +35,12 @@ namespace RenewXControl.Application.Asset.Implementation.Asset
                 return GeneralResponse<Guid>.Failure(message: userValidation.Message, errors: userValidation.Errors);
 
             var siteIdResponse = await _siteService.GetSiteId(userId);
+            if (!siteIdResponse.IsSuccess)
+                return GeneralResponse<Guid>.Failure(
+                    message:siteIdResponse.Message,
+                    errors:siteIdResponse.Errors
+                    );
+
             var siteId = siteIdResponse.Data;
 
             var battery = Battery.Create(addBattery, siteId);
@@ -54,6 +60,12 @@ namespace RenewXControl.Application.Asset.Implementation.Asset
                 return GeneralResponse<Guid>.Failure(message: userValidation.Message, errors: userValidation.Errors);
 
             var siteIdResponse = await _siteService.GetSiteId(userId);
+            if (!siteIdResponse.IsSuccess)
+                return GeneralResponse<Guid>.Failure(
+                    message: siteIdResponse.Message,
+                    errors: siteIdResponse.Errors
+                );
+
             var siteId = siteIdResponse.Data;
 
             var solar = SolarPanel.Create(addSolar, siteId);
@@ -73,6 +85,12 @@ namespace RenewXControl.Application.Asset.Implementation.Asset
                 return GeneralResponse<Guid>.Failure(message: userValidation.Message, errors: userValidation.Errors);
 
             var siteIdResponse = await _siteService.GetSiteId(userId);
+            if (!siteIdResponse.IsSuccess)
+                return GeneralResponse<Guid>.Failure(
+                    message: siteIdResponse.Message,
+                    errors: siteIdResponse.Errors
+                );
+
             var siteId = siteIdResponse.Data;
 
             var turbine = WindTurbine.Create(addTurbine, siteId);
