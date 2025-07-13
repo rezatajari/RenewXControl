@@ -66,15 +66,11 @@
 }
 
 @code {
-    private SiteModel siteModel = new();
+    private DTOs.AddAsset.AddSite siteModel = new();
     private bool isLoading = false;
     private bool showSuccess = false;
 
-    public class SiteModel
-    {
-        public string Name { get; set; }
-        public string Location { get; set; }
-    }
+   
 
     private async Task HandleSubmit()
     {

@@ -57,15 +57,9 @@
 </div>
 
 @code {
-    private SolarModel solarModel = new();
+    private DTOs.AddAsset.AddSolar solarModel = new();
     private bool isLoading = false;
 
-    public class SolarModel
-    {
-        public double Irradiance { get; set; }
-        public double SetPoint { get; set; }
-        public double ActivePower { get; set; }
-    }
 
     private async Task HandleSubmit()
     {

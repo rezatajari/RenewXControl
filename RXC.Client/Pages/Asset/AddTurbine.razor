@@ -57,15 +57,9 @@
 </div>
 
 @code {
-    private TurbineModel turbineModel = new();
+    private DTOs.AddAsset.AddTurbine turbineModel = new();
     private bool isLoading = false;
 
-    public class TurbineModel
-    {
-        public double WindSpeed { get; set; }
-        public double SetPoint { get; set; }
-        public double ActivePower { get; set; }
-    }
 
     private async Task HandleSubmit()
     {

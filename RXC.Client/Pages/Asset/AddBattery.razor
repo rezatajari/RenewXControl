@@ -63,16 +63,8 @@
 </div>
 
 @code {
-    private BatteryModel batteryModel = new();
+    private DTOs.AddAsset.AddBattery batteryModel = new();
     private bool isLoading = false;
-
-    public class BatteryModel
-    {
-        public double Capacity { get; set; }
-        public double StateCharge { get; set; }
-        public double SetPoint { get; set; }
-        public double FrequentlyDischarge { get; set; }
-    }
 
     private async Task HandleSubmit()
     {

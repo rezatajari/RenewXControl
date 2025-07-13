@@ -12,11 +12,11 @@ public record Login
     /// </summary>
     [Required]
     [EmailAddress]
-    public string Email { get; set; }
+    public string Email { get; init; }
 
     /// <summary>
     /// The user's password.
     /// </summary>
     [Required]
-    public string Password { get; set; }
+    public string Password { get; init; }
 }

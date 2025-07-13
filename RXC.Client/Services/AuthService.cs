@@ -4,7 +4,7 @@ using System.Net.Http.Headers;
 using System.Net.Http.Json;
 using System.Runtime.CompilerServices;
 using RXC.Client.DTOs;
-using RXC.Client.DTOs.User;
+using RXC.Client.DTOs.User.Auth;
 
 namespace RXC.Client.Services
 {
