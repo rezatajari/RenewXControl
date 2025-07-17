@@ -132,6 +132,14 @@ builder.Services.AddControllers(options =>
 
 var app = builder.Build();
 
+var scope = app.Services.CreateScope();
+var dbContext = scope.ServiceProvider.GetService<RxcDbContext>();
+var pendingMigration = dbContext.Database.GetPendingMigrations();
+if (pendingMigration.Any())
+{
+    dbContext.Database.Migrate();
+}
+
 app.UseSwagger();
 app.UseSwaggerUI();
 app.UseRouting();
