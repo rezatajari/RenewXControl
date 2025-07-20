@@ -1,0 +1,39 @@
+name: Build and Deploy to SmarterASP
+
+on:
+  push:
+    branches:
+      - main    # or your default branch
+
+jobs:
+  build-and-deploy:
+    runs-on: windows-latest
+
+    steps:
+    - name: Checkout repo
+      uses: actions/checkout@v3
+
+    - name: Setup .NET SDK
+      uses: actions/setup-dotnet@v3
+      with:
+        dotnet-version: '7.0.x'   # or your target .NET version
+
+    - name: Publish Blazor client
+      run: dotnet publish RXC.Client/RXC.Client.csproj -c Release -o ../publish/RXC.Client
+
+    - name: Copy Blazor client files to API wwwroot
+      run: |
+        mkdir -p RenewXControl/wwwroot
+        cp -r publish/RXC.Client/wwwroot/* RenewXControl/wwwroot/
+
+    - name: Publish API project
+      run: dotnet publish RenewXControl/RenewXControl.csproj -c Release -o ../publish/RenewXControl
+
+    - name: Deploy via FTP to SmarterASP
+      uses: SamKirkland/FTP-Deploy-Action@4.3.0
+      with:
+        server: ${{ secrets.FTP_HOST }}
+        username: ${{ secrets.FTP_USERNAME }}
+        password: ${{ secrets.FTP_PASSWORD }}
+        local-dir: publish/RenewXControl
+        server-dir: /site1  # adjust if needed for your FTP folder
