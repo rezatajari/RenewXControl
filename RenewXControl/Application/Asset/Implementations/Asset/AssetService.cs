@@ -4,7 +4,6 @@ using RenewXControl.Application.Asset.Interfaces.Asset;
 using RenewXControl.Application.DTOs.AddAsset;
 using RenewXControl.Domain.Assets;
 using RenewXControl.Infrastructure.Persistence;
-using Battery = RenewXControl.Domain.Assets.Battery;
 
 namespace RenewXControl.Application.Asset.Implementation.Asset
 {

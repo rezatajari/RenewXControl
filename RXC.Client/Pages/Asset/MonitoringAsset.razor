@@ -79,7 +79,7 @@ else
         }
 
         _hubConnection = new HubConnectionBuilder()
-            .WithUrl(Nav.ToAbsoluteUri("http://localhost:61998/assetsHub"), options =>
+            .WithUrl(Nav.ToAbsoluteUri("http://alirezanuri70-001-site1.mtempurl.com/assetsHub"), options =>
             {
                 options.AccessTokenProvider = async () => await JS.InvokeAsync<string>("localStorage.getItem", "authToken");
             })

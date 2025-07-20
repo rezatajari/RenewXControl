@@ -37,7 +37,7 @@ builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowBlazorClient", policy =>
     {
-        policy.WithOrigins("http://localhost:5187")
+        policy.WithOrigins("http://alirezanuri70-001-site1.mtempurl.com")
             .AllowAnyHeader()
             .AllowAnyMethod()
             .AllowCredentials();
@@ -66,7 +66,7 @@ builder.Services.AddHostedService<MonitoringScreen>();
 
 // ✅ 5. Others
 builder.Services.AddDbContext<RxcDbContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString(name:"DefaultConnection")));
+    options.UseSqlServer(builder.Configuration.GetConnectionString(name: "localDatabase")));
 
 builder.Services.AddIdentity<User, IdentityRole>(options =>
     {
@@ -142,6 +142,8 @@ if (pendingMigration.Any())
 
 app.UseSwagger();
 app.UseSwaggerUI();
+app.UseBlazorFrameworkFiles();
+app.UseStaticFiles();
 app.UseRouting();
 app.UseMiddleware<GlobalErrorException>();
 app.UseCors("AllowBlazorClient");
@@ -149,5 +151,6 @@ app.UseAuthentication();
 app.UseAuthorization();
 app.MapHub<AssetsHub>(pattern:"/assetsHub").RequireAuthorization();
 app.MapControllers();
+app.MapFallbackToFile("index.html");
 app.Run();
 

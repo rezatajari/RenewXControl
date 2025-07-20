@@ -11,7 +11,7 @@ builder.RootComponents.Add<App>("#app");
 builder.RootComponents.Add<HeadOutlet>("head::after");
 builder.Services.AddScoped(sp => new HttpClient
 {
-    BaseAddress = new Uri("http://localhost:61998") // 👈 backend API port
+    BaseAddress = new Uri("http://alirezanuri70-001-site1.mtempurl.com")
 });
 
 builder.Services.AddScoped<AuthService>();

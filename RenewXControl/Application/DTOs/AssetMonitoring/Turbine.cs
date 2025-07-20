@@ -7,4 +7,4 @@ public record Turbine(
     string Message,
     double SetPoint,
     DateTime Timestamp)
-    : AssetMonitoring.Asset(AssetType,  Message, SetPoint, Timestamp);
+    : AssetMonitoring.AssetDto(AssetType,  Message, SetPoint, Timestamp);

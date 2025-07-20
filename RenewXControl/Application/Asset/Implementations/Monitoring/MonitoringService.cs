@@ -4,7 +4,7 @@ using RenewXControl.Application.Asset.Interfaces.Asset;
 using RenewXControl.Application.Asset.Interfaces.Monitoring;
 using RenewXControl.Application.DTOs.AssetMonitoring;
 using RenewXControl.Domain.Assets;
-using Battery = RenewXControl.Application.DTOs.AssetMonitoring.Battery;
+using Battery = RenewXControl.Application.DTOs.AssetMonitoring.BatteryDto;
 
 namespace RenewXControl.Application.Asset.Implementation.Monitoring
 {

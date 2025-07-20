@@ -7,4 +7,4 @@ public record Solar(
     string Message,
     double SetPoint,
     DateTime Timestamp)
-    :Asset(AssetType,  Message, SetPoint, Timestamp);
+    :AssetDto(AssetType,  Message, SetPoint, Timestamp);

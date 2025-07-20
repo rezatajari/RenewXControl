@@ -52,7 +52,7 @@ namespace RenewXControl.Infrastructure.Services.Asset
                         Timestamp: DateTime.UtcNow
                     );
 
-                    var batteryDto = new Battery(
+                    var batteryDto = new BatteryDto(
                         AssetType: "Battery",
                         Message: session.BatteryControl?.ChargeStateMessage,
                         Capacity: session.BatteryControl?.Capacity ?? 0,
