@@ -66,7 +66,7 @@ builder.Services.AddHostedService<MonitoringScreen>();
 
 // ✅ 5. Others
 builder.Services.AddDbContext<RxcDbContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString(name: "localDatabase")));
+    options.UseSqlServer(builder.Configuration.GetConnectionString(name: "DefaultConnection")));
 
 builder.Services.AddIdentity<User, IdentityRole>(options =>
     {
