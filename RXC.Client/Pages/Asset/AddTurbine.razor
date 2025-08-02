@@ -1,62 +1,91 @@
 ﻿@page "/asset/add-turbine"
+@layout DashboardLayout
 @using System.Net.Http.Headers
 @using RXC.Client.DTOs
-@layout DashboardLayout
 @inject HttpClient Http
 @inject NavigationManager Nav
 @inject IJSRuntime JS
 
-<div class="container mt-4">
-    <div class="card shadow">
-        @if (!string.IsNullOrEmpty(errorMessage))
-        {
-            <div class="mb-4 text-bg-danger text-center">@errorMessage</div>
-        }
-        <div class="card-header bg-primary text-white">
-            <h3><i class="bi bi-fan me-2"></i> Add Wind Turbine</h3>
-        </div>
-        <div class="card-body">
-            <EditForm Model="@turbineModel" OnValidSubmit="@HandleSubmit">
-                <DataAnnotationsValidator/>
-                <ValidationSummary/>
+<PageTitle>Add Wind Turbine - RenewXControl</PageTitle>
 
-                <div class="row mb-3">
-                    <div class="col-md-4">
-                        <label class="form-label">Wind Speed (m/s)</label>
-                        <InputNumber class="form-control" @bind-Value="@turbineModel.WindSpeed"/>
-                        <ValidationMessage For="@(() => turbineModel.WindSpeed)"/>
-                    </div>
-
-                    <div class="col-md-4">
-                        <label class="form-label">Set Point (kW)</label>
-                        <InputNumber class="form-control" @bind-Value="@turbineModel.SetPoint"/>
-                        <ValidationMessage For="@(() => turbineModel.SetPoint)"/>
-                    </div>
-
-                    <div class="col-md-4">
-                        <label class="form-label">Active Power (kW)</label>
-                        <InputNumber class="form-control" @bind-Value="@turbineModel.ActivePower"/>
-                        <ValidationMessage For="@(() => turbineModel.ActivePower)"/>
-                    </div>
+<div class="container-fluid">
+    <div class="row justify-content-center">
+        <div class="col-md-8 col-lg-6">
+            <div class="card shadow-sm">
+                <div class="card-header bg-primary text-white">
+                    <h3 class="mb-0">
+                        <i class="bi bi-fan me-2"></i> Add Wind Turbine
+                    </h3>
                 </div>
 
-                <div class="d-flex justify-content-end gap-2">
-                    <button type="button" class="btn btn-secondary" @onclick="Cancel">
-                        <i class="bi bi-x-circle me-1"></i> Cancel
-                    </button>
-                    <button type="submit" class="btn btn-primary" disabled="@isLoading">
-                        @if (isLoading)
-                        {
-                            <span class="spinner-border spinner-border-sm me-1" role="status"></span>
-                        }
-                        else
-                        {
-                            <i class="bi bi-save me-1"></i>
-                        }
-                        Save Turbine
-                    </button>
+                <div class="card-body">
+                    @if (!string.IsNullOrEmpty(errorMessage))
+                    {
+                        <div class="alert alert-danger alert-dismissible fade show mb-4">
+                            @errorMessage
+                            <button type="button" class="btn-close" @onclick="() => errorMessage = null"></button>
+                        </div>
+                    }
+
+                    <EditForm Model="@turbineModel" OnValidSubmit="@HandleSubmit">
+                        <DataAnnotationsValidator />
+                        <ValidationSummary class="text-danger mb-4" />
+
+                        <div class="row g-3">
+                            <!-- Wind Speed Input -->
+                            <div class="col-md-6">
+                                <label class="form-label">Wind Speed (m/s)*</label>
+                                <InputNumber class="form-control" @bind-Value="@turbineModel.WindSpeed" />
+                                <ValidationMessage For="@(() => turbineModel.WindSpeed)" class="text-danger" />
+                                <small class="text-muted">Must be ≥ 0</small>
+                            </div>
+
+                            <!-- Set Point Input -->
+                            <div class="col-md-6">
+                                <label class="form-label">Set Point (%)*</label>
+                                <InputNumber class="form-control" @bind-Value="@turbineModel.SetPoint" />
+                                <ValidationMessage For="@(() => turbineModel.SetPoint)" class="text-danger" />
+                                <small class="text-muted">Range: 0-100%</small>
+                            </div>
+
+                            <!-- Active Power Input -->
+                            <div class="col-12">
+                                <label class="form-label">Active Power (kW)*</label>
+                                <InputNumber class="form-control" @bind-Value="@turbineModel.ActivePower" />
+                                <ValidationMessage For="@(() => turbineModel.ActivePower)" class="text-danger" />
+                                <small class="text-muted">Must be ≥ 0</small>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label class="form-label">Installation Date</label>
+                                <InputDate class="form-control" @bind-Value="@installationDate" />
+                            </div>
+
+                            <div class="col-12">
+                                <label class="form-label">Notes</label>
+                                <InputTextArea class="form-control" @bind-Value="@notes" rows="2" placeholder="Additional notes" />
+                            </div>
+                        </div>
+
+                        <div class="d-flex justify-content-end gap-2 mt-4">
+                            <button type="button" class="btn btn-outline-secondary" @onclick="Cancel">
+                                <i class="bi bi-x-circle me-1"></i> Cancel
+                            </button>
+                            <button type="submit" class="btn btn-primary" disabled="@isLoading">
+                                @if (isLoading)
+                                {
+                                    <span class="spinner-border spinner-border-sm me-1" role="status" aria-hidden="true"></span>
+                                }
+                                else
+                                {
+                                    <i class="bi bi-save me-1"></i>
+                                }
+                                Save Turbine
+                            </button>
+                        </div>
+                    </EditForm>
                 </div>
-            </EditForm>
+            </div>
         </div>
     </div>
 </div>
@@ -70,59 +99,12 @@
                 <button type="button" class="btn-close btn-close-white" @onclick="() => showSuccess = false"></button>
             </div>
             <div class="toast-body">
-                Turbine added successfully!
+                <i class="bi bi-check-circle me-2"></i> Wind turbine added successfully!
+                <div class="progress mt-2" style="height: 3px;">
+                    <div class="progress-bar bg-white" role="progressbar" style="width: @redirectProgress%"></div>
+                </div>
             </div>
         </div>
     </div>
 }
 
-@code {
-    private DTOs.AddAsset.AddTurbine turbineModel = new();
-    private bool isLoading = false;
-    private bool showSuccess = false;
-    private string? errorMessage;
-
-    protected override async Task OnInitializedAsync()
-    {
-        errorMessage = null;
-    }
-
-    private async Task HandleSubmit()
-    {
-        isLoading = true;
-        try
-        {
-            var token = await JS.InvokeAsync<string>("localStorage.getItem", "authToken");
-            if (string.IsNullOrEmpty(token))
-            {
-                Nav.NavigateTo("/login");
-                return;
-            }
-
-            Http.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(scheme: "Bearer", token);
-            var result = await Http.PostAsJsonAsync(requestUri: "api/asset/add/turbine", turbineModel);
-            var response = await result.Content.ReadFromJsonAsync<GeneralResponse<Guid>>();
-            if (response.IsSuccess)
-            {
-                showSuccess = true;
-            }
-            else
-            {
-                errorMessage = response.Message;
-            }
-        }
-        catch (Exception ex)
-        {
-            await JS.InvokeVoidAsync("alert", $"Error: {ex.Message}");
-        }
-        finally
-        {
-            isLoading = false;
-        }
-    }
-
-    private void Cancel()
-    {
-        Nav.NavigateTo("/api/Dashboard/profile");
-    }
-}

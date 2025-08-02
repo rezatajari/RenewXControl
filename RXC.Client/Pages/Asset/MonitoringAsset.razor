@@ -1,114 +1,148 @@
 ﻿@page "/dashboard/monitoring"
+@layout DashboardLayout
 @using RXC.Client.Utility
 @inject HubConfig HubConfig
 @inject HttpClient Http
 @inject NavigationManager Nav
 @inject IJSRuntime JS
+@implements IAsyncDisposable
 
-<h3 class="mb-4">Live Asset Monitoring</h3>
+<PageTitle>Live Monitoring - RenewXControl</PageTitle>
 
-@if (!isConnected)
-{
-    <p>Connecting to server...</p>
-}
-else if (assetsMonitoring is null)
-{
-    <p>Waiting for data...</p>
-}
-else
-{
-    <div class="row">
-        <!-- Solar Panel -->
-        <div class="col-md-4 mb-3">
-            <div class="card shadow-sm p-3">
-                <h5>☀️ Solar</h5>
-                <p><strong>Power:</strong> @assetsMonitoring.Solar.ActivePower kW</p>
-                <p><strong>Irradiance:</strong> @assetsMonitoring.Solar.Irradiance W/m²</p>
-                <p><strong>SetPoint:</strong> @assetsMonitoring.Solar.SetPoint</p>
-                <p><strong>Message:</strong> @assetsMonitoring.Solar.Message</p>
-                <p><small>@assetsMonitoring.Solar.TimeStamp.ToLocalTime()</small></p>
-            </div>
-        </div>
-
-        <!-- Turbine Panel -->
-        <div class="col-md-4 mb-3">
-            <div class="card shadow-sm p-3">
-                <h5>🌪️ Turbine</h5>
-                <p><strong>Power:</strong> @assetsMonitoring.Turbine.ActivePower kW</p>
-                <p><strong>Wind Speed:</strong> @assetsMonitoring.Turbine.WindSpeed m/s</p>
-                <p><strong>SetPoint:</strong> @assetsMonitoring.Turbine.SetPoint</p>
-                <p><strong>Message:</strong> @assetsMonitoring.Turbine.Message</p>
-                <p><small>@assetsMonitoring.Turbine.TimeStamp.ToLocalTime()</small></p>
-            </div>
-        </div>
-
-        <!-- Battery Panel -->
-        <div class="col-md-4 mb-3">
-            <div class="card shadow-sm p-3">
-                <h5>🔋 Battery</h5>
-                <p><strong>Capacity:</strong> @assetsMonitoring.Battery.Capacity kWh</p>
-                <p><strong>State of Charge:</strong> @assetsMonitoring.Battery.StateCharge%</p>
-                <p><strong>Rate Discharge:</strong> @assetsMonitoring.Battery.RateDischarge kW</p>
-                <p><strong>SetPoint:</strong> @assetsMonitoring.Battery.SetPoint</p>
-                <p><strong>Message:</strong> @assetsMonitoring.Battery.Message</p>
-                <p><small>@assetsMonitoring.Battery.TimeStamp.ToLocalTime()</small></p>
-            </div>
+<div class="container-fluid">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h3><i class="bi bi-speedometer2 me-2"></i> Live Asset Monitoring</h3>
+        <div class="badge @(isConnected ? "bg-success" : "bg-warning")">
+            @(isConnected ? "CONNECTED" : "CONNECTING...")
         </div>
     </div>
-}
 
-@code {
-    private HubConnection? _hubConnection;
-   
-    private bool isConnected = false;
-    private AssetsMonitoring? assetsMonitoring;
-
-    protected override async Task OnInitializedAsync()
+    @if (!isConnected)
     {
-        var token = await JS.InvokeAsync<string>(identifier:"localStorage.getItem", "authToken");
-        if (string.IsNullOrEmpty(token))
-        {
-            Nav.NavigateTo("/login");
-            return;
-        }
-
-        Http.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
-
-        var response = await Http.PostAsync("api/monitoring/register", null);
-        if (!response.IsSuccessStatusCode)
-        {
-            Console.Error.WriteLine("Failed to register assets");
-            return;
-        }
-
-        _hubConnection = new HubConnectionBuilder()
-            .WithUrl(HubConfig.HubUrl, options =>
-            {
-                options.AccessTokenProvider = async () => await JS.InvokeAsync<string>("localStorage.getItem", "authToken");
-            })
-            .WithAutomaticReconnect()
-            .Build();
-
-        _hubConnection.On<AssetsMonitoring>("AssetUpdate", updatedAssets =>
-        {
-            assetsMonitoring = updatedAssets;
-            InvokeAsync(StateHasChanged);
-        });
-
-        await _hubConnection.StartAsync();
-        isConnected = true;
+        <div class="text-center py-5">
+            <div class="spinner-border text-primary" role="status">
+                <span class="visually-hidden">Loading...</span>
+            </div>
+            <p class="mt-3">Connecting to monitoring service...</p>
+        </div>
     }
-
-    public async ValueTask DisposeAsync()
+    else if (assetsMonitoring is null)
     {
-        if (_hubConnection is not null)
-            await _hubConnection.DisposeAsync();
+        <div class="text-center py-5">
+            <div class="spinner-border text-primary" role="status">
+                <span class="visually-hidden">Loading...</span>
+            </div>
+            <p class="mt-3">Waiting for initial data...</p>
+        </div>
     }
-
-    private class AssetsMonitoring
+    else
     {
-        public Solar Solar { get; set; } = default!;
-        public Turbine Turbine { get; set; } = default!;
-        public Battery Battery { get; set; } = default!;
+        <div class="row g-4">
+            <!-- Solar Panel Card -->
+            <div class="col-md-6 col-xl-4">
+                <div class="card shadow-sm h-100 border-primary">
+                    <div class="card-header bg-primary text-white">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <h5 class="mb-0">
+                                <i class="bi bi-sun-fill me-2"></i> Solar Panel
+                            </h5>
+                            <span class="badge bg-white text-primary">@assetsMonitoring.Solar.TimeStamp.ToLocalTime().ToString("HH:mm")</span>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="d-flex flex-column">
+                            <div class="d-flex justify-content-between py-2 border-bottom">
+                                <span class="text-muted">Power Output</span>
+                                <span class="fw-bold">@assetsMonitoring.Solar.ActivePower kW</span>
+                            </div>
+                            <div class="d-flex justify-content-between py-2 border-bottom">
+                                <span class="text-muted">Irradiance</span>
+                                <span class="fw-bold">@assetsMonitoring.Solar.Irradiance W/m²</span>
+                            </div>
+                            <div class="d-flex justify-content-between py-2 border-bottom">
+                                <span class="text-muted">Set Point</span>
+                                <span class="fw-bold">@assetsMonitoring.Solar.SetPoint%</span>
+                            </div>
+                            <div class="mt-3 p-2 bg-light rounded">
+                                <small class="text-muted">Status:</small>
+                                <p class="mb-0">@assetsMonitoring.Solar.Message</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Wind Turbine Card -->
+            <div class="col-md-6 col-xl-4">
+                <div class="card shadow-sm h-100 border-info">
+                    <div class="card-header bg-info text-white">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <h5 class="mb-0">
+                                <i class="bi bi-fan me-2"></i> Wind Turbine
+                            </h5>
+                            <span class="badge bg-white text-info">@assetsMonitoring.Turbine.TimeStamp.ToLocalTime().ToString("HH:mm")</span>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="d-flex flex-column">
+                            <div class="d-flex justify-content-between py-2 border-bottom">
+                                <span class="text-muted">Power Output</span>
+                                <span class="fw-bold">@assetsMonitoring.Turbine.ActivePower kW</span>
+                            </div>
+                            <div class="d-flex justify-content-between py-2 border-bottom">
+                                <span class="text-muted">Wind Speed</span>
+                                <span class="fw-bold">@assetsMonitoring.Turbine.WindSpeed m/s</span>
+                            </div>
+                            <div class="d-flex justify-content-between py-2 border-bottom">
+                                <span class="text-muted">Set Point</span>
+                                <span class="fw-bold">@assetsMonitoring.Turbine.SetPoint%</span>
+                            </div>
+                            <div class="mt-3 p-2 bg-light rounded">
+                                <small class="text-muted">Status:</small>
+                                <p class="mb-0">@assetsMonitoring.Turbine.Message</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Battery Storage Card -->
+            <div class="col-md-6 col-xl-4">
+                <div class="card shadow-sm h-100 border-success">
+                    <div class="card-header bg-success text-white">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <h5 class="mb-0">
+                                <i class="bi bi-battery-charging me-2"></i> Battery Storage
+                            </h5>
+                            <span class="badge bg-white text-success">@assetsMonitoring.Battery.TimeStamp.ToLocalTime().ToString("HH:mm")</span>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="d-flex flex-column">
+                            <div class="d-flex justify-content-between py-2 border-bottom">
+                                <span class="text-muted">Capacity</span>
+                                <span class="fw-bold">@assetsMonitoring.Battery.Capacity kWh</span>
+                            </div>
+                            <div class="d-flex justify-content-between py-2 border-bottom">
+                                <span class="text-muted">State of Charge</span>
+                                <span class="fw-bold">@assetsMonitoring.Battery.StateCharge%</span>
+                            </div>
+                            <div class="d-flex justify-content-between py-2 border-bottom">
+                                <span class="text-muted">Discharge Rate</span>
+                                <span class="fw-bold">@assetsMonitoring.Battery.RateDischarge kW</span>
+                            </div>
+                            <div class="d-flex justify-content-between py-2 border-bottom">
+                                <span class="text-muted">Set Point</span>
+                                <span class="fw-bold">@assetsMonitoring.Battery.SetPoint%</span>
+                            </div>
+                            <div class="mt-3 p-2 bg-light rounded">
+                                <small class="text-muted">Status:</small>
+                                <p class="mb-0">@assetsMonitoring.Battery.Message</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     }
-}
+</div>

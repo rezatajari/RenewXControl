@@ -1,53 +1,63 @@
 ﻿@page "/asset/add-site"
-@using System.Net.Http.Headers
-@using RXC.Client.Services
 @layout DashboardLayout
+@using RXC.Client.Services
 @inject HttpClient Http
 @inject NavigationManager Nav
 @inject IJSRuntime JS
 @inject DashboardState DashboardState
 
-<div class="container mt-4">
-    <div class="card shadow">
-        <div class="card-header bg-primary text-white">
-            <h3><i class="bi bi-pin-map me-2"></i> Add New Site</h3>
-        </div>
-        <div class="card-body">
-            <EditForm Model="@siteModel" OnValidSubmit="@HandleSubmit">
-                <DataAnnotationsValidator />
-                <ValidationSummary />
+<PageTitle>Add Site - RenewXControl</PageTitle>
 
-                <div class="row mb-3">
-                    <div class="col-md-6">
-                        <label class="form-label">Site Name</label>
-                        <InputText class="form-control" @bind-Value="@siteModel.Name" />
-                        <ValidationMessage For="@(() => siteModel.Name)" />
-                    </div>
-
-                    <div class="col-md-6">
-                        <label class="form-label">Location</label>
-                        <InputText class="form-control" @bind-Value="@siteModel.Location" />
-                        <ValidationMessage For="@(() => siteModel.Location)" />
-                    </div>
+<div class="container-fluid">
+    <div class="row justify-content-center">
+        <div class="col-md-8 col-lg-6">
+            <div class="card shadow-sm">
+                <div class="card-header bg-primary text-white">
+                    <h3 class="mb-0">
+                        <i class="bi bi-pin-map me-2"></i> Add New Site
+                    </h3>
                 </div>
 
-                <div class="d-flex justify-content-end gap-2">
-                    <button type="button" class="btn btn-secondary" @onclick="Cancel">
-                        <i class="bi bi-x-circle me-1"></i> Cancel
-                    </button>
-                    <button type="submit" class="btn btn-primary" disabled="@isLoading">
-                        @if (isLoading)
-                        {
-                            <span class="spinner-border spinner-border-sm me-1" role="status"></span>
-                        }
-                        else
-                        {
-                            <i class="bi bi-save me-1"></i>
-                        }
-                        Save Site
-                    </button>
+                <div class="card-body">
+                    <EditForm Model="@siteModel" OnValidSubmit="@HandleSubmit">
+                        <DataAnnotationsValidator />
+                        <ValidationSummary class="text-danger mb-4" />
+
+                        <div class="mb-3">
+                            <label class="form-label">Site Name*</label>
+                            <InputText class="form-control" @bind-Value="@siteModel.Name"
+                                       placeholder="Enter site name" />
+                            <ValidationMessage For="@(() => siteModel.Name)" class="text-danger" />
+                            <small class="text-muted">Maximum 50 characters</small>
+                        </div>
+
+                        <div class="mb-4">
+                            <label class="form-label">Location*</label>
+                            <InputText class="form-control" @bind-Value="@siteModel.Location"
+                                       placeholder="Enter location address" />
+                            <ValidationMessage For="@(() => siteModel.Location)" class="text-danger" />
+                            <small class="text-muted">Maximum 100 characters</small>
+                        </div>
+
+                        <div class="d-flex justify-content-end gap-2">
+                            <button type="button" class="btn btn-outline-secondary" @onclick="Cancel">
+                                <i class="bi bi-x-circle me-1"></i> Cancel
+                            </button>
+                            <button type="submit" class="btn btn-primary" disabled="@isLoading">
+                                @if (isLoading)
+                                {
+                                    <span class="spinner-border spinner-border-sm me-1" role="status" aria-hidden="true"></span>
+                                }
+                                else
+                                {
+                                    <i class="bi bi-save me-1"></i>
+                                }
+                                Save Site
+                            </button>
+                        </div>
+                    </EditForm>
                 </div>
-            </EditForm>
+            </div>
         </div>
     </div>
 </div>
@@ -61,58 +71,8 @@
                 <button type="button" class="btn-close btn-close-white" @onclick="() => showSuccess = false"></button>
             </div>
             <div class="toast-body">
-                Site added successfully!
+                <i class="bi bi-check-circle me-2"></i> Site added successfully!
             </div>
         </div>
     </div>
-}
-
-@code {
-    private DTOs.AddAsset.AddSite siteModel = new();
-    private bool isLoading = false;
-    private bool showSuccess = false;
-
-   
-
-    private async Task HandleSubmit()
-    {
-        isLoading = true;
-        try
-        {
-            var token = await JS.InvokeAsync<string>("localStorage.getItem", "authToken");
-            if (string.IsNullOrEmpty(token))
-            {
-                Nav.NavigateTo("/login");
-                return;
-            }
-
-            Http.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
-            var response = await Http.PostAsJsonAsync("api/site/add", siteModel);
-
-            if (response.IsSuccessStatusCode)
-            {
-                showSuccess = true;
-                await Task.Delay(3000);
-                DashboardState.SetHasSite(true);
-                Nav.NavigateTo("/asset/add-site");
-            }
-            else
-            {
-                await JS.InvokeVoidAsync("alert", $"Error: {response.ReasonPhrase}");
-            }
-        }
-        catch (Exception ex)
-        {
-            await JS.InvokeVoidAsync("alert", $"Error: {ex.Message}");
-        }
-        finally
-        {
-            isLoading = false;
-        }
-    }
-
-    private void Cancel()
-    {
-        Nav.NavigateTo("/api/Dashboard/profile");
-    }
 }
