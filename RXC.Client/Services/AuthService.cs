@@ -41,5 +41,29 @@ namespace RXC.Client.Services
             var result= await _http.PostAsJsonAsync(requestUri:"api/auth/register", model);
             return await  result.Content.ReadFromJsonAsync<GeneralResponse<string>>();
         }
+
+        public async Task<GeneralResponse<bool>> LogoutAsync()
+        {
+          var result=  await _http.PostAsync("api/auth/logout", null);
+          var resultContent = await result.Content.ReadFromJsonAsync<GeneralResponse<bool>>();
+
+          if (!resultContent.IsSuccess)
+              return new GeneralResponse<bool>()
+              {
+                  IsSuccess = false, 
+                  Message = "Log out is not work"
+              };
+
+          await _js.InvokeVoidAsync("localStorage.removeItem", "authToken");
+
+            _http.DefaultRequestHeaders.Authorization = null;
+
+            return new GeneralResponse<bool>
+            {
+                IsSuccess = true,
+                Data = true,
+                Message = "Logged out successfully"
+            };
+        }
     }
 }

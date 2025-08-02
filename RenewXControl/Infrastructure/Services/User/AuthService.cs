@@ -103,6 +103,13 @@ public class AuthService : IAuthService
         return GeneralResponse<string>.Success(data:token, message:"Login successful");
     }
 
+    public async Task<GeneralResponse<bool>> LogoutAsync()
+    {
+       await _signInManager.SignOutAsync();
+
+       return GeneralResponse<bool>.Success(data: true);
+    }
+
     public string GenerateToken(Domain.User.User user, IList<string> roles)
     {
         var claims = new List<Claim>

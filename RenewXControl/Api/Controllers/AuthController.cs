@@ -50,5 +50,11 @@ namespace RenewXControl.Api.Controllers
             return result.IsSuccess ? Ok(result) : BadRequest(result);
         }
 
+        [HttpPost(template: "logout")]
+        public async Task<IActionResult> Logout()
+        {
+            var result = await _authService.LogoutAsync();
+            return result.IsSuccess ? Ok(result) : BadRequest(result);
+        }
     }
 }

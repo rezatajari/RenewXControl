@@ -5,6 +5,7 @@
 @inject IJSRuntime JS
 @inject NavigationManager Nav
 @inject HttpClient Http
+@inject AuthService AuthService
 
 <div class="d-flex flex-column min-vh-100 bg-light">
     <!-- Top Navigation -->
@@ -29,13 +30,13 @@
                     </button>
                     <ul class="dropdown-menu dropdown-menu-end">
                         <li>
-                            <NavLink class="dropdown-item" href="/profile">
+                            <NavLink class="dropdown-item" href="/dashboard/profile">
                                 <i class="bi bi-person me-2"></i> Profile
                             </NavLink>
                         </li>
                         <li><hr class="dropdown-divider"></li>
                         <li>
-                            <NavLink class="dropdown-item text-danger" href="/logout">
+                            <NavLink class="dropdown-item text-danger" @onclick="Logout">
                                 <i class="bi bi-box-arrow-right me-2"></i> Logout
                             </NavLink>
                         </li>
