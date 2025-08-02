@@ -4,84 +4,72 @@
 @inject NavigationManager Navigation
 @inject IJSRuntime JS
 
-<PageTitle>Login</PageTitle>
+<PageTitle>Login - RenewXControl</PageTitle>
 
-<div class="max-w-md mx-auto mt-20 p-6 shadow-xl rounded-xl bg-white">
-    <h2 class="text-2xl font-bold mb-4 text-center">Login</h2>
+<div class="container-fluid">
+    <div class="row justify-content-center">
+        <div class="col-md-6 col-lg-4">
+            <div class="card shadow-sm mt-5">
+                <div class="card-body p-4">
+                    <div class="text-center mb-4">
+                        <i class="bi bi-lightning-charge-fill text-primary" style="font-size: 2rem;"></i>
+                        <h2 class="h4 mt-2">Sign in to RXC</h2>
+                    </div>
 
-    @if (!string.IsNullOrEmpty(errorMessage))
-    {
-        <div class="mb-4 text-bg-warning text-center">@errorMessage</div>
-    }
+                    @if (!string.IsNullOrEmpty(errorMessage))
+                    {
+                        <div class="alert alert-danger mb-3 text-center">@errorMessage</div>
+                    }
 
-    @if (!string.IsNullOrEmpty(successMessage))
-    {
-        <div class="alert alert-success text-center mb-4">@successMessage</div>
-    }
+                    @if (!string.IsNullOrEmpty(successMessage))
+                    {
+                        <div class="alert alert-success mb-3 text-center">@successMessage</div>
+                    }
 
-    @if (isLoading)
-    {
-        <div class="mb-4 text-center">
-            <span class="loader"></span> <!-- Replace with your spinner if you have one -->
-            Loading...
+                    @if (isLoading)
+                    {
+                        <div class="text-center mb-3">
+                            <div class="spinner-border text-primary" role="status">
+                                <span class="visually-hidden">Loading...</span>
+                            </div>
+                            <p class="mt-2">Authenticating...</p>
+                        </div>
+                    }
+
+                    <EditForm Model="@model" OnValidSubmit="@LoginUser">
+                        <DataAnnotationsValidator />
+                        <ValidationSummary class="text-danger mb-3" />
+
+                        <div class="mb-3">
+                            <label class="form-label">Email</label>
+                            <InputText @bind-Value="model.Email" class="form-control" placeholder="Enter your email" />
+                            <ValidationMessage For="@(() => model.Email)" class="text-danger" />
+                        </div>
+
+                        <div class="mb-4">
+                            <label class="form-label">Password</label>
+                            <InputText @bind-Value="model.Password" type="password" class="form-control" placeholder="Enter your password" />
+                            <ValidationMessage For="@(() => model.Password)" class="text-danger" />
+                        </div>
+
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-primary" disabled="@isLoading">
+                                @if (isLoading)
+                                {
+                                    <span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+                                }
+                                Sign In
+                            </button>
+                        </div>
+                    </EditForm>
+
+                    <div class="text-center mt-3">
+                        <p class="small text-muted">
+                            Don't have an account? <NavLink href="/register" class="text-primary">Register</NavLink>
+                        </p>
+                    </div>
+                </div>
+            </div>
         </div>
-    }
-
-    <EditForm Model="@model" OnValidSubmit="@LoginUser">
-        <DataAnnotationsValidator />
-        <ValidationSummary />
-
-        <div class="mb-4">
-            <InputText @bind-Value="model.Email" class="input" placeholder="Email" />
-        </div>
-
-        <div class="mb-4">
-            <InputText @bind-Value="model.Password" type="password" class="input" placeholder="Password" />
-        </div>
-
-        <button type="submit" class="btn-primary w-full" disabled="@isLoading">Login</button>
-    </EditForm>
+    </div>
 </div>
-
-@code {
-    private DTOs.User.Auth.Login model = new();
-    private string? errorMessage;
-    private string? successMessage;
-    private bool isLoading = false;
-
-
-    protected override async Task OnInitializedAsync()
-    {
-        successMessage = await JS.InvokeAsync<string>(identifier: "localStorage.getItem", "RegisterSuccess");
-        if (!string.IsNullOrEmpty(successMessage))
-        {
-            await JS.InvokeVoidAsync(identifier: "localStorage.removeItem", "RegisterSuccess");
-        }
-    }
-
-    private async Task LoginUser()
-    {
-
-        successMessage = null;
-
-        isLoading = true;
-        errorMessage = null;
-        try
-        {
-            var result = await AuthService.LoginAsync(model);
-            if (!result.IsSuccess)
-            {
-                errorMessage = result.Message;
-            }
-            else
-            {
-                await JS.InvokeVoidAsync(identifier:"localStorage.setItem","loginSuccess",$"{result.Message}");
-                Navigation.NavigateTo(uri:"/Dashboard/profile");
-            }
-        }
-        finally
-        {
-            isLoading = false;
-        }
-    }
-}

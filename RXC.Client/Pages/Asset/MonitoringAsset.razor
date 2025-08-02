@@ -1,4 +1,6 @@
 ﻿@page "/dashboard/monitoring"
+@using RXC.Client.Utility
+@inject HubConfig HubConfig
 @inject HttpClient Http
 @inject NavigationManager Nav
 @inject IJSRuntime JS
@@ -57,6 +59,7 @@ else
 
 @code {
     private HubConnection? _hubConnection;
+   
     private bool isConnected = false;
     private AssetsMonitoring? assetsMonitoring;
 
@@ -79,7 +82,7 @@ else
         }
 
         _hubConnection = new HubConnectionBuilder()
-            .WithUrl(Nav.ToAbsoluteUri("http://alirezanuri70-001-site1.mtempurl.com/assetsHub"), options =>
+            .WithUrl(HubConfig.HubUrl, options =>
             {
                 options.AccessTokenProvider = async () => await JS.InvokeAsync<string>("localStorage.getItem", "authToken");
             })

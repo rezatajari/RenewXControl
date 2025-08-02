@@ -1,12 +1,40 @@
 ﻿@inherits LayoutComponentBase
-<div class="page">
-    <div class="sidebar">
-        <NavMenu />
-    </div>
 
-    <main>
-        <article class="content px-4">
+<div class="app-container d-flex flex-column min-vh-100">
+    <!-- Header with minimal navigation -->
+    <header class="bg-primary text-white p-3">
+        <div class="container-fluid">
+            <div class="d-flex justify-content-between align-items-center">
+                <a href="/" class="navbar-brand text-white">
+                    <span class="fw-bold">RenewXControl</span>
+                </a>
+
+                <nav class="d-flex align-items-center">
+                    <ul class="nav">
+                        <li class="nav-item">
+                            <NavLink class="nav-link text-white" href="/">Home</NavLink>
+                        </li>
+                        <li class="nav-item">
+                            <NavLink class="nav-link text-white" href="/login">Login</NavLink>
+                        </li>
+                        <li class="nav-item">
+                            <NavLink class="nav-link text-white" href="/register">Register</NavLink>
+                        </li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main content area -->
+    <main class="flex-grow-1 p-3">
+        <div class="container-fluid">
             @Body
-        </article>
+        </div>
     </main>
+
+    <!-- Simple footer -->
+    <footer class="bg-light p-3 text-center">
+        <small class="text-muted">© @DateTime.Now.Year RenewXControl</small>
+    </footer>
 </div>

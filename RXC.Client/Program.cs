@@ -1,17 +1,30 @@
-﻿using Microsoft.AspNetCore.Components;
-using Microsoft.AspNetCore.Components.Authorization;
-using Microsoft.AspNetCore.Components.Web;
-using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
-using Microsoft.AspNetCore.SignalR.Client;
+﻿using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using RXC.Client;
 using RXC.Client.Services;
+using System.Net.Http.Json;
+using RXC.Client.Utility;
 
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
 builder.RootComponents.Add<App>("#app");
-builder.RootComponents.Add<HeadOutlet>("head::after");
+
+// Step 1: Load appsettings manually
+var httpClient = new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) };
+var config = await httpClient.GetFromJsonAsync<Dictionary<string, string>>($"appsettings.Development.json");
+
+// Step 2: Read config values
+var apiBaseUrl = config["ApiBaseUrl"];
+var signalRHubUrl = config["SignalRHubUrl"];
+
+// Step 3: Inject HttpClient with base address
 builder.Services.AddScoped(sp => new HttpClient
 {
-    BaseAddress = new Uri("http://alirezanuri70-001-site1.mtempurl.com")
+    BaseAddress = new Uri(apiBaseUrl)
+});
+
+// Optional: register config values in DI
+builder.Services.AddSingleton(new HubConfig
+{
+    HubUrl = signalRHubUrl
 });
 
 builder.Services.AddScoped<AuthService>();

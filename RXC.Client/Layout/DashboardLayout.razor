@@ -1,263 +1,141 @@
 ﻿@inherits LayoutComponentBase
-@using System.Globalization
-@inject DashboardState DashboardState
-@using System.Net
-@using System.Net.Http.Headers
-@using Microsoft.AspNetCore.Components.Authorization
-@using Microsoft.AspNetCore.Components.Routing
 @using RXC.Client.DTOs
 @using RXC.Client.Services
+@inject DashboardState DashboardState
+@inject IJSRuntime JS
+@inject NavigationManager Nav
+@inject HttpClient Http
 
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <!-- Bootstrap 5 CSS CDN -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-    <!-- Bootstrap Icons -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
-    <!-- Custom Dashboard CSS -->
-    <style>
-        :root {
-            --sidebar-width: 250px;
-            --topbar-height: 60px;
-        }
+<div class="d-flex flex-column min-vh-100 bg-light">
+    <!-- Top Navigation -->
+    <header class="navbar navbar-expand-lg navbar-dark bg-primary shadow-sm sticky-top">
+        <div class="container-fluid">
+            <!-- Sidebar Toggle Button (visible on mobile) -->
+            <button class="navbar-toggler me-2" type="button" @onclick="ToggleSidebar">
+                <span class="navbar-toggler-icon"></span>
+            </button>
 
-        body {
-            overflow-x: hidden;
-        }
+            <!-- Brand -->
+            <a class="navbar-brand fw-bold" href="/">
+                <i class="bi bi-lightning-charge-fill me-2"></i> RenewXControl
+            </a>
 
-        .dashboard-container {
-            display: flex;
-            min-height: 100vh;
-        }
-
-        .sidebar {
-            width: var(--sidebar-width);
-            height: 100vh;
-            position: fixed;
-            left: 0;
-            top: 0;
-            background: #2c3e50;
-            color: white;
-            transition: all 0.3s;
-            z-index: 1000;
-        }
-
-        .main-content {
-            margin-left: var(--sidebar-width);
-            width: calc(100% - var(--sidebar-width));
-            min-height: 100vh;
-            background: #f8f9fa;
-        }
-
-        .topbar {
-            height: var(--topbar-height);
-            background: white;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-        }
-
-        .nav-link {
-            color: rgba(255,255,255,0.8);
-            border-radius: 4px;
-            margin: 5px 10px;
-        }
-
-        .nav-link:hover, .nav-link.active {
-            background: rgba(255,255,255,0.1);
-            color: white;
-        }
-
-        .submenu {
-            background: rgba(0,0,0,0.1);
-            border-radius: 4px;
-        }
-
-        @@media (max-width: 992px) {
-            .sidebar {
-                margin-left: calc(-1 * var(--sidebar-width));
-            }
-
-            .sidebar.show {
-                margin-left: 0;
-            }
-
-            .main-content {
-                width: 100%;
-                margin-left: 0;
-            }
-        }
-    </style>
-</head>
-<body>
-    <div class="dashboard-container">
-        <!-- Sidebar -->
-        <div class="sidebar @(sidebarCollapsed ? "collapsed" : "")" id="sidebar">
-            <div class="d-flex flex-column h-100">
-                <!-- Brand Logo -->
-                <div class="p-3 text-center border-bottom">
-                    <h4 class="m-0">RXC Dashboard</h4>
+            <!-- User Dropdown -->
+            <div class="ms-auto">
+                <div class="dropdown">
+                    <button class="btn btn-light dropdown-toggle" type="button" id="userDropdown"
+                            data-bs-toggle="dropdown" aria-expanded="false">
+                        <i class="bi bi-person-circle me-1"></i> @userName
+                    </button>
+                    <ul class="dropdown-menu dropdown-menu-end">
+                        <li>
+                            <NavLink class="dropdown-item" href="/profile">
+                                <i class="bi bi-person me-2"></i> Profile
+                            </NavLink>
+                        </li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li>
+                            <NavLink class="dropdown-item text-danger" href="/logout">
+                                <i class="bi bi-box-arrow-right me-2"></i> Logout
+                            </NavLink>
+                        </li>
+                    </ul>
                 </div>
+            </div>
+        </div>
+    </header>
 
+    <!-- Main Content Area -->
+    <div class="d-flex flex-grow-1">
+        <!-- Sidebar - Collapsible -->
+        <div class="@sidebarClass bg-white border-end shadow-sm">
+            <div class="d-flex flex-column h-100 p-3">
                 <!-- Navigation -->
-                <div class="flex-grow-1 p-3 overflow-auto">
-                    <nav class="nav flex-column">
-                        <!-- Home -->
+                <ul class="nav nav-pills flex-column mb-auto">
+                    <!-- Dashboard -->
+                    <li class="nav-item">
                         <NavLink class="nav-link" href="/" Match="NavLinkMatch.All">
-                            <i class="bi bi-house-door me-2"></i> Home
+                            <i class="bi bi-speedometer2 me-2"></i> Dashboard
                         </NavLink>
+                    </li>
 
-                        <!-- Collapsible Menu -->
-                        <div class="nav-item">
-                            <button class="nav-link w-100 text-start" @onclick="ToggleAssetsMenu">
-                                <i class="bi bi-gear me-2"></i> Asset Settings
-                                <i class="bi float-end @(showAssetsMenu ? "bi-chevron-up" : "bi-chevron-down")"></i>
-                            </button>
+                    <!-- Asset Management (Collapsible) -->
+                    <li class="nav-item">
+                        <button class="nav-link text-start w-100 d-flex justify-content-between align-items-center"
+                                @onclick="ToggleAssetsMenu">
+                            <span>
+                                <i class="bi bi-gear me-2"></i> Asset Management
+                            </span>
+                            <i class="bi @(showAssetsMenu ? "bi-chevron-up" : "bi-chevron-down")"></i>
+                        </button>
 
-                            @if (showAssetsMenu)
-                            {
-                                <div class="submenu ps-4 py-2">
+                        @if (showAssetsMenu)
+                        {
+                            <ul class="nav flex-column ps-4 mt-1">
+                                <li class="nav-item">
                                     <NavLink class="nav-link" href="/asset/add-site">
                                         <i class="bi bi-building me-2"></i> Add Site
                                     </NavLink>
+                                </li>
 
-                                    @if (DashboardState.HasSite)
-                                    {
+                                @if (DashboardState.HasSite)
+                                {
+                                    <li class="nav-item">
                                         <NavLink class="nav-link" href="/asset/add-battery">
                                             <i class="bi bi-battery-charging me-2"></i> Add Battery
                                         </NavLink>
+                                    </li>
+                                    <li class="nav-item">
                                         <NavLink class="nav-link" href="/asset/add-solar">
                                             <i class="bi bi-sun me-2"></i> Add Solar
                                         </NavLink>
+                                    </li>
+                                    <li class="nav-item">
                                         <NavLink class="nav-link" href="/asset/add-turbine">
                                             <i class="bi bi-fan me-2"></i> Add Turbine
                                         </NavLink>
-                                    }
-                                    else
-                                    {
-                                        <div class="alert alert-warning mt-2">
-                                            Please add a Site first
-                                        </div>
-                                    }
-                                </div>
-                            }
-                        </div>
+                                    </li>
+                                }
+                            </ul>
+                        }
+                    </li>
 
-                        <!-- Profile -->
-                        <NavLink class="nav-link" href="/dashboard/profile">
-                            <i class="bi bi-person-circle me-2"></i> Profile
+                    <!-- Monitoring -->
+                    <li class="nav-item">
+                        <NavLink class="nav-link" href="/monitoring">
+                            <i class="bi bi-graph-up me-2"></i> Monitoring
                         </NavLink>
-                        
-                        <NavLink class="nav-link" href="/dashboard/monitoring">
-                            <i class="bi bi-person-circle me-2"></i> Monitoring Assets
+                    </li>
+
+                    <!-- Reports -->
+                    <li class="nav-item">
+                        <NavLink class="nav-link" href="/reports">
+                            <i class="bi bi-file-earmark-text me-2"></i> Reports
                         </NavLink>
-                    </nav>
-                </div>
+                    </li>
+                </ul>
 
                 <!-- Footer -->
-                <div class="p-3 border-top text-center">
-                    <small>Version 1.0.0</small>
+                <div class="mt-auto pt-3 border-top text-center">
+                    <small class="text-muted">v1.0.0</small>
                 </div>
             </div>
         </div>
 
         <!-- Main Content -->
-        <div class="main-content">
-            <!-- Top Bar -->
-            <div class="topbar sticky-top d-flex align-items-center px-4">
-                <button class="btn btn-outline-secondary me-3 d-lg-none" @onclick="ToggleSidebar">
-                    <i class="bi bi-list"></i>
-                </button>
-                <span class="flex-grow-1"></span>
-                <div class="dropdown">
-                    <button class="btn btn-light dropdown-toggle" type="button" id="userDropdown" data-bs-toggle="dropdown">
-                        <i class="bi bi-person-circle me-1"></i> User
-                    </button>
-                    <ul class="dropdown-menu dropdown-menu-end">
-                        <li><NavLink class="dropdown-item" href="/dashboard/profile">Profile</NavLink></li>
-                        <li><hr class="dropdown-divider"></li>
-                        <li><a class="dropdown-item text-danger" href="/logout">Logout</a></li>
-                    </ul>
-                </div>
-            </div>
-
-            <!-- Page Content -->
-            <div class="p-4">
-                @Body
-            </div>
-        </div>
+        <main class="flex-grow-1 p-4">
+            @Body
+        </main>
     </div>
 
-    <!-- Bootstrap 5 JS Bundle with Popper -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-
-    <!-- Custom JavaScript -->
-    <script>
-        // Initialize Bootstrap tooltips
-        var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
-        var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
-            return new bootstrap.Tooltip(tooltipTriggerEl)
-        });
-    </script>
-</body>
-</html>
+    <!-- Footer -->
+    <footer class="bg-dark text-white py-3 mt-auto">
+        <div class="container-fluid text-center">
+            <small>RenewXControl &copy; @DateTime.Now.Year</small>
+        </div>
+    </footer>
+</div>
 
 @code {
-    private bool sidebarCollapsed = false;
-    private bool showAssetsMenu = false;
-
-    [Inject] private IJSRuntime JS { get; set; }
-    [Inject] private HttpClient _http { get; set; }
-    [Inject] private NavigationManager Nav { get; set; }
-
-    protected override async Task OnInitializedAsync()
-    {
-        DashboardState.OnChange += StateHasChanged;
-
-        var token = await JS.InvokeAsync<string>("localStorage.getItem", "authToken");
-        if (string.IsNullOrEmpty(token))
-        {
-            Nav.NavigateTo("/login");
-            return;
-        }
-
-        try
-        {
-            var response = await _http.GetAsync("api/site/HasSite");
-            if (response.IsSuccessStatusCode)
-            {
-                var result = await response.Content.ReadFromJsonAsync<GeneralResponse<bool>>();
-                DashboardState.SetHasSite(result.Data);
-            }
-            else
-            {
-                DashboardState.SetHasSite(false);
-            }
-        }
-        catch
-        {
-            DashboardState.SetHasSite(false);
-        }
-    }
-
-    public void Dispose()
-    {
-        DashboardState.OnChange -= StateHasChanged;
-    }
-
-    private void ToggleSidebar()
-    {
-        sidebarCollapsed = !sidebarCollapsed;
-
-        // For mobile view
-        var sidebar = JS.InvokeAsync<string>("eval",
-            "document.getElementById('sidebar').classList.toggle('show')");
-    }
-
-    private void ToggleAssetsMenu()
-    {
-        showAssetsMenu = !showAssetsMenu;
-    }
-
+    
 }

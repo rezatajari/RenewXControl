@@ -27,6 +27,14 @@ using Microsoft.OpenApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
+var environment = builder.Environment;
+
+builder.Configuration
+    .SetBasePath(Directory.GetCurrentDirectory())
+    .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
+    .AddJsonFile($"appsettings.{environment.EnvironmentName}.json", optional: true, reloadOnChange: true)
+    .AddEnvironmentVariables();
+
 builder.Services.Configure<ApiBehaviorOptions>(options =>
 {
     options.SuppressModelStateInvalidFilter = true;
@@ -37,7 +45,11 @@ builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowBlazorClient", policy =>
     {
-        policy.WithOrigins("http://alirezanuri70-001-site1.mtempurl.com")
+        var allowedOrigins = builder.Configuration
+            .GetSection("Cors:AllowedOrigins")
+            .Get<string[]>();
+
+        policy.WithOrigins(allowedOrigins!)
             .AllowAnyHeader()
             .AllowAnyMethod()
             .AllowCredentials();
@@ -131,13 +143,13 @@ builder.Services.AddControllers(options =>
 
 var app = builder.Build();
 
-var scope = app.Services.CreateScope();
-var dbContext = scope.ServiceProvider.GetService<RxcDbContext>();
-var pendingMigration = dbContext.Database.GetPendingMigrations();
-if (pendingMigration.Any())
-{
-    dbContext.Database.Migrate();
-}
+//var scope = app.Services.CreateScope();
+//var dbContext = scope.ServiceProvider.GetService<RxcDbContext>();
+//var pendingMigration = dbContext.Database.GetPendingMigrations();
+//if (pendingMigration.Any())
+//{
+//    dbContext.Database.Migrate();
+//}
 
 app.UseSwagger();
 app.UseSwaggerUI();

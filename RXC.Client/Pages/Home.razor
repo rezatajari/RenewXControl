@@ -1,28 +1,41 @@
 ﻿@page "/"
 @inject NavigationManager Navigation
 
-<PageTitle>Welcome</PageTitle>
+<PageTitle>RenewXControl - Home</PageTitle>
 
-<div class="flex flex-col items-center justify-center min-h-screen bg-gray-100 p-8">
-    <div class="bg-white shadow-xl rounded-2xl p-10 max-w-md text-center">
-        <h1 class="text-3xl font-bold mb-6 text-gray-800">Welcome to RenewX Control</h1>
-        <p class="text-gray-600 mb-8">Please login or register to continue</p>
+<div class="welcome-container text-center py-5">
+    <h1 class="display-5 mb-4">Welcome to RenewXControl</h1>
 
-        <div class="flex justify-around">
-            <button @onclick="NavigateToLogin"
-                    class="bg-blue-600 hover:bg-blue-700 text-blue font-bold py-2 px-4 rounded-xl shadow">
-                Login
-            </button>
+    <EditForm Model="@model" class="card p-4 mx-auto" style="max-width: 500px;">
+        <DataAnnotationsValidator />
+        <ValidationSummary />
 
-            <button @onclick="NavigateToRegister"
-                    class="bg-green-600 hover:bg-green-700 text-blue font-bold py-2 px-4 rounded-xl shadow">
-                Register
-            </button>
+        <div class="mb-3">
+            <label class="form-label">Quick Access</label>
+            <div class="d-grid gap-2">
+                <button type="button" @onclick="NavigateToLogin"
+                        class="btn btn-primary">
+                    Login to Your Account
+                </button>
+                <button type="button" @onclick="NavigateToRegister"
+                        class="btn btn-outline-secondary">
+                    Create New Account
+                </button>
+            </div>
         </div>
+    </EditForm>
+
+    <div class="mt-5">
+        <h3 class="h5 mb-3">About Our System</h3>
+        <p class="text-muted">
+            Smart monitoring for your renewable energy assets
+        </p>
     </div>
 </div>
 
 @code {
-    private void NavigateToLogin() => Navigation.NavigateTo(uri:"/login");
-    private void NavigateToRegister() => Navigation.NavigateTo(uri:"/register");
+    private object model = new(); // Empty model for form validation structure
+
+    private void NavigateToLogin() => Navigation.NavigateTo("/login");
+    private void NavigateToRegister() => Navigation.NavigateTo("/register");
 }

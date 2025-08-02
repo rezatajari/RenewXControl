@@ -1,73 +1,90 @@
 ﻿@page "/dashboard/profile"
 @layout DashboardLayout
-@using System.Net.Http.Headers
-@using RXC.Client.DTOs
 @inject HttpClient Http
 @inject IJSRuntime JS
 @inject NavigationManager Nav
 
-<h3>Profile</h3>
+<PageTitle>Profile - RenewXControl</PageTitle>
 
-@if (!string.IsNullOrEmpty(successMessage))
-{
-    <div class="alert alert-success text-center mb-4">@successMessage</div>
-}
+<div class="container-fluid">
+    <div class="row justify-content-center">
+        <div class="col-md-8 col-lg-6">
+            <div class="card shadow-sm">
+                <div class="card-header bg-white">
+                    <h3 class="card-title mb-0">
+                        <i class="bi bi-person-circle me-2"></i> User Profile
+                    </h3>
+                </div>
 
-@if (!string.IsNullOrEmpty(errorMessage) || profile==null)
-{
-    <div class="alert alert-success text-center mb-4">@errorMessage</div>
-}
-else
-{
-    <div>
-        <p><strong>Username:</strong> @profile.UserName</p>
-        <p><strong>Total Assets</strong> @profile.TotalAssets</p>
-        @foreach (var role in profile.Role)
-        {
-            <p><strong>Role:</strong> @role</p>
-        }
+                <div class="card-body">
+                    @if (!string.IsNullOrEmpty(successMessage))
+                    {
+                        <div class="alert alert-success alert-dismissible fade show mb-4">
+                            @successMessage
+                            <button type="button" class="btn-close" @onclick="() => successMessage = null"></button>
+                        </div>
+                    }
+
+                    @if (!string.IsNullOrEmpty(errorMessage))
+                    {
+                        <div class="alert alert-danger alert-dismissible fade show mb-4">
+                            @errorMessage
+                            <button type="button" class="btn-close" @onclick="() => errorMessage = null"></button>
+                        </div>
+                    }
+
+                    @if (profile == null)
+                    {
+                        <div class="text-center py-5">
+                            <div class="spinner-border text-primary" role="status">
+                                <span class="visually-hidden">Loading...</span>
+                            </div>
+                            <p class="mt-2">Loading profile...</p>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label class="form-label fw-bold">Username</label>
+                                    <div class="form-control-plaintext">@profile.UserName</div>
+                                </div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label class="form-label fw-bold">Total Assets</label>
+                                    <div class="form-control-plaintext">@profile.TotalAssets</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Roles</label>
+                            <div class="d-flex flex-wrap gap-2">
+                                @foreach (var role in profile.Role)
+                                {
+                                    <span class="badge bg-primary">@role</span>
+                                }
+                            </div>
+                        </div>
+
+                        <div class="mt-4 pt-3 border-top">
+                            <button class="btn btn-primary me-2" @onclick="NavigateToEditProfile">
+                                <i class="bi bi-pencil-square me-2"></i> Edit Profile
+                            </button>
+                            <button class="btn btn-outline-secondary" @onclick="NavigateToChangePassword">
+                                <i class="bi bi-shield-lock me-2"></i> Change Password
+                            </button>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
     </div>
-}
+</div>
+
 @code {
-    private DTOs.User.Profile? profile;
-    private string? successMessage;
-    private string? errorMessage;
-
-    protected override async Task OnInitializedAsync()
-    {
-        successMessage = await JS.InvokeAsync<string>(identifier:"localStorage.getItem", "loginSuccess");
-        if (!string.IsNullOrEmpty(successMessage))
-        {
-            await JS.InvokeVoidAsync(identifier: "localStorage.removeItem", "loginSuccess");
-        }
-
-        var token = await JS.InvokeAsync<string>(identifier:"localStorage.getItem", "authToken");
-
-        if (string.IsNullOrEmpty(token))
-        {
-            Nav.NavigateTo(uri:"/login");
-            return;
-        }
-        try
-        {
-            Http.DefaultRequestHeaders.Authorization =
-                new AuthenticationHeaderValue(scheme:"Bearer", token);
-
-            var response = await Http.GetFromJsonAsync<GeneralResponse<DTOs.User.Profile>>(requestUri: "api/Dashboard/profile");
-            if (!response.IsSuccess){
-                errorMessage = response.Message;
-            }
-            else
-            {
-                successMessage = response.Message;
-                profile = response.Data;
-            }
-
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine("API Error: " + ex.Message);
-        }
-    }
-
+  
 }
