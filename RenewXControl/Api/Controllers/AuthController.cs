@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using System.Security.Claims;
+using Microsoft.AspNetCore.Mvc;
 using RenewXControl.Application.DTOs.User.Auth;
 using RenewXControl.Application.User.Interfaces;
 
@@ -9,7 +10,7 @@ namespace RenewXControl.Api.Controllers
     /// </summary>
     [Route(template: "api/[controller]")]
     [ApiController]
-    public class AuthController : ControllerBase
+    public class AuthController : BaseController
     {
         private readonly IAuthService _authService;
 
@@ -54,6 +55,14 @@ namespace RenewXControl.Api.Controllers
         public async Task<IActionResult> Logout()
         {
             var result = await _authService.LogoutAsync();
+            return result.IsSuccess ? Ok(result) : BadRequest(result);
+        }
+
+        [HttpPut(template: "Change-Password")]
+        public async Task<IActionResult> ChangePassword([FromBody] ChangePassword changePassword)
+        {
+            
+            var result = await _authService.ChangePasswordAsync(changePassword,UserId);
             return result.IsSuccess ? Ok(result) : BadRequest(result);
         }
     }

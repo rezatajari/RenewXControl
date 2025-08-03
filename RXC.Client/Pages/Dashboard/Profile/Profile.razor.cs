@@ -3,7 +3,7 @@ using System.Net.Http.Headers;
 using System.Net.Http.Json;
 using RXC.Client.DTOs;
 
-namespace RXC.Client.Pages.Dashboard
+namespace RXC.Client.Pages.Dashboard.Profile
 {
     public partial class Profile
     {
@@ -13,19 +13,35 @@ namespace RXC.Client.Pages.Dashboard
 
         protected override async Task OnInitializedAsync()
         {
-            successMessage = await JS.InvokeAsync<string>("localStorage.getItem", "loginSuccess");
-            if (!string.IsNullOrEmpty(successMessage))
-            {
-                await JS.InvokeVoidAsync("localStorage.removeItem", "loginSuccess");
-                StateHasChanged();
-            }
-
             var token = await JS.InvokeAsync<string>("localStorage.getItem", "authToken");
-
             if (string.IsNullOrEmpty(token))
             {
                 Nav.NavigateTo("/login");
                 return;
+            }
+
+            var passwordChangeMsg = await JS.InvokeAsync<string>("localStorage.getItem", "passwordChangeSuccess");
+            var loginSuccessMsg = await JS.InvokeAsync<string>("localStorage.getItem", "loginSuccess");
+
+            if (!string.IsNullOrEmpty(passwordChangeMsg))
+            {
+                successMessage = passwordChangeMsg;
+                await JS.InvokeVoidAsync("localStorage.removeItem", "passwordChangeSuccess");
+                StateHasChanged();
+            }
+            else if (!string.IsNullOrEmpty(loginSuccessMsg))
+            {
+                successMessage = loginSuccessMsg;
+                await JS.InvokeVoidAsync("localStorage.removeItem", "loginSuccess");
+            }
+
+            if (!string.IsNullOrEmpty(successMessage))
+            {
+                StateHasChanged();
+
+                await Task.Delay(5000);
+                successMessage = null;
+                StateHasChanged();
             }
 
             try

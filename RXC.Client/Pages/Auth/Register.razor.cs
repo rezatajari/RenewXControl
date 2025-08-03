@@ -1,6 +1,6 @@
 ﻿using Microsoft.JSInterop;
 
-namespace RXC.Client.Pages
+namespace RXC.Client.Pages.Auth
 {
     public partial class Register
     {

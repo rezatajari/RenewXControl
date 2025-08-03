@@ -65,5 +65,30 @@ namespace RXC.Client.Services
                 Message = "Logged out successfully"
             };
         }
+
+
+        public async Task<GeneralResponse<bool>> ChangePasswordAsync(ChangePassword changePassword)
+        {
+
+            var result = await _http.PutAsJsonAsync(
+                requestUri: "api/auth/change-password",
+                value: changePassword);
+
+            var resultContent = await result.Content.ReadFromJsonAsync<GeneralResponse<bool>>();
+            if (!resultContent.IsSuccess)
+                return new GeneralResponse<bool>()
+                {
+                    IsSuccess = false,
+                    Message = resultContent.Message,
+                    Errors = resultContent.Errors
+                };
+
+            return new GeneralResponse<bool>()
+            {
+                Data = resultContent.Data,
+                IsSuccess = true,
+                Message = resultContent.Message
+            };
+        }
     }
 }
