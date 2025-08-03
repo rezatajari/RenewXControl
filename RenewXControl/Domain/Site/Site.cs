@@ -1,5 +1,4 @@
 ﻿using RenewXControl.Application.DTOs.AddAsset;
-using RenewXControl.Configuration.AssetsModel.Users;
 using RenewXControl.Domain.Assets;
 
 namespace RenewXControl.Domain.Site

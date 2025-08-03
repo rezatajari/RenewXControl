@@ -5,6 +5,9 @@ using System.Net.Http.Json;
 using System.Runtime.CompilerServices;
 using RXC.Client.DTOs;
 using RXC.Client.DTOs.User.Auth;
+using RXC.Client.DTOs.User.Profile;
+using Microsoft.AspNetCore.Components.Forms;
+using static System.Net.WebRequestMethods;
 
 namespace RXC.Client.Services
 {
@@ -66,7 +69,6 @@ namespace RXC.Client.Services
             };
         }
 
-
         public async Task<GeneralResponse<bool>> ChangePasswordAsync(ChangePassword changePassword)
         {
 
@@ -89,6 +91,19 @@ namespace RXC.Client.Services
                 IsSuccess = true,
                 Message = resultContent.Message
             };
+        }
+
+        public async Task<GeneralResponse<bool>> EditProfileAsync(EditProfile editProfile)
+        {
+            var response = await _http.PutAsJsonAsync(
+                requestUri: "api/dashboard/profile/edit",
+                value: editProfile);
+
+            var responseContent = await response.Content.ReadFromJsonAsync<GeneralResponse<bool>>();
+
+            return responseContent.IsSuccess ?
+                new GeneralResponse<bool>() { IsSuccess = true, Message = responseContent.Message } :
+                new GeneralResponse<bool>() { IsSuccess = false, Message = responseContent.Message };
         }
     }
 }

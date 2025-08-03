@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using RenewXControl.Api.Utility;
+using RenewXControl.Application.DTOs.User.Profile;
 using RenewXControl.Application.User.Interfaces;
 
 namespace RenewXControl.Api.Controllers
@@ -37,6 +38,13 @@ namespace RenewXControl.Api.Controllers
         {
             var response = await _dashboardService.GetProfile(UserId);
             return Ok(response);
+        }
+
+        [HttpPut(template: "Profile/Edit")]
+        public async Task<IActionResult> EditProfile([FromBody] EditProfile editProfile)
+        {
+            var response = await _dashboardService.EditProfile(editProfile,UserId);
+            return response.IsSuccess ? Ok(response) : BadRequest(response);
         }
     }
 }

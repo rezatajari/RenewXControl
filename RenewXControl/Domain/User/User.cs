@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Identity;
-using RenewXControl.Configuration.AssetsModel.Users;
 
 namespace RenewXControl.Domain.User
 {
@@ -13,7 +12,8 @@ namespace RenewXControl.Domain.User
             CreateTime = DateTime.UtcNow;
         }
 
-        public DateTime CreateTime { get; set; } 
+        public DateTime CreateTime { get; set; }
+        public string? ProfileImage { get;private set; }
 
         public ICollection<Site.Site> Sites { get; private set; } = [];
    
@@ -22,11 +22,10 @@ namespace RenewXControl.Domain.User
             return new User(username,email);
         }
 
-        public void ChangeName(string newUsername)
+        public void ChangeProfile(string newName, string? newImagePath)
         {
-            UserName = newUsername;
+            UserName=newName;
+            ProfileImage=newImagePath;
         }
-
-        public void AddSite(Site.Site site) => Sites.Add(site);
     }
 }

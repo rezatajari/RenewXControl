@@ -24,6 +24,7 @@ using System.Reflection;
 using RenewXControl.Application;
 using RenewXControl.Infrastructure.Services.Site;
 using Microsoft.OpenApi.Models;
+using RenewXControl.Infrastructure.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -65,6 +66,7 @@ builder.Services.AddSwaggerGen(options =>
 });
 
 builder.Services.AddScoped<IAuthService, AuthService>();
+builder.Services.AddScoped<IFileService, FileService>();
 builder.Services.AddScoped<IDashboardService, DashboardService>();
 builder.Services.AddScoped<IUserValidator, UserValidator>();
 builder.Services.AddScoped<ISiteService, SiteService>();

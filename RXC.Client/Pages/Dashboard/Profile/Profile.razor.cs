@@ -7,7 +7,7 @@ namespace RXC.Client.Pages.Dashboard.Profile
 {
     public partial class Profile
     {
-        private DTOs.User.Profile? profile;
+        private DTOs.User.Profile.Profile? profile;
         private string? successMessage;
         private string? errorMessage;
 
@@ -22,6 +22,8 @@ namespace RXC.Client.Pages.Dashboard.Profile
 
             var passwordChangeMsg = await JS.InvokeAsync<string>("localStorage.getItem", "passwordChangeSuccess");
             var loginSuccessMsg = await JS.InvokeAsync<string>("localStorage.getItem", "loginSuccess");
+            var editProfileMsg = await JS.InvokeAsync<string>("localStorage.getItem", "EditProfileSuccess");
+            
 
             if (!string.IsNullOrEmpty(passwordChangeMsg))
             {
@@ -33,6 +35,10 @@ namespace RXC.Client.Pages.Dashboard.Profile
             {
                 successMessage = loginSuccessMsg;
                 await JS.InvokeVoidAsync("localStorage.removeItem", "loginSuccess");
+            } else if (!string.IsNullOrEmpty(editProfileMsg))
+            {
+                successMessage=editProfileMsg;
+                await JS.InvokeVoidAsync("LocalStorage.removeItem", "EditProfileSuccess");
             }
 
             if (!string.IsNullOrEmpty(successMessage))
@@ -49,7 +55,7 @@ namespace RXC.Client.Pages.Dashboard.Profile
                 Http.DefaultRequestHeaders.Authorization =
                     new AuthenticationHeaderValue("Bearer", token);
 
-                var response = await Http.GetFromJsonAsync<GeneralResponse<DTOs.User.Profile>>("api/Dashboard/profile");
+                var response = await Http.GetFromJsonAsync<GeneralResponse<DTOs.User.Profile.Profile>>("api/Dashboard/profile");
 
                 if (response == null || !response.IsSuccess)
                 {

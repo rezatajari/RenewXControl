@@ -2,8 +2,8 @@
 using System.Net.Http.Json;
 using Microsoft.AspNetCore.Components;
 using RXC.Client.DTOs;
-using RXC.Client.DTOs.User;
 using RXC.Client.Services;
+using RXC.Client.DTOs.User.Profile;
 
 
 namespace RXC.Client.Layout
