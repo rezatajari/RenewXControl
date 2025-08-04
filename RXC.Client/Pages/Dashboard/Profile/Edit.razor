@@ -1,6 +1,5 @@
-﻿@page "dashboard/profile/edit"
+﻿@page "/dashboard/profile/edit"
 @inject NavigationManager Nav
-@using RXC.Client.DTOs.User.Profile
 @using RXC.Client.Services
 @inject AuthService AuthService
 @inject IJSRuntime JS
@@ -28,8 +27,8 @@
                             <div class="col-md-6">
                                 <div class="form-floating">
                                     <InputText id="username" class="form-control" 
-                                              @bind-Value="_editProfile.UserName"
-                                              placeholder=" " />
+                                               @bind-Value="_editProfile.UserName"
+                                               placeholder=" " />
                                     <label for="username">Username</label>
                                 </div>
                                 <ValidationMessage For="@(() => _editProfile.UserName)" class="text-danger small" />
@@ -41,20 +40,32 @@
                                 <div class="border rounded p-3 bg-light">
                                     <div class="d-flex flex-column align-items-center">
                                         <!-- Image Preview -->
-                                        @if (!string.IsNullOrEmpty(_editProfile.ProfileImage))
-                                        {
-                                            <img src="@_editProfile.ProfileImage" 
-                                                 class="img-thumbnail mb-3" 
-                                                 style="width: 150px; height: 150px; object-fit: cover;"
-                                                 alt="Profile preview" />
-                                        }
-                                        else
-                                        {
-                                            <div class="bg-secondary rounded-circle d-flex align-items-center justify-content-center mb-3" 
-                                                 style="width: 150px; height: 150px;">
-                                                <i class="bi bi-person-fill text-white" style="font-size: 4rem;"></i>
-                                            </div>
-                                        }
+                                        <div class="d-flex flex-column align-items-center">
+                                            @if (!string.IsNullOrEmpty(_tempImageUrl))
+                                            {
+                                                <!-- Temporary preview during upload -->
+                                                <img src="@_tempImageUrl" 
+                                                     class="img-thumbnail mb-3" 
+                                                     style="width: 150px; height: 150px; object-fit: cover;"
+                                                     alt="Upload preview" />
+                                            }
+                                            else if (!string.IsNullOrEmpty(_editProfile.ProfileImage))
+                                            {
+                                                <!-- Permanent image from server -->
+                                                <img src="@_editProfile.ProfileImage" 
+                                                     class="img-thumbnail mb-3" 
+                                                     style="width: 150px; height: 150px; object-fit: cover;"
+                                                     alt="Profile image" />
+                                            }
+                                            else
+                                            {
+                                                <!-- Default placeholder -->
+                                                <div class="bg-secondary rounded-circle d-flex align-items-center justify-content-center mb-3" 
+                                                     style="width: 150px; height: 150px;">
+                                                    <i class="bi bi-person-fill text-white" style="font-size: 4rem;"></i>
+                                                </div>
+                                            }
+                                        </div>
 
                                         <!-- File Upload -->
                                         <div class="w-100">
@@ -63,9 +74,9 @@
                                                 @(string.IsNullOrEmpty(_editProfile.ProfileImage) ? "Upload Image" : "Change Image")
                                             </label>
                                             <InputFile id="profileUpload" 
-                                                      class="d-none" 
-                                                      OnChange="OnInputFileChange" 
-                                                      accept="image/*" />
+                                                       class="d-none" 
+                                                       OnChange="OnInputFileChange" 
+                                                       accept="image/*" />
                                         </div>
                                     </div>
                                     @if (!string.IsNullOrEmpty(_errorMessage))
@@ -75,22 +86,11 @@
                                 </div>
                             </div>
 
-                            <!-- Hidden Image URL Field -->
-                            <div class="col-12">
-                                <div class="form-floating">
-                                    <InputText id="profileImage" class="form-control" 
-                                              @bind-Value="_editProfile.ProfileImage"
-                                              placeholder=" " 
-                                              readonly />
-                                    <label for="profileImage">Profile Image URL</label>
-                                </div>
-                                <ValidationMessage For="@(() => _editProfile.ProfileImage)" class="text-danger small" />
-                            </div>
                         </div>
 
                         <!-- Action Buttons -->
                         <div class="d-flex justify-content-between mt-4">
-                            <button type="button" class="btn btn-outline-secondary" @onclick="() => Nav.NavigateTo("/profile")">
+                            <button type="button" class="btn btn-outline-secondary" @onclick="@(() => Nav.NavigateTo("dashboard/profile"))">
                                 <i class="bi bi-arrow-left me-2"></i> Cancel
                             </button>
                             <button type="submit" class="btn btn-primary" disabled="@_isLoading">
@@ -111,3 +111,7 @@
         </div>
     </div>
 </div>
+
+                                    
+
+                              

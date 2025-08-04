@@ -73,9 +73,11 @@ public class DashboardService:IDashboardService
        if (result.Succeeded)
         return GeneralResponse<bool>.Success(
             data:true,
-            message:"Profile updated successfully.");
+            message:"Profile updated successfully."
+            );
 
        return GeneralResponse<bool>.Failure(
-           message: "Profile updated failed");
+           message: "Profile updated failed",
+           errors:null);
     }
 }

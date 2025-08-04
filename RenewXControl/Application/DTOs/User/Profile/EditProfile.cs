@@ -10,8 +10,5 @@ public record EditProfile
     [RegularExpression(@"^[a-zA-Z0-9_\-\.]+$",
         ErrorMessage = "Only letters, numbers, dots, underscores and hyphens allowed")]
     public string UserName { get; init; }
-    [Url(ErrorMessage = "Please enter a valid image URL")]
-    [StringLength(500,
-        ErrorMessage = "Image URL cannot exceed 500 characters")]
     public string? ProfileImage { get; set; }
 }

@@ -9,14 +9,32 @@ namespace RXC.Client.Pages.Dashboard.Profile;
 public partial class Edit
 {
     private string _errorMessage = string.Empty;
-    private EditProfile _editProfile = new();
+
+    private EditProfile _editProfile = new EditProfile
+    {
+        UserName = string.Empty,
+        ProfileImage = string.Empty
+    };
+
     private bool _isLoading = false;
+    private string _tempImageUrl = string.Empty;
+
     private async Task OnInputFileChange(InputFileChangeEventArgs e)
     {
+            _errorMessage = string.Empty;
+
         try
         {
             var file = e.File;
-            _errorMessage = string.Empty;
+            
+            // 1. Create temporary preview (before upload completes)
+            var imageFile = await file.RequestImageFileAsync("image/jpeg", 300, 300);
+            var buffer = new byte[imageFile.Size];
+            await imageFile.OpenReadStream().ReadAsync(buffer);
+            _tempImageUrl = $"data:image/jpeg;base64,{Convert.ToBase64String(buffer)}";
+            // Force UI update to show temporary preview
+            StateHasChanged();
+
 
             var content = new MultipartFormDataContent();
             var fileContent = new StreamContent(file.OpenReadStream(maxAllowedSize: 10_000_000)); // e.g., 10 MB limit
@@ -34,11 +52,17 @@ public partial class Edit
             }
 
             _editProfile.ProfileImage = responseContent.Data;
+            StateHasChanged();
+
+            // Clear temporary preview
+            _tempImageUrl = string.Empty;
 
         }
         catch (Exception ex)
         {
             _errorMessage = $"Error uploading image: {ex.Message}";
+            _tempImageUrl = string.Empty;
+            StateHasChanged();
         }
     }
 
@@ -65,4 +89,5 @@ public partial class Edit
             _isLoading = false;
         }
     }
+
 }

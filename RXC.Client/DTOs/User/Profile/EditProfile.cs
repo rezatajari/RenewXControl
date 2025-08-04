@@ -11,12 +11,6 @@ public class EditProfile
         ErrorMessage = "Only letters, numbers, dots, underscores and hyphens allowed")]
     [Display(Name = "Username", Prompt = "Enter your username")]
     public string UserName { get; set; }
-
-    [Url(ErrorMessage = "Please enter a valid image URL")]
-    [StringLength(500,
-        ErrorMessage = "Image URL cannot exceed 500 characters")]
-    [Display(Name = "Profile Image URL",
-        Prompt = "https://example.com/your-image.jpg")]
     public string? ProfileImage { get; set; }
    
 }

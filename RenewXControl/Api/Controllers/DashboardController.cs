@@ -36,15 +36,15 @@ namespace RenewXControl.Api.Controllers
         [HttpGet(template:"profile")]
         public async Task<IActionResult> Profile()
         {
-            var response = await _dashboardService.GetProfile(UserId);
-            return Ok(response);
+            var result = await _dashboardService.GetProfile(UserId);
+            return Ok(result);
         }
 
         [HttpPut(template: "Profile/Edit")]
         public async Task<IActionResult> EditProfile([FromBody] EditProfile editProfile)
         {
-            var response = await _dashboardService.EditProfile(editProfile,UserId);
-            return response.IsSuccess ? Ok(response) : BadRequest(response);
+            var result = await _dashboardService.EditProfile(editProfile,UserId);
+            return result.IsSuccess ? Ok(result) : BadRequest(result);
         }
     }
 }

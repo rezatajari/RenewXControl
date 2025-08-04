@@ -95,15 +95,36 @@ namespace RXC.Client.Services
 
         public async Task<GeneralResponse<bool>> EditProfileAsync(EditProfile editProfile)
         {
-            var response = await _http.PutAsJsonAsync(
-                requestUri: "api/dashboard/profile/edit",
-                value: editProfile);
+            try
+            {
+                var response = await _http.PutAsJsonAsync(
+                    "api/dashboard/profile/edit",
+                    editProfile);
 
-            var responseContent = await response.Content.ReadFromJsonAsync<GeneralResponse<bool>>();
+                if (!response.IsSuccessStatusCode)
+                {
+                    return new GeneralResponse<bool>
+                    {
+                        IsSuccess = false,
+                        Message = $"Server error: {response.StatusCode}"
+                    };
+                }
 
-            return responseContent.IsSuccess ?
-                new GeneralResponse<bool>() { IsSuccess = true, Message = responseContent.Message } :
-                new GeneralResponse<bool>() { IsSuccess = false, Message = responseContent.Message };
+                var resultContent = await response.Content.ReadFromJsonAsync<GeneralResponse<bool>>();
+                return resultContent ?? new GeneralResponse<bool>
+                {
+                    IsSuccess = false,
+                    Message = "Invalid server response"
+                };
+            }
+            catch (Exception ex)
+            {
+                return new GeneralResponse<bool>
+                {
+                    IsSuccess = false,
+                    Message = $"Network error: {ex.Message}"
+                };
+            }
         }
     }
 }

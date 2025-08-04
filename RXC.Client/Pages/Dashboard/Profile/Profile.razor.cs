@@ -23,23 +23,17 @@ namespace RXC.Client.Pages.Dashboard.Profile
             var passwordChangeMsg = await JS.InvokeAsync<string>("localStorage.getItem", "passwordChangeSuccess");
             var loginSuccessMsg = await JS.InvokeAsync<string>("localStorage.getItem", "loginSuccess");
             var editProfileMsg = await JS.InvokeAsync<string>("localStorage.getItem", "EditProfileSuccess");
-            
+
+            successMessage = passwordChangeMsg ?? loginSuccessMsg ?? editProfileMsg;
 
             if (!string.IsNullOrEmpty(passwordChangeMsg))
-            {
-                successMessage = passwordChangeMsg;
                 await JS.InvokeVoidAsync("localStorage.removeItem", "passwordChangeSuccess");
-                StateHasChanged();
-            }
-            else if (!string.IsNullOrEmpty(loginSuccessMsg))
-            {
-                successMessage = loginSuccessMsg;
+
+            if (!string.IsNullOrEmpty(loginSuccessMsg))
                 await JS.InvokeVoidAsync("localStorage.removeItem", "loginSuccess");
-            } else if (!string.IsNullOrEmpty(editProfileMsg))
-            {
-                successMessage=editProfileMsg;
-                await JS.InvokeVoidAsync("LocalStorage.removeItem", "EditProfileSuccess");
-            }
+
+            if (!string.IsNullOrEmpty(editProfileMsg))
+                await JS.InvokeVoidAsync("localStorage.removeItem", "EditProfileSuccess");
 
             if (!string.IsNullOrEmpty(successMessage))
             {
