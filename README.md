@@ -10,16 +10,27 @@ The project focuses on providing a comprehensive application for users to overse
 
 ## Project Documentation
 
-- **[Domain](https://github.com/rezatajari/RenewXControl/tree/master/RenewXControl.Console/doc/Domain)**
+- **[Domain](https://github.com/rezatajari/RenewXControl/tree/master/RenewXControl/doc/Domain)**
   - This documentation dives into the domain model, covering the logic and interaction between various entities.
 
-- **[Configuration](https://github.com/rezatajari/RenewXControl/blob/master/RenewXControl.Console/doc/Configuration.md)**
+- **[Configuration](https://github.com/rezatajari/RenewXControl/blob/master/RenewXControl/doc/Configuration.md)**
   - Details the configuration settings for the system, helping you understand how to set up different components.
 
-- **[Monitoring Application Process](https://github.com/rezatajari/RenewXControl/blob/master/RenewXControl.Console/doc/Monitoring%20Application%20Process.md)**
+- **[Monitoring Application Process](https://github.com/rezatajari/RenewXControl/blob/master/RenewXControl/doc/Monitoring%20Application%20Process.md)**
   - This document explains the monitoring process, including how data is captured, updated, and displayed in real-time for asset monitoring.
 
+---
+## **Application Demo**  
+### **1. Initial Configuration**  
+![Initial Setup](https://github.com/rezatajari/RenewXControl/blob/master/RenewXControl/doc/Images%26Gifs/Init.jpg)  
+*System startup showing loaded configurations for all assets*
 
+### **2. Live Monitoring**  
+![Live Monitoring Demo](https://github.com/rezatajari/RenewXControl/blob/master/RenewXControl/doc/Images%26Gifs/Live%20Monitoring%20Application%20Process.gif)  
+*Real-time operation featuring:*  
+- Color-coded status updates (Green=Active, Red=Inactive)  
+- Dynamic power level adjustments  
+- Automatic battery state transitions 
 ---
 
 ## Key Components
