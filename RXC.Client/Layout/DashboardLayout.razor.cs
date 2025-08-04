@@ -1,7 +1,10 @@
 ﻿using Microsoft.JSInterop;
 using System.Net.Http.Json;
+using Microsoft.AspNetCore.Components;
 using RXC.Client.DTOs;
-using RXC.Client.DTOs.User;
+using RXC.Client.Services;
+using RXC.Client.DTOs.User.Profile;
+
 
 namespace RXC.Client.Layout
 {
@@ -10,12 +13,20 @@ namespace RXC.Client.Layout
         private bool sidebarCollapsed = false;
         private bool showAssetsMenu = false;
         private string userName = "User";
-
+      
         // Dynamically set sidebar classes
         private string sidebarClass => sidebarCollapsed
             ? "d-lg-none"  // Hide completely on mobile when collapsed
             : "d-flex flex-shrink-0 flex-column w-250"; // Show with fixed width
 
+        private async Task Logout()
+        {
+            var result = await AuthService.LogoutAsync();
+            if (!result.IsSuccess)
+                await JS.InvokeVoidAsync("alert", "Logout failed: " + result.Message);
+
+            Nav.NavigateTo("/login",forceLoad:true);
+        }
         protected override async Task OnInitializedAsync()
         {
             DashboardState.OnChange += StateHasChanged;

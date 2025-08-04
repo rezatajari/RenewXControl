@@ -1,138 +1,105 @@
 ﻿@page "/asset/add-battery"
+@layout DashboardLayout
 @using System.Net.Http.Headers
 @using RXC.Client.DTOs
-@layout DashboardLayout
 @inject HttpClient Http
 @inject NavigationManager Nav
 @inject IJSRuntime JS
 
-<div class="container mt-4">
-    <div class="card shadow">
-        @if (!string.IsNullOrEmpty(errorMessage))
-        {
-            <div class="mb-4 text-bg-danger text-center">@errorMessage</div>
-        }
-        
-  
-        <div class="card-header bg-primary text-white">
-            <h3><i class="bi bi-battery-charging me-2"></i> Add Battery System</h3>
-        </div>
-        <div class="card-body">
-            <EditForm Model="@batteryModel" OnValidSubmit="@HandleSubmit">
-                <DataAnnotationsValidator/>
-                <ValidationSummary/>
+<PageTitle>Add Battery - RenewXControl</PageTitle>
 
-                <div class="row mb-3">
-                    <div class="col-md-3">
-                        <label class="form-label">Capacity (kWh)</label>
-                        <InputNumber class="form-control" @bind-Value="@batteryModel.Capacity"/>
-                        <ValidationMessage For="@(() => batteryModel.Capacity)"/>
-                    </div>
-
-                    <div class="col-md-3">
-                        <label class="form-label">State of Charge (%)</label>
-                        <InputNumber class="form-control" @bind-Value="@batteryModel.StateCharge"/>
-                        <ValidationMessage For="@(() => batteryModel.StateCharge)"/>
-                    </div>
-
-                    <div class="col-md-3">
-                        <label class="form-label">Set Point (kW)</label>
-                        <InputNumber class="form-control" @bind-Value="@batteryModel.SetPoint"/>
-                        <ValidationMessage For="@(() => batteryModel.SetPoint)"/>
-                    </div>
-
-                    <div class="col-md-3">
-                        <label class="form-label">Frequent Discharge (cycles/day)</label>
-                        <InputNumber class="form-control" @bind-Value="@batteryModel.FrequentlyDischarge"/>
-                        <ValidationMessage For="@(() => batteryModel.FrequentlyDischarge)"/>
-                    </div>
+<div class="container-fluid">
+    <div class="row justify-content-center">
+        <div class="col-md-8 col-lg-6">
+            <div class="card shadow-sm">
+                <div class="card-header bg-primary text-white">
+                    <h3 class="mb-0">
+                        <i class="bi bi-battery-charging me-2"></i> Add Battery Storage
+                    </h3>
                 </div>
 
-                <div class="d-flex justify-content-end gap-2">
-                    <button type="button" class="btn btn-secondary" @onclick="Cancel">
-                        <i class="bi bi-x-circle me-1"></i> Cancel
-                    </button>
-                    <button type="submit" class="btn btn-primary" disabled="@isLoading">
-                        @if (isLoading)
-                        {
-                            <span class="spinner-border spinner-border-sm me-1" role="status"></span>
-                        }
-                        else
-                        {
-                            <i class="bi bi-save me-1"></i>
-                        }
-                        Save Battery
-                    </button>
+                <div class="card-body">
+                    @if (!string.IsNullOrEmpty(errorMessage))
+                    {
+                        <div class="alert alert-danger alert-dismissible fade show mb-4">
+                            @errorMessage
+                            <button type="button" class="btn-close" @onclick="() => errorMessage = null"></button>
+                        </div>
+                    }
+
+                    <EditForm Model="@batteryModel" OnValidSubmit="@HandleSubmit">
+                        <DataAnnotationsValidator />
+                        <ValidationSummary class="text-danger mb-4" />
+
+                        <div class="row g-3">
+                            <!-- Capacity Input -->
+                            <div class="col-md-6">
+                                <label class="form-label">Capacity (kWh)*</label>
+                                <InputNumber class="form-control" @bind-Value="@batteryModel.Capacity" />
+                                <ValidationMessage For="@(() => batteryModel.Capacity)" class="text-danger" />
+                                <small class="text-muted">Minimum: 1 kWh</small>
+                            </div>
+
+                            <!-- State of Charge Input -->
+                            <div class="col-md-6">
+                                <label class="form-label">State of Charge (%)*</label>
+                                <InputNumber class="form-control" @bind-Value="@batteryModel.StateCharge" />
+                                <ValidationMessage For="@(() => batteryModel.StateCharge)" class="text-danger" />
+                                <small class="text-muted">Range: 0-100%</small>
+                            </div>
+
+                            <!-- Set Point Input -->
+                            <div class="col-md-6">
+                                <label class="form-label">Set Point (%)*</label>
+                                <InputNumber class="form-control" @bind-Value="@batteryModel.SetPoint" />
+                                <ValidationMessage For="@(() => batteryModel.SetPoint)" class="text-danger" />
+                                <small class="text-muted">Range: 0-100%</small>
+                            </div>
+
+                            <!-- Discharge Cycles Input -->
+                            <div class="col-md-6">
+                                <label class="form-label">Discharge Cycles/Day*</label>
+                                <InputNumber class="form-control" @bind-Value="@batteryModel.FrequentlyDischarge" />
+                                <ValidationMessage For="@(() => batteryModel.FrequentlyDischarge)" class="text-danger" />
+                                <small class="text-muted">Range: 0-100 cycles</small>
+                            </div>
+                        </div>
+
+                        <div class="d-flex justify-content-end gap-2 mt-4">
+                            <button type="button" class="btn btn-outline-secondary" @onclick="Cancel">
+                                <i class="bi bi-x-circle me-1"></i> Cancel
+                            </button>
+                            <button type="submit" class="btn btn-primary" disabled="@isLoading">
+                                @if (isLoading)
+                                {
+                                    <span class="spinner-border spinner-border-sm me-1" role="status" aria-hidden="true"></span>
+                                }
+                                else
+                                {
+                                    <i class="bi bi-save me-1"></i>
+                                }
+                                Save Battery
+                            </button>
+                        </div>
+                    </EditForm>
                 </div>
-            </EditForm>
+            </div>
         </div>
     </div>
 </div>
 
-
 @if (showSuccess)
 {
     <div class="position-fixed bottom-0 end-0 p-3" style="z-index: 11">
-        <div class="toast show" role="alert" aria-live="assertive" aria-atomic="true">
+        <div id="successToast" class="toast show" role="alert" aria-live="assertive" aria-atomic="true">
             <div class="toast-header bg-success text-white">
                 <strong class="me-auto">Success</strong>
                 <button type="button" class="btn-close btn-close-white" @onclick="() => showSuccess = false"></button>
             </div>
             <div class="toast-body">
-                Battery added successfully!
+                <i class="bi bi-check-circle me-2"></i> Battery added successfully!
             </div>
         </div>
     </div>
 }
 
-@code {
-    private DTOs.AddAsset.AddBattery batteryModel = new();
-    private bool isLoading = false;
-    private bool showSuccess = false;
-    private string? errorMessage;
-
-    protected override async Task OnInitializedAsync()
-    {
-        errorMessage = null;
-    }
-
-    private async Task HandleSubmit()
-    {
-        errorMessage = null;
-        isLoading = true;
-        try
-        {
-            var token = await JS.InvokeAsync<string>(identifier:"localStorage.getItem", "authToken");
-            if (string.IsNullOrEmpty(token))
-            {
-                Nav.NavigateTo("/login");
-                return;
-            }
-
-            Http.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(scheme:"Bearer", token);
-            var result = await Http.PostAsJsonAsync(requestUri:"api/asset/add/battery", batteryModel);
-            var response = await result.Content.ReadFromJsonAsync<GeneralResponse<Guid>>();
-            if (response.IsSuccess)
-            {
-                showSuccess = true;
-            }
-            else
-            {
-                errorMessage = response.Message;
-            }
-        }
-        catch (Exception ex)
-        {
-            await JS.InvokeVoidAsync("alert", $"Error: {ex.Message}");
-        }
-        finally
-        {
-            isLoading = false;
-        }
-    }
-
-    private void Cancel()
-    {
-        Nav.NavigateTo("/api/Dashboard/profile");
-    }
-}

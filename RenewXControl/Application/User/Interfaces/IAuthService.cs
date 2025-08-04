@@ -7,6 +7,8 @@ namespace RenewXControl.Application.User.Interfaces
     {
         Task<GeneralResponse<string>> RegisterAsync(Register register);
         Task<GeneralResponse<string>> LoginAsync(Login login);
+        Task<GeneralResponse<bool>> LogoutAsync();
         string GenerateToken(Domain.User.User  user, IList<string> roles);
+        Task<GeneralResponse<bool>> ChangePasswordAsync(ChangePassword  changePassword,string userId);
     }
 }

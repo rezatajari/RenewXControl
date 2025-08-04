@@ -103,6 +103,13 @@ public class AuthService : IAuthService
         return GeneralResponse<string>.Success(data:token, message:"Login successful");
     }
 
+    public async Task<GeneralResponse<bool>> LogoutAsync()
+    {
+       await _signInManager.SignOutAsync();
+
+       return GeneralResponse<bool>.Success(data: true);
+    }
+
     public string GenerateToken(Domain.User.User user, IList<string> roles)
     {
         var claims = new List<Claim>
@@ -128,5 +135,31 @@ public class AuthService : IAuthService
             signingCredentials: credentials);
 
         return new JwtSecurityTokenHandler().WriteToken(token);
+    }
+
+    public async Task<GeneralResponse<bool>> ChangePasswordAsync(ChangePassword changePassword,string userId)
+    {
+        var user = await _userManager.FindByIdAsync(userId);
+        var result = await _userManager.ChangePasswordAsync(
+            user,
+            changePassword.CurrentPassword,
+            changePassword.NewPassword);
+
+        if (result.Succeeded)
+            return GeneralResponse<bool>.Success(
+                data: true,
+                message: "Your update password successful"
+            );
+
+
+        var errors=result.Errors
+            .Select(error=>new ErrorResponse(
+                name:error.Code.ToString(),
+                message:error.Description))
+            .ToList();
+
+        return GeneralResponse<bool>.Failure(
+            message: "Password update failed.",
+            errors: errors);
     }
 }

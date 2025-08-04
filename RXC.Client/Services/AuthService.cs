@@ -5,6 +5,9 @@ using System.Net.Http.Json;
 using System.Runtime.CompilerServices;
 using RXC.Client.DTOs;
 using RXC.Client.DTOs.User.Auth;
+using RXC.Client.DTOs.User.Profile;
+using Microsoft.AspNetCore.Components.Forms;
+using static System.Net.WebRequestMethods;
 
 namespace RXC.Client.Services
 {
@@ -40,6 +43,88 @@ namespace RXC.Client.Services
         {
             var result= await _http.PostAsJsonAsync(requestUri:"api/auth/register", model);
             return await  result.Content.ReadFromJsonAsync<GeneralResponse<string>>();
+        }
+
+        public async Task<GeneralResponse<bool>> LogoutAsync()
+        {
+          var result=  await _http.PostAsync("api/auth/logout", null);
+          var resultContent = await result.Content.ReadFromJsonAsync<GeneralResponse<bool>>();
+
+          if (!resultContent.IsSuccess)
+              return new GeneralResponse<bool>()
+              {
+                  IsSuccess = false, 
+                  Message = "Log out is not work"
+              };
+
+          await _js.InvokeVoidAsync("localStorage.removeItem", "authToken");
+
+            _http.DefaultRequestHeaders.Authorization = null;
+
+            return new GeneralResponse<bool>
+            {
+                IsSuccess = true,
+                Data = true,
+                Message = "Logged out successfully"
+            };
+        }
+
+        public async Task<GeneralResponse<bool>> ChangePasswordAsync(ChangePassword changePassword)
+        {
+
+            var result = await _http.PutAsJsonAsync(
+                requestUri: "api/auth/change-password",
+                value: changePassword);
+
+            var resultContent = await result.Content.ReadFromJsonAsync<GeneralResponse<bool>>();
+            if (!resultContent.IsSuccess)
+                return new GeneralResponse<bool>()
+                {
+                    IsSuccess = false,
+                    Message = resultContent.Message,
+                    Errors = resultContent.Errors
+                };
+
+            return new GeneralResponse<bool>()
+            {
+                Data = resultContent.Data,
+                IsSuccess = true,
+                Message = resultContent.Message
+            };
+        }
+
+        public async Task<GeneralResponse<bool>> EditProfileAsync(EditProfile editProfile)
+        {
+            try
+            {
+                var response = await _http.PutAsJsonAsync(
+                    "api/dashboard/profile/edit",
+                    editProfile);
+
+                if (!response.IsSuccessStatusCode)
+                {
+                    return new GeneralResponse<bool>
+                    {
+                        IsSuccess = false,
+                        Message = $"Server error: {response.StatusCode}"
+                    };
+                }
+
+                var resultContent = await response.Content.ReadFromJsonAsync<GeneralResponse<bool>>();
+                return resultContent ?? new GeneralResponse<bool>
+                {
+                    IsSuccess = false,
+                    Message = "Invalid server response"
+                };
+            }
+            catch (Exception ex)
+            {
+                return new GeneralResponse<bool>
+                {
+                    IsSuccess = false,
+                    Message = $"Network error: {ex.Message}"
+                };
+            }
         }
     }
 }

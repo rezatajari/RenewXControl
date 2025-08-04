@@ -1,0 +1,117 @@
+﻿@page "/dashboard/profile/edit"
+@inject NavigationManager Nav
+@using RXC.Client.Services
+@inject AuthService AuthService
+@inject IJSRuntime JS
+@inject HttpClient Http
+
+<PageTitle>Edit Profile - RenewXControl</PageTitle>
+
+<div class="container-fluid">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="card shadow-sm">
+                <div class="card-header bg-primary text-white">
+                    <h3 class="mb-0">
+                        <i class="bi bi-person-gear me-2"></i> Edit Profile
+                    </h3>
+                </div>
+                
+                <div class="card-body">
+                    <EditForm Model="_editProfile" OnValidSubmit="HandleValidSubmit">
+                        <DataAnnotationsValidator />
+                        <ValidationSummary class="text-danger mb-4" />
+
+                        <div class="row g-3">
+                            <!-- Username Field -->
+                            <div class="col-md-6">
+                                <div class="form-floating">
+                                    <InputText id="username" class="form-control" 
+                                               @bind-Value="_editProfile.UserName"
+                                               placeholder=" " />
+                                    <label for="username">Username</label>
+                                </div>
+                                <ValidationMessage For="@(() => _editProfile.UserName)" class="text-danger small" />
+                                <div class="form-text">3-50 characters, letters, numbers, and ._- only</div>
+                            </div>
+
+                            <!-- Profile Image Upload -->
+                            <div class="col-md-6">
+                                <div class="border rounded p-3 bg-light">
+                                    <div class="d-flex flex-column align-items-center">
+                                        <!-- Image Preview -->
+                                        <div class="d-flex flex-column align-items-center">
+                                            @if (!string.IsNullOrEmpty(_tempImageUrl))
+                                            {
+                                                <!-- Temporary preview during upload -->
+                                                <img src="@_tempImageUrl" 
+                                                     class="img-thumbnail mb-3" 
+                                                     style="width: 150px; height: 150px; object-fit: cover;"
+                                                     alt="Upload preview" />
+                                            }
+                                            else if (!string.IsNullOrEmpty(_editProfile.ProfileImage))
+                                            {
+                                                <!-- Permanent image from server -->
+                                                <img src="@_editProfile.ProfileImage" 
+                                                     class="img-thumbnail mb-3" 
+                                                     style="width: 150px; height: 150px; object-fit: cover;"
+                                                     alt="Profile image" />
+                                            }
+                                            else
+                                            {
+                                                <!-- Default placeholder -->
+                                                <div class="bg-secondary rounded-circle d-flex align-items-center justify-content-center mb-3" 
+                                                     style="width: 150px; height: 150px;">
+                                                    <i class="bi bi-person-fill text-white" style="font-size: 4rem;"></i>
+                                                </div>
+                                            }
+                                        </div>
+
+                                        <!-- File Upload -->
+                                        <div class="w-100">
+                                            <label for="profileUpload" class="btn btn-outline-primary w-100">
+                                                <i class="bi bi-upload me-2"></i> 
+                                                @(string.IsNullOrEmpty(_editProfile.ProfileImage) ? "Upload Image" : "Change Image")
+                                            </label>
+                                            <InputFile id="profileUpload" 
+                                                       class="d-none" 
+                                                       OnChange="OnInputFileChange" 
+                                                       accept="image/*" />
+                                        </div>
+                                    </div>
+                                    @if (!string.IsNullOrEmpty(_errorMessage))
+                                    {
+                                        <div class="alert alert-danger mt-2 mb-0">@_errorMessage</div>
+                                    }
+                                </div>
+                            </div>
+
+                        </div>
+
+                        <!-- Action Buttons -->
+                        <div class="d-flex justify-content-between mt-4">
+                            <button type="button" class="btn btn-outline-secondary" @onclick="@(() => Nav.NavigateTo("dashboard/profile"))">
+                                <i class="bi bi-arrow-left me-2"></i> Cancel
+                            </button>
+                            <button type="submit" class="btn btn-primary" disabled="@_isLoading">
+                                @if (_isLoading)
+                                {
+                                    <span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+                                }
+                                else
+                                {
+                                    <i class="bi bi-save me-2"></i>
+                                }
+                                Save Changes
+                            </button>
+                        </div>
+                    </EditForm>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+                                    
+
+                              
