@@ -7,9 +7,8 @@ namespace Client.Pages.Asset;
 public partial class MonitoringAsset
 {
     private HubConnection? _hubConnection;
-    private bool isConnected = false;
-    private AssetsMonitoring? assetsMonitoring;
-    private Timer? _updateTimer;
+    private bool _isConnected = false;
+    private AssetsMonitoring? _assetsMonitoring;
     private bool _disposed;
 
     protected override async Task OnInitializedAsync()
@@ -50,26 +49,26 @@ public partial class MonitoringAsset
 
             _hubConnection.Reconnected += _ =>
             {
-                isConnected = true;
+                _isConnected = true;
                 StateHasChanged();
                 return Task.CompletedTask;
             };
 
             _hubConnection.Reconnecting += _ =>
             {
-                isConnected = false;
+                _isConnected = false;
                 StateHasChanged();
                 return Task.CompletedTask;
             };
 
             _hubConnection.On<AssetsMonitoring>("AssetUpdate", updatedAssets =>
             {
-                assetsMonitoring = updatedAssets;
+                _assetsMonitoring = updatedAssets;
                 InvokeAsync(StateHasChanged);
             });
 
             await _hubConnection.StartAsync();
-            isConnected = true;
+            _isConnected = true;
 
             // Request initial data
             await _hubConnection.SendAsync("RequestInitialData");

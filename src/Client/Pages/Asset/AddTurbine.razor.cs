@@ -36,7 +36,7 @@ public partial class AddTurbine
             if (response.IsSuccessStatusCode)
             {
                 showSuccess = true;
-                StartRedirectTimer();
+                await Task.Delay(2000);
             }
             else
             {
@@ -55,18 +55,8 @@ public partial class AddTurbine
         }
     }
 
-    private async void StartRedirectTimer()
-    {
-        for (redirectProgress = 0; redirectProgress <= 100; redirectProgress += 10)
-        {
-            StateHasChanged();
-            await Task.Delay(300);
-        }
-        Nav.NavigateTo("/monitoring");
-    }
-
     private void Cancel()
     {
-        Nav.NavigateTo("/monitoring");
+        Nav.NavigateTo("/dashboard/profile");
     }
 }

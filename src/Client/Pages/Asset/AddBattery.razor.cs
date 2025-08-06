@@ -33,7 +33,6 @@ public partial class AddBattery
             {
                 showSuccess = true;
                 await Task.Delay(2000); // Show success message for 2 seconds
-                Nav.NavigateTo("/monitoring");
             }
             else
             {
@@ -54,6 +53,6 @@ public partial class AddBattery
 
     private void Cancel()
     {
-        Nav.NavigateTo("/monitoring");
+        Nav.NavigateTo("/dashboard/profile");
     }
 }

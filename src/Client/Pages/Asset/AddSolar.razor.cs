@@ -35,7 +35,6 @@ public partial class AddSolar
             {
                 showSuccess = true;
                 await Task.Delay(2000); // Show success message for 2 seconds
-                Nav.NavigateTo("/monitoring");
             }
             else
             {
@@ -56,6 +55,6 @@ public partial class AddSolar
 
     private void Cancel()
     {
-        Nav.NavigateTo("/monitoring");
+        Nav.NavigateTo("/dashboard/profile");
     }
 }

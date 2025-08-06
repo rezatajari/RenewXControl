@@ -56,22 +56,6 @@
                                 <ValidationMessage For="@(() => solarModel.ActivePower)" class="text-danger" />
                                 <small class="text-muted">Must be ≥ 0</small>
                             </div>
-
-                            <!-- Additional Fields -->
-                            <div class="col-md-6">
-                                <label class="form-label">Panel Type</label>
-                                <InputSelect class="form-select" @bind-Value="@panelType">
-                                    <option value="">Select panel type</option>
-                                    <option value="Monocrystalline">Monocrystalline</option>
-                                    <option value="Polycrystalline">Polycrystalline</option>
-                                    <option value="ThinFilm">Thin Film</option>
-                                </InputSelect>
-                            </div>
-
-                            <div class="col-md-6">
-                                <label class="form-label">Installation Date</label>
-                                <InputDate class="form-control" @bind-Value="@installationDate" />
-                            </div>
                         </div>
 
                         <div class="d-flex justify-content-end gap-2 mt-4">

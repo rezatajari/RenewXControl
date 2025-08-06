@@ -9,7 +9,7 @@ public partial class AddSite
 {
     private RXC.Client.DTOs.AddAsset.AddSite siteModel = new();
     private bool isLoading = false;
-    private bool showSuccess = false;
+    private bool _showSuccess = false;
 
     private async Task HandleSubmit()
     {
@@ -28,10 +28,9 @@ public partial class AddSite
 
             if (response.IsSuccessStatusCode)
             {
-                showSuccess = true;
+                _showSuccess = true;
                 DashboardState.SetHasSite(true);
                 await Task.Delay(2000); // Show success message for 2 seconds
-                Nav.NavigateTo("/asset/add-battery"); // Redirect to add battery after site creation
             }
             else
             {
@@ -52,6 +51,6 @@ public partial class AddSite
 
     private void Cancel()
     {
-        Nav.NavigateTo("/monitoring");
+        Nav.NavigateTo("/dashboard/profile");
     }
 }
