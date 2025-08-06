@@ -1,6 +1,6 @@
 {
   "profiles": {
-    "RenewXControl": {
+    "API": {
       "commandName": "Project",
       "launchUrl": "swagger",
       "environmentVariables": {

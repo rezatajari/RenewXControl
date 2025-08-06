@@ -3,18 +3,22 @@ using RXC.Client;
 using RXC.Client.Services;
 using System.Net.Http.Json;
 using Client;
-using RXC.Client.Utility;
+using Client.Utility;
 
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
 builder.RootComponents.Add<App>("#app");
 
 // Step 1: Load appsettings manually
-var httpClient = new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) };
-var config = await httpClient.GetFromJsonAsync<Dictionary<string, string>>($"appsettings.Development.json");
+var configFile = builder.HostEnvironment.IsDevelopment()
+    ? "appsettings.Development.json"
+    : "appsettings.Production.json";
 
-// Step 2: Read config values
+var httpClient = new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) };
+var config = await httpClient.GetFromJsonAsync<Dictionary<string, string>>(configFile);
+
 var apiBaseUrl = config["ApiBaseUrl"];
 var signalRHubUrl = config["SignalRHubUrl"];
+
 
 // Step 3: Inject HttpClient with base address
 builder.Services.AddScoped(sp => new HttpClient
