@@ -4,6 +4,37 @@
 
 RenewXControl is a smart monitoring and management system designed to optimize renewable energy usage for users who generate electricity from solar panels and wind turbines. The system enables users to track their energy assets, monitor performance, and manage energy storage for selling electricity to the government.
 
+---
+
+## 🌐 Live Demo
+
+🔗 [Visit Live Website](http://alirezanuri70-001-site1.mtempurl.com/)
+
+---
+
+## 📷 API Documentation
+
+![Swagger API UI](https://github.com/rezatajari/RenewXControl/blob/master/doc/Images%26Gifs/SwaggerEndpoints.jpeg)  
+_Interactive Swagger documentation showing all available endpoints._
+
+---
+
+## **Application Demo**  
+### **1. Initial Configuration (Console Application) **  
+![Initial Setup](https://github.com/rezatajari/RenewXControl/blob/master/doc/Images%26Gifs/Init.jpg)  
+*System startup showing loaded configurations for all assets*
+
+### **2. Live Monitoring (Console Application) **  
+![Live Monitoring Demo](https://github.com/rezatajari/RenewXControl/blob/master/doc/Images%26Gifs/Live%20Monitoring%20Application%20Process.gif)  
+*Real-time operation featuring:*  
+- Color-coded status updates (Green=Active, Red=Inactive)  
+- Dynamic power level adjustments  
+- Automatic battery state transitions
+
+### **3. Live Monitoring (In Website) **  
+![Live Monitoring Demo](https://github.com/rezatajari/RenewXControl/blob/master/doc/Images%26Gifs/LiveMonitoringsInHost.gif)  
+---
+
 ## Project Scope
 
 The project focuses on providing a comprehensive application for users to oversee their renewable energy infrastructure. This includes tracking asset conditions, monitoring energy generation, and ensuring efficient energy storage and distribution.
@@ -20,19 +51,6 @@ The project focuses on providing a comprehensive application for users to overse
   - This document explains the monitoring process, including how data is captured, updated, and displayed in real-time for asset monitoring.
 
 ---
-## **Application Demo**  
-### **1. Initial Configuration**  
-![Initial Setup](https://github.com/rezatajari/RenewXControl/blob/master/doc/Images%26Gifs/Init.jpg)  
-*System startup showing loaded configurations for all assets*
-
-### **2. Live Monitoring**  
-![Live Monitoring Demo](https://github.com/rezatajari/RenewXControl/blob/master/doc/Images%26Gifs/Live%20Monitoring%20Application%20Process.gif)  
-*Real-time operation featuring:*  
-- Color-coded status updates (Green=Active, Red=Inactive)  
-- Dynamic power level adjustments  
-- Automatic battery state transitions 
----
-
 ## Key Components
 ### **Users & Energy Generation**
 
@@ -82,6 +100,18 @@ The application reads data from assets **every second** to ensure real-time moni
 - **Write Operations**: Making decisions based on the collected data, such as adjusting battery charging and discharging operations.
 
 This read/write operation is crucial for the system's logic, ensuring efficient energy management and decision-making.
+
+---
+
+## Tech Stack
+
+- C# .NET 9 Web API  
+- Blazor WebAssembly (SignalR real-time updates)  
+- SQL Server (SmartASP.NET hosting)  
+- Clean Architecture & Domain-Driven Design  
+- Swagger for API documentation  
+
+---
 
 ## Modular & Scalable Design
 
