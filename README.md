@@ -22,11 +22,11 @@ The project focuses on providing a comprehensive application for users to overse
 ---
 ## **Application Demo**  
 ### **1. Initial Configuration**  
-![Initial Setup](https://github.com/rezatajari/RenewXControl/blob/master/RenewXControl/doc/Images%26Gifs/Init.jpg)  
+![Initial Setup](https://github.com/rezatajari/RenewXControl/blob/master/doc/Images%26Gifs/Init.jpg)  
 *System startup showing loaded configurations for all assets*
 
 ### **2. Live Monitoring**  
-![Live Monitoring Demo](https://github.com/rezatajari/RenewXControl/blob/master/RenewXControl/doc/Images%26Gifs/Live%20Monitoring%20Application%20Process.gif)  
+![Live Monitoring Demo](https://github.com/rezatajari/RenewXControl/blob/master/doc/Images%26Gifs/Live%20Monitoring%20Application%20Process.gif)  
 *Real-time operation featuring:*  
 - Color-coded status updates (Green=Active, Red=Inactive)  
 - Dynamic power level adjustments  
