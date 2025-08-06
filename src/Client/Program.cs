@@ -23,13 +23,13 @@ var signalRHubUrl = config["SignalRHubUrl"];
 // Step 3: Inject HttpClient with base address
 builder.Services.AddScoped(sp => new HttpClient
 {
-    BaseAddress = new Uri(apiBaseUrl)
+    BaseAddress = new Uri("http://alirezanuri70-001-site1.mtempurl.com")
 });
 
 // Optional: register config values in DI
 builder.Services.AddSingleton(new HubConfig
 {
-    HubUrl = signalRHubUrl
+    HubUrl = "http://alirezanuri70-001-site1.mtempurl.com/assetsHub/"
 });
 
 builder.Services.AddScoped<AuthService>();
