@@ -10,13 +10,13 @@ The project focuses on providing a comprehensive application for users to overse
 
 ## Project Documentation
 
-- **[Domain](https://github.com/rezatajari/RenewXControl/tree/master/RenewXControl/doc/Domain)**
+- **[Domain](https://github.com/rezatajari/RenewXControl/tree/master/doc/Domain)**
   - This documentation dives into the domain model, covering the logic and interaction between various entities.
 
-- **[Configuration](https://github.com/rezatajari/RenewXControl/blob/master/RenewXControl/doc/Configuration.md)**
+- **[Configuration](https://github.com/rezatajari/RenewXControl/blob/master/doc/Configuration.md)**
   - Details the configuration settings for the system, helping you understand how to set up different components.
 
-- **[Monitoring Application Process](https://github.com/rezatajari/RenewXControl/blob/master/RenewXControl/doc/Monitoring%20Application%20Process.md)**
+- **[Monitoring Application Process](https://github.com/rezatajari/RenewXControl/blob/master/doc/Monitoring%20Application%20Process.md)**
   - This document explains the monitoring process, including how data is captured, updated, and displayed in real-time for asset monitoring.
 
 ---
