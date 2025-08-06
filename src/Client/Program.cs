@@ -1,38 +1,40 @@
 ﻿using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
-using RXC.Client;
 using RXC.Client.Services;
-using System.Net.Http.Json;
 using Client;
 using Client.Utility;
+using System.Net.Http.Json;
 
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
 builder.RootComponents.Add<App>("#app");
 
-// Step 1: Load appsettings manually
-var configFile = builder.HostEnvironment.IsDevelopment()
-    ? "appsettings.Development.json"
-    : "appsettings.Production.json";
+// Step 1: Determine config file based on environment
+var environment = builder.HostEnvironment.Environment;
+var configFile = $"appsettings.{environment}.json";
 
+// Step 2: Fetch config from the correct file
 var httpClient = new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) };
-var config = await httpClient.GetFromJsonAsync<Dictionary<string, string>>(configFile);
+var config = await httpClient.GetFromJsonAsync<AppSettings>(configFile);
 
-var apiBaseUrl = config["ApiBaseUrl"];
-var signalRHubUrl = config["SignalRHubUrl"];
+if (config is null)
+    throw new Exception($"Failed to load configuration from {configFile}");
 
-
-// Step 3: Inject HttpClient with base address
+// Step 3: Register HttpClient using the ApiBaseUrl
 builder.Services.AddScoped(sp => new HttpClient
 {
-    BaseAddress = new Uri("http://alirezanuri70-001-site1.mtempurl.com")
+    BaseAddress = new Uri(config.ApiBaseUrl)
 });
 
-// Optional: register config values in DI
+// Step 4: Inject SignalR Hub config
 builder.Services.AddSingleton(new HubConfig
 {
-    HubUrl = "http://alirezanuri70-001-site1.mtempurl.com/assetsHub/"
+    HubUrl = config.SignalRHubUrl
 });
+Console.WriteLine($"Loaded ApiBaseUrl: {config.ApiBaseUrl}");
+Console.WriteLine($"Loaded SignalRHubUrl: {config.SignalRHubUrl}");
 
+// Step 5: Register app services
 builder.Services.AddScoped<AuthService>();
 builder.Services.AddScoped<DashboardState>();
 builder.Services.AddAuthorizationCore();
+
 await builder.Build().RunAsync();

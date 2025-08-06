@@ -8,10 +8,10 @@ public static class Database
 {
     public static IServiceCollection AddDatabase(this IServiceCollection services, IConfiguration configuration)
     {
-            services.AddDbContext<RxcDbContext>(options =>
-                options.UseSqlServer(configuration.GetConnectionString(name: "DefaultConnection")));
+        services.AddDbContext<RxcDbContext>(options =>
+            options.UseSqlServer(configuration.GetConnectionString(name: "DefaultConnection")));
 
-              services.AddIdentity<ApplicationUser, IdentityRole<Guid>>(options =>
+        services.AddIdentity<ApplicationUser, IdentityRole<Guid>>(options =>
                 {
                     options.User.AllowedUserNameCharacters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789 -_.";
                 })

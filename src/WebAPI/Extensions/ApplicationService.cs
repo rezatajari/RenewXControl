@@ -35,3 +35,4 @@ public static class ApplicationService
 
         return services;
     }
+}
