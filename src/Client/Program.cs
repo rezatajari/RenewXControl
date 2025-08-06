@@ -2,6 +2,7 @@
 using RXC.Client;
 using RXC.Client.Services;
 using System.Net.Http.Json;
+using Client;
 using RXC.Client.Utility;
 
 var builder = WebAssemblyHostBuilder.CreateDefault(args);

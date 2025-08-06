@@ -1,12 +1,10 @@
-﻿using Microsoft.JSInterop;
+﻿using System.Net;
 using System.Net.Http.Json;
-using Microsoft.AspNetCore.Components;
+using Microsoft.JSInterop;
 using RXC.Client.DTOs;
-using RXC.Client.Services;
 using RXC.Client.DTOs.User.Profile;
 
-
-namespace RXC.Client.Layout
+namespace Client.Layout
 {
     public partial class DashboardLayout
     {

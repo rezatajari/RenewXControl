@@ -1,40 +1,39 @@
 ﻿using Microsoft.JSInterop;
 
-namespace RXC.Client.Pages.Auth
+namespace Client.Pages.Auth;
+
+public partial class Register
 {
-    public partial class Register
+    private RXC.Client.DTOs.User.Auth.Register model = new();
+    private string errorMessage = string.Empty;
+    private bool isLoading = false;
+
+    private async Task RegisterUser()
     {
-        private DTOs.User.Auth.Register model = new();
-        private string errorMessage = string.Empty;
-        private bool isLoading = false;
+        isLoading = true;
+        errorMessage = string.Empty;
 
-        private async Task RegisterUser()
+        try
         {
-            isLoading = true;
-            errorMessage = string.Empty;
-
-            try
+            var response = await AuthService.RegisterAsync(model);
+            if (!response.IsSuccess)
             {
-                var response = await AuthService.RegisterAsync(model);
-                if (!response.IsSuccess)
-                {
-                    errorMessage = response.Message ?? "Registration failed";
-                }
-                else
-                {
-                    await JS.InvokeVoidAsync("localStorage.setItem", "RegisterSuccess", response.Message ?? "Registration successful");
-                    Navigation.NavigateTo("/login");
-                }
+                errorMessage = response.Message ?? "Registration failed";
             }
-            catch (Exception ex)
+            else
             {
-                errorMessage = "An error occurred during registration";
-                Console.Error.WriteLine(ex.Message);
+                await JS.InvokeVoidAsync("localStorage.setItem", "RegisterSuccess", response.Message ?? "Registration successful");
+                Navigation.NavigateTo("/login");
             }
-            finally
-            {
-                isLoading = false;
-            }
+        }
+        catch (Exception ex)
+        {
+            errorMessage = "An error occurred during registration";
+            Console.Error.WriteLine(ex.Message);
+        }
+        finally
+        {
+            isLoading = false;
         }
     }
 }

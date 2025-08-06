@@ -1,10 +1,10 @@
-﻿using Microsoft.AspNetCore.Components.Forms;
+﻿using System.Net.Http.Json;
+using Microsoft.AspNetCore.Components.Forms;
 using Microsoft.JSInterop;
-using System.Net.Http.Json;
 using RXC.Client.DTOs;
 using RXC.Client.DTOs.User.Profile;
 
-namespace RXC.Client.Pages.Dashboard.Profile;
+namespace Client.Pages.Dashboard.Profile;
 
 public partial class Edit
 {
@@ -21,7 +21,7 @@ public partial class Edit
 
     private async Task OnInputFileChange(InputFileChangeEventArgs e)
     {
-            _errorMessage = string.Empty;
+        _errorMessage = string.Empty;
 
         try
         {

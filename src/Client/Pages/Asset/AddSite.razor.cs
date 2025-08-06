@@ -1,58 +1,57 @@
-﻿using Microsoft.JSInterop;
-using System.Net.Http.Headers;
+﻿using System.Net.Http.Headers;
 using System.Net.Http.Json;
+using Microsoft.JSInterop;
 using RXC.Client.DTOs;
 
-namespace RXC.Client.Pages.Asset
+namespace Client.Pages.Asset;
+
+public partial class AddSite
 {
-    public partial class AddSite
+    private RXC.Client.DTOs.AddAsset.AddSite siteModel = new();
+    private bool isLoading = false;
+    private bool showSuccess = false;
+
+    private async Task HandleSubmit()
     {
-        private DTOs.AddAsset.AddSite siteModel = new();
-        private bool isLoading = false;
-        private bool showSuccess = false;
-
-        private async Task HandleSubmit()
+        isLoading = true;
+        try
         {
-            isLoading = true;
-            try
+            var token = await JS.InvokeAsync<string>("localStorage.getItem", "authToken");
+            if (string.IsNullOrEmpty(token))
             {
-                var token = await JS.InvokeAsync<string>("localStorage.getItem", "authToken");
-                if (string.IsNullOrEmpty(token))
-                {
-                    Nav.NavigateTo("/login");
-                    return;
-                }
-
-                Http.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
-                var response = await Http.PostAsJsonAsync("api/site/add", siteModel);
-
-                if (response.IsSuccessStatusCode)
-                {
-                    showSuccess = true;
-                    DashboardState.SetHasSite(true);
-                    await Task.Delay(2000); // Show success message for 2 seconds
-                    Nav.NavigateTo("/asset/add-battery"); // Redirect to add battery after site creation
-                }
-                else
-                {
-                    var errorResponse = await response.Content.ReadFromJsonAsync<GeneralResponse<string>>();
-                    await JS.InvokeVoidAsync("alert", errorResponse?.Message ?? "Failed to add site");
-                }
+                Nav.NavigateTo("/login");
+                return;
             }
-            catch (Exception ex)
+
+            Http.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+            var response = await Http.PostAsJsonAsync("api/site/add", siteModel);
+
+            if (response.IsSuccessStatusCode)
             {
-                await JS.InvokeVoidAsync("alert", $"Error: {ex.Message}");
-                Console.Error.WriteLine($"Add Site Error: {ex}");
+                showSuccess = true;
+                DashboardState.SetHasSite(true);
+                await Task.Delay(2000); // Show success message for 2 seconds
+                Nav.NavigateTo("/asset/add-battery"); // Redirect to add battery after site creation
             }
-            finally
+            else
             {
-                isLoading = false;
+                var errorResponse = await response.Content.ReadFromJsonAsync<GeneralResponse<string>>();
+                await JS.InvokeVoidAsync("alert", errorResponse?.Message ?? "Failed to add site");
             }
         }
-
-        private void Cancel()
+        catch (Exception ex)
         {
-            Nav.NavigateTo("/monitoring");
+            await JS.InvokeVoidAsync("alert", $"Error: {ex.Message}");
+            Console.Error.WriteLine($"Add Site Error: {ex}");
         }
+        finally
+        {
+            isLoading = false;
+        }
+    }
+
+    private void Cancel()
+    {
+        Nav.NavigateTo("/monitoring");
     }
 }
