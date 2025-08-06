@@ -19,19 +19,19 @@ _Interactive Swagger documentation showing all available endpoints._
 
 ---
 
-## **Application Demo**  
-### **1. Initial Configuration (Console Application) **  
+## Application Demo  
+### 1. Initial Configuration (Console Application) 
 ![Initial Setup](https://github.com/rezatajari/RenewXControl/blob/master/doc/Images%26Gifs/Init.jpg)  
 *System startup showing loaded configurations for all assets*
 
-### **2. Live Monitoring (Console Application) **  
+### 2. Live Monitoring (Console Application) 
 ![Live Monitoring Demo](https://github.com/rezatajari/RenewXControl/blob/master/doc/Images%26Gifs/Live%20Monitoring%20Application%20Process.gif)  
 *Real-time operation featuring:*  
 - Color-coded status updates (Green=Active, Red=Inactive)  
 - Dynamic power level adjustments  
 - Automatic battery state transitions
 
-### **3. Live Monitoring (In Website) **  
+### 3. Live Monitoring (In Website) 
 ![Live Monitoring Demo](https://github.com/rezatajari/RenewXControl/blob/master/doc/Images%26Gifs/LiveMonitoringsInHost.gif)  
 ---
 
