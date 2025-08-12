@@ -15,7 +15,6 @@ builder.Services
 var app = builder.Build();
 
 app.UseCustomErrorHandling();
-//app.ApplyMigrations();
 app.UseSwaggerSetup();
 
 app.UseStaticFilesAndBlazor();

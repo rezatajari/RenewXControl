@@ -43,7 +43,7 @@
                                         <div class="d-flex flex-column align-items-center">
                                             @if (!string.IsNullOrEmpty(_tempImageUrl))
                                             {
-                                                <!-- Temporary preview during upload -->
+                                                <!-- Show temporary preview during/after upload -->
                                                 <img src="@_tempImageUrl" 
                                                      class="img-thumbnail mb-3" 
                                                      style="width: 150px; height: 150px; object-fit: cover;"
@@ -51,7 +51,7 @@
                                             }
                                             else if (!string.IsNullOrEmpty(_editProfile.ProfileImage))
                                             {
-                                                <!-- Permanent image from server -->
+                                                <!-- Show saved image from server -->
                                                 <img src="@_editProfile.ProfileImage" 
                                                      class="img-thumbnail mb-3" 
                                                      style="width: 150px; height: 150px; object-fit: cover;"

@@ -46,28 +46,54 @@
                     else
                     {
                         <div class="row">
-                            <div class="col-md-6">
-                                <div class="mb-3">
-                                    <label class="form-label fw-bold">Username</label>
-                                    <div class="form-control-plaintext">@profile.UserName</div>
+                            <!-- Profile Image Column -->
+                            <div class="col-md-4 text-center mb-4 mb-md-0">
+                                <div class="position-relative">
+                                    @if (!string.IsNullOrEmpty(profile?.ProfileImage))
+                                    {
+                                        <img src="@GetProfileImageUrl(profile.ProfileImage)" 
+                                             class="img-thumbnail rounded-circle" 
+                                             style="width: 200px; height: 200px; object-fit: cover;"
+                                             alt="Profile image"
+                                             onerror="this.onerror=null;this.src='/default-profile.png';this.className='bg-secondary rounded-circle'" />
+                                    }
+                                    else
+                                    {
+                                        <div class="bg-secondary rounded-circle d-flex align-items-center justify-content-center" 
+                                             style="width: 200px; height: 200px;">
+                                            <i class="bi bi-person-fill text-white" style="font-size: 5rem;"></i>
+                                        </div>
+                                    }
                                 </div>
                             </div>
 
-                            <div class="col-md-6">
-                                <div class="mb-3">
-                                    <label class="form-label fw-bold">Total Assets</label>
-                                    <div class="form-control-plaintext">@profile.TotalAssets</div>
-                                </div>
-                            </div>
-                        </div>
+                            <!-- Profile Details Column -->
+                            <div class="col-md-8">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label class="form-label fw-bold">Username</label>
+                                            <div class="form-control-plaintext">@profile.UserName</div>
+                                        </div>
+                                    </div>
 
-                        <div class="mb-3">
-                            <label class="form-label fw-bold">Roles</label>
-                            <div class="d-flex flex-wrap gap-2">
-                                @foreach (var role in profile.Role)
-                                {
-                                    <span class="badge bg-primary">@role</span>
-                                }
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label class="form-label fw-bold">Total Assets</label>
+                                            <div class="form-control-plaintext">@profile.TotalAssets</div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label class="form-label fw-bold">Roles</label>
+                                    <div class="d-flex flex-wrap gap-2">
+                                        @foreach (var role in profile.Role)
+                                        {
+                                            <span class="badge bg-primary">@role</span>
+                                        }
+                                    </div>
+                                </div>
                             </div>
                         </div>
 

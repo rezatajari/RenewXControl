@@ -26,18 +26,17 @@ public partial class Edit
         try
         {
             var file = e.File;
-            
-            // 1. Create temporary preview (before upload completes)
+
+            // Create temporary preview
             var imageFile = await file.RequestImageFileAsync("image/jpeg", 300, 300);
             var buffer = new byte[imageFile.Size];
             await imageFile.OpenReadStream().ReadAsync(buffer);
             _tempImageUrl = $"data:image/jpeg;base64,{Convert.ToBase64String(buffer)}";
-            // Force UI update to show temporary preview
             StateHasChanged();
 
-
+            // Upload the original file (not the resized one)
             var content = new MultipartFormDataContent();
-            var fileContent = new StreamContent(file.OpenReadStream(maxAllowedSize: 10_000_000)); // e.g., 10 MB limit
+            var fileContent = new StreamContent(file.OpenReadStream(maxAllowedSize: 10_000_000));
             fileContent.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue(file.ContentType);
 
             content.Add(fileContent, "file", file.Name);
@@ -48,20 +47,22 @@ public partial class Edit
             if (responseContent is null || !responseContent.IsSuccess)
             {
                 _errorMessage = responseContent?.Message ?? "Upload failed";
+                _tempImageUrl = string.Empty;
                 return;
             }
 
             _editProfile.ProfileImage = responseContent.Data;
+
+            // Don't clear _tempImageUrl here - let it show until page reload
             StateHasChanged();
-
-            // Clear temporary preview
-            _tempImageUrl = string.Empty;
-
         }
         catch (Exception ex)
         {
             _errorMessage = $"Error uploading image: {ex.Message}";
             _tempImageUrl = string.Empty;
+        }
+        finally
+        {
             StateHasChanged();
         }
     }
@@ -75,10 +76,13 @@ public partial class Edit
         {
             var result = await AuthService.EditProfileAsync(_editProfile);
             if (!result.IsSuccess)
+            {
                 _errorMessage = result.Message;
+                return;
+            }
 
             await JS.InvokeVoidAsync("localStorage.setItem", "EditProfileSuccess", result.Message);
-            Nav.NavigateTo("dashboard/profile");
+            Nav.NavigateTo("dashboard/profile", forceLoad: true); // Add forceLoad to ensure fresh data
         }
         catch (Exception ex)
         {

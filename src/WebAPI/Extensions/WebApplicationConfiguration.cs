@@ -2,6 +2,7 @@
 using Infrastructure.Hubs;
 using Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.FileProviders;
 
 namespace API.Extensions;
 
@@ -36,6 +37,19 @@ public static class WebApplicationConfiguration
     {
         app.UseBlazorFrameworkFiles();
         app.UseStaticFiles();
+
+        // If you want to serve from a custom directory (alternative approach)
+        var customStaticFilesPath = Path.Combine(app.Environment.ContentRootPath, "profile-images");
+        if (!Directory.Exists(customStaticFilesPath))
+        {
+            Directory.CreateDirectory(customStaticFilesPath);
+        }
+        app.UseStaticFiles(new StaticFileOptions
+        {
+            FileProvider = new PhysicalFileProvider(customStaticFilesPath),
+            RequestPath = "/profile-images"
+        });
+
         return app;
     }
 

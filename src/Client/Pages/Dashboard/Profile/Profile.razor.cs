@@ -70,7 +70,24 @@ public partial class Profile
             Console.WriteLine("API Error: " + ex.Message);
         }
     }
+    private string GetProfileImageUrl(string imagePath)
+    {
+        if (string.IsNullOrEmpty(imagePath))
+            return string.Empty;
 
+        // If it's already a full URL (like from a CDN), return as-is
+        if (imagePath.StartsWith("http", StringComparison.OrdinalIgnoreCase))
+            return imagePath;
+
+        // Handle both wwwroot/profile-images and custom profile-images cases
+        if (imagePath.StartsWith("profile-images/"))
+        {
+            return $"{Nav.BaseUri}{imagePath}";
+        }
+
+        // Default case - assume it's in wwwroot
+        return $"{Nav.BaseUri}{imagePath.TrimStart('/')}";
+    }
     private void NavigateToEditProfile()
     {
         Nav.NavigateTo("/dashboard/profile/edit");
