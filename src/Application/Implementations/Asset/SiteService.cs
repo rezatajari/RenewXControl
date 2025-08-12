@@ -9,18 +9,18 @@ namespace Application.Implementations.Asset;
 public class SiteService:ISiteService
 {
     private readonly ISiteRepository _siteRepository;
-    private readonly IUserValidator _userValidator;
+    private readonly IUsersService _userService;
     private readonly IUnitOfWork _unitOfWork;
 
-    public SiteService(ISiteRepository siteRepository, IUnitOfWork unitOfWork, IUserValidator userValidator)
+    public SiteService(ISiteRepository siteRepository, IUnitOfWork unitOfWork, IUsersService userService)
     {
         _siteRepository = siteRepository;
         _unitOfWork = unitOfWork;
-        _userValidator = userValidator;
+        _userService = userService;
     }
     public async Task<GeneralResponse<Guid>> AddSiteAsync(AddSite addSite, Guid userId)
     {
-        var userValidation = _userValidator.ValidateUserId(userId);
+        var userValidation = _userService.ValidateUserId(userId);
         if (!userValidation.IsSuccess)
             return GeneralResponse<Guid>.Failure(message:userValidation.Message,errors:userValidation.Errors);
 
@@ -37,7 +37,7 @@ public class SiteService:ISiteService
 
     public async Task<GeneralResponse<Guid>> GetSiteId(Guid userId)
     {
-        var userValidation = _userValidator.ValidateUserId(userId);
+        var userValidation = _userService.ValidateUserId(userId);
         if (!userValidation.IsSuccess)
             return GeneralResponse<Guid>.Failure(message: userValidation.Message, errors: userValidation.Errors);
 

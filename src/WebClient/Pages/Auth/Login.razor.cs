@@ -1,4 +1,5 @@
 ﻿using Microsoft.JSInterop;
+using RXC.Client.Services;
 
 namespace Client.Pages.Auth;
 

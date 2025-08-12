@@ -9,17 +9,17 @@ namespace API.Controllers;
 /// Provides endpoints for managing user sites.
 /// </summary>
 [Authorize]
-[Route(template: "api/[controller]")]
+[Route(template: "[controller]")]
 [ApiController]
-public class SiteController : BaseController
+public class SitesController : BaseController
 {
     private readonly ISiteService _siteService;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="SiteController"/> class.
+    /// Initializes a new instance of the <see cref="SitesController"/> class.
     /// </summary>
     /// <param name="siteService">The site service instance.</param>
-    public SiteController(ISiteService siteService)
+    public SitesController(ISiteService siteService)
     {
         _siteService = siteService;
     }
@@ -31,7 +31,7 @@ public class SiteController : BaseController
     /// <returns>A response indicating the result of the add operation.</returns>
     /// <response code="200">Site added successfully.</response>
     /// <response code="400">Invalid data or operation failed.</response>
-    [HttpPost(template: "add")]
+    [HttpPost(template: "Site")]
     public async Task<IActionResult> Add([FromBody] AddSite addSite)
     {
         var response = await _siteService.AddSiteAsync(addSite, UserId);
@@ -48,7 +48,7 @@ public class SiteController : BaseController
     /// <param name="addSite">Site information payload (currently unused in the implementation but required for the request body)</param>
     /// <response code="200">Returns success status with site information if the user has a site</response>
     /// <response code="400">Returns error information if the request fails</response>
-    [HttpGet(template: "HasSite")]
+    [HttpGet(template: "User/UserId/Has-Site")]
     public async Task<IActionResult> HasSite()
     {
         var response = await _siteService.HasSiteAsync(UserId);

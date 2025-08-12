@@ -3,6 +3,7 @@ using System.Security.Claims;
 using System.Text;
 using Application.Common;
 using Application.DTOs.User.Auth;
+using Application.DTOs.User.Profile;
 using Application.Interfaces.User;
 using Infrastructure.Persistence;
 using Microsoft.AspNetCore.Identity;
@@ -11,12 +12,12 @@ using Microsoft.IdentityModel.Tokens;
 
 namespace Infrastructure.Services.User;
 
-public class AuthService(
+public class AccountService(
     UserManager<ApplicationUser> userManager,
     SignInManager<ApplicationUser> signInManager,
     RoleManager<IdentityRole<Guid>> roleManager,
     IOptions<JwtSettings> jwtSettings)
-    : IAuthService
+    : IAccountService
 {
     private readonly JwtSettings _jwtSettings = jwtSettings.Value;
 
@@ -125,7 +126,7 @@ public class AuthService(
        return GeneralResponse<bool>.Success(data: true);
     }
 
-    public string GenerateToken(AuthUser user, IList<string> roles)
+    private string GenerateToken(AuthUser user, IList<string> roles)
     {
         var claims = new List<Claim>
         {
@@ -150,31 +151,5 @@ public class AuthService(
             signingCredentials: credentials);
 
         return new JwtSecurityTokenHandler().WriteToken(token);
-    }
-
-    public async Task<GeneralResponse<bool>> ChangePasswordAsync(ChangePassword changePassword, Guid userId)
-    {
-        var user = await userManager.FindByIdAsync(userId.ToString());
-        var result = await userManager.ChangePasswordAsync(
-            user,
-            changePassword.CurrentPassword,
-            changePassword.NewPassword);
-
-        if (result.Succeeded)
-            return GeneralResponse<bool>.Success(
-                data: true,
-                message: "Your update password successful"
-            );
-
-
-        var errors=result.Errors
-            .Select(error=>new ErrorResponse(
-                name:error.Code.ToString(),
-                message:error.Description))
-            .ToList();
-
-        return GeneralResponse<bool>.Failure(
-            message: "Password update failed.",
-            errors: errors);
     }
 }

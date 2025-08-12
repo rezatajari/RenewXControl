@@ -9,17 +9,17 @@ namespace API.Controllers
     /// Provides endpoints for managing user assets such as batteries, solar panels, and wind turbines.
     /// </summary>
     [Authorize]
-    [Route(template: "api/[controller]")]
+    [Route(template: "[controller]")]
     [ApiController]
-    public class AssetController : BaseController
+    public class AssetsController : BaseController
     {
         private readonly IAssetService _assetService;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="AssetController"/> class.
+        /// Initializes a new instance of the <see cref="AssetsController"/> class.
         /// </summary>
         /// <param name="assetService">The asset service instance.</param>
-        public AssetController(IAssetService assetService)
+        public AssetsController(IAssetService assetService)
         {
             _assetService = assetService;
         }
@@ -31,7 +31,7 @@ namespace API.Controllers
         /// <returns>A response indicating the result of the add operation.</returns>
         /// <response code="200">Battery added successfully.</response>
         /// <response code="400">Invalid data or operation failed.</response>
-        [HttpPost(template: "add/battery")]
+        [HttpPost(template: "battery")]
         public async Task<IActionResult> AddBattery([FromBody] AddBattery addBattery)
         {
 
@@ -46,7 +46,7 @@ namespace API.Controllers
         /// <returns>A response indicating the result of the add operation.</returns>
         /// <response code="200">Solar panel added successfully.</response>
         /// <response code="400">Invalid data or operation failed.</response>
-        [HttpPost(template: "add/solar")]
+        [HttpPost(template: "solar")]
         public async Task<IActionResult> AddSolar([FromBody] AddSolar addSolar)
         {
             var response = await _assetService.AddSolarAsync(addSolar, UserId);
@@ -60,7 +60,7 @@ namespace API.Controllers
         /// <returns>A response indicating the result of the add operation.</returns>
         /// <response code="200">Wind turbine added successfully.</response>
         /// <response code="400">Invalid data or operation failed.</response>
-        [HttpPost(template: "add/turbine")]
+        [HttpPost(template: "turbine")]
         public async Task<IActionResult> AddTurbine([FromBody] AddTurbine addTurbine)
         {
             var response = await _assetService.AddTurbineAsync(addTurbine, UserId);

@@ -1,9 +1,7 @@
 ﻿using Application.Common;
-using Infrastructure.Persistence;
 
-namespace Infrastructure;
+namespace Infrastructure.Persistence;
 
-// RXC.Infrastructure.Persistence
 public class UnitOfWork : IUnitOfWork
 {
     private readonly RxcDbContext _context;

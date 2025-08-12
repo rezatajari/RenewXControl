@@ -10,25 +10,25 @@ namespace Application.Implementations.Asset
     {
         private readonly IAssetRepository _assetRepository;
         private readonly ISiteService _siteService;
-        private readonly IUserValidator _userValidator;
+        private readonly IUsersService _userService;
         private readonly IUnitOfWork _unitOfWork;
 
         public AssetService(
             IAssetRepository assetRepository,
             ISiteService siteService,
             IUnitOfWork unitOfWork,
-            IUserValidator userValidator)
+            IUsersService userService)
         {
             _assetRepository = assetRepository;
             _siteService = siteService;
-            _userValidator = userValidator;
+            _userService = userService;
             _unitOfWork= unitOfWork;
         }
 
 
         public async Task<GeneralResponse<Guid>> AddBatteryAsync(AddBattery addBattery, Guid userId)
         {
-            var userValidation = _userValidator.ValidateUserId(userId);
+            var userValidation = _userService.ValidateUserId(userId);
             if (!userValidation.IsSuccess)
                 return GeneralResponse<Guid>.Failure(message: userValidation.Message, errors: userValidation.Errors);
 
@@ -53,7 +53,7 @@ namespace Application.Implementations.Asset
 
         public async Task<GeneralResponse<Guid>> AddSolarAsync(AddSolar addSolar, Guid userId)
         {
-            var userValidation = _userValidator.ValidateUserId(userId);
+            var userValidation = _userService.ValidateUserId(userId);
             if (!userValidation.IsSuccess)
                 return GeneralResponse<Guid>.Failure(message: userValidation.Message, errors: userValidation.Errors);
 
@@ -78,7 +78,7 @@ namespace Application.Implementations.Asset
 
         public async Task<GeneralResponse<Guid>> AddTurbineAsync(AddTurbine addTurbine, Guid userId)
         {
-            var userValidation = _userValidator.ValidateUserId(userId);
+            var userValidation = _userService.ValidateUserId(userId);
             if (!userValidation.IsSuccess)
                 return GeneralResponse<Guid>.Failure(message: userValidation.Message, errors: userValidation.Errors);
 
@@ -103,7 +103,7 @@ namespace Application.Implementations.Asset
 
         public async Task<GeneralResponse<SolarPanel>> GetSolarByUserIdAsync(Guid userId)
         {
-            var userValidation = _userValidator.ValidateUserId(userId);
+            var userValidation = _userService.ValidateUserId(userId);
             if (!userValidation.IsSuccess)
                 return GeneralResponse<SolarPanel>.Failure(message: userValidation.Message, errors: userValidation.Errors);
 
@@ -117,7 +117,7 @@ namespace Application.Implementations.Asset
 
         public async Task<GeneralResponse<WindTurbine>> GetTurbineByUserIdAsync(Guid userId)
         {
-            var userValidation = _userValidator.ValidateUserId(userId);
+            var userValidation = _userService.ValidateUserId(userId);
             if (!userValidation.IsSuccess)
                 return GeneralResponse<WindTurbine>.Failure(message: userValidation.Message, errors: userValidation.Errors);
 
@@ -131,7 +131,7 @@ namespace Application.Implementations.Asset
 
         public async Task<GeneralResponse<Battery>> GetBatteryByUserIdAsync(Guid userId)
         {
-            var userValidation = _userValidator.ValidateUserId(userId);
+            var userValidation = _userService.ValidateUserId(userId);
             if (!userValidation.IsSuccess)
                 return GeneralResponse<Battery>.Failure(message: userValidation.Message, errors: userValidation.Errors);
 

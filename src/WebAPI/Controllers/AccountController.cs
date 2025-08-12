@@ -7,19 +7,19 @@ namespace API.Controllers;
 /// <summary>
 /// Handles authentication operations such as user registration and login.
 /// </summary>
-[Route(template: "api/[controller]")]
+[Route(template: "[controller]")]
 [ApiController]
-public class AuthController : BaseController
+public class AccountController : BaseController
 {
-    private readonly IAuthService _authService;
+    private readonly IAccountService _accountService;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="AuthController"/> class.
+    /// Initializes a new instance of the <see cref="AccountController"/> class.
     /// </summary>
-    /// <param name="authService">The authentication service.</param>
-    public AuthController(IAuthService authService)
+    /// <param name="accountService">The authentication service.</param>
+    public AccountController(IAccountService accountService)
     {
-        _authService = authService;
+        _accountService = accountService;
     }
 
     /// <summary>
@@ -32,7 +32,7 @@ public class AuthController : BaseController
     [HttpPost(template: "register")]
     public async Task<IActionResult> Register([FromBody] Register register)
     {
-        var result = await _authService.RegisterAsync(register);
+        var result = await _accountService.RegisterAsync(register);
         return result.IsSuccess ? Ok(result) : BadRequest(result);
     }
 
@@ -46,22 +46,14 @@ public class AuthController : BaseController
     [HttpPost(template: "login")]
     public async Task<IActionResult> Login([FromBody] Login login)
     {
-        var result = await _authService.LoginAsync(login);
+        var result = await _accountService.LoginAsync(login);
         return result.IsSuccess ? Ok(result) : BadRequest(result);
     }
 
     [HttpPost(template: "logout")]
     public async Task<IActionResult> Logout()
     {
-        var result = await _authService.LogoutAsync();
-        return result.IsSuccess ? Ok(result) : BadRequest(result);
-    }
-
-    [HttpPut(template: "Change-Password")]
-    public async Task<IActionResult> ChangePassword([FromBody] ChangePassword changePassword)
-    {
-            
-        var result = await _authService.ChangePasswordAsync(changePassword,UserId);
+        var result = await _accountService.LogoutAsync();
         return result.IsSuccess ? Ok(result) : BadRequest(result);
     }
 }

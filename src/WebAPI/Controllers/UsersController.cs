@@ -11,19 +11,19 @@ namespace API.Controllers;
 /// Provides endpoints for user dashboard operations.
 /// </summary>
 [Authorize]
-[Route(template: "api/[controller]")]
+[Route(template: "[controller]/User")]
 [ApiController]
-public class DashboardController : BaseController
+public class UsersController : BaseController
 {
-    private readonly IDashboardService _dashboardService;
+    private readonly IUsersService _usersService;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="DashboardController"/> class.
+    /// Initializes a new instance of the <see cref="UsersController"/> class.
     /// </summary>
     /// <param name="dashboardService">The dashboard service instance.</param>
-    public DashboardController(IDashboardService dashboardService)
+    public UsersController(IUsersService usersService)
     {
-        _dashboardService = dashboardService;
+        _usersService = usersService;
     }
 
     /// <summary>
@@ -32,17 +32,35 @@ public class DashboardController : BaseController
     /// <returns>A <see cref="GeneralResponse{T}"/> containing the user's profile data.</returns>
     /// <response code="200">Returns the user's profile information.</response>
     /// <response code="401">If the user is not authenticated.</response>
-    [HttpGet(template:"profile")]
+    [HttpGet(template:"Profile")]
     public async Task<IActionResult> Profile()
     {
-        var result = await _dashboardService.GetProfile(UserId);
+        var result = await _usersService.GetProfile(UserId);
         return Ok(result);
     }
 
     [HttpPut(template: "Profile/Edit")]
     public async Task<IActionResult> EditProfile([FromBody] EditProfile editProfile)
     {
-        var result = await _dashboardService.EditProfile(editProfile,UserId);
+        var result = await _usersService.EditProfile(editProfile,UserId);
+        return result.IsSuccess ? Ok(result) : BadRequest(result);
+    }
+
+
+    [HttpPut(template: "Change-Pass")]
+    public async Task<IActionResult> ChangePassword([FromBody] ChangePassword changePassword)
+    {
+
+        var result = await _usersService.ChangePasswordAsync(changePassword, UserId);
+        return result.IsSuccess ? Ok(result) : BadRequest(result);
+    }
+
+
+    [HttpPost(template: "Upload/Profile-Image")]
+    public async Task<IActionResult> UploadImage(IFormFile file)
+    {
+        var uploadedFile = new FormFileAdapter(file);
+        var result = await _usersService.SaveProfileImageAsync(uploadedFile);
         return result.IsSuccess ? Ok(result) : BadRequest(result);
     }
 }

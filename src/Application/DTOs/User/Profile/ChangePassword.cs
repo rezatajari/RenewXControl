@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace Application.DTOs.User.Auth;
+namespace Application.DTOs.User.Profile;
 
 public record ChangePassword
 {
