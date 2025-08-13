@@ -1,60 +1,51 @@
 ﻿using Application.Interfaces.Asset;
-using Domain.Interfaces.Assets;
+using Domain.Entities.Assets;
 
 namespace Application.Implementations.Asset
 {
-    public class AssetOperations:IAssetOperations
+    public class AssetOperations(
+        SolarPanel solar,
+        WindTurbine turbine,
+        Battery battery)
+        : IAssetOperations
     {
-        private readonly IBatteryControl _batteryControl;
-        private readonly ISolarControl _solarControl;
-        private readonly ITurbineControl _turbineControl;
-
-        public AssetOperations(
-            IBatteryControl batteryControl,
-            ISolarControl solarControl,
-            ITurbineControl turbineControl)
-        {
-            _batteryControl = batteryControl;
-            _solarControl = solarControl;
-            _turbineControl = turbineControl;
-        }
         public async Task ChargeDischarge()
         {
-            switch (_batteryControl.IsNeedToCharge)
+            switch (battery.IsNeedToCharge)
             {
                 // charging
-                case true when _batteryControl.IsStartingChargeDischarge == false:
-                    _solarControl.Start();
-                    _turbineControl.Start();
+                case true when battery.IsStartingChargeDischarge == false:
+                    solar.Start();
+                    turbine.Start();
                     RecalculateTotalPower();
-                    await _batteryControl.Charge();
+                    await battery.Charge();
                     break;
 
                 // when battery need to update new total power for charging
-                case true when _batteryControl.IsStartingChargeDischarge == true:
+                case true when battery.IsStartingChargeDischarge == true:
                     RecalculateTotalPower();
                     break;
 
                 // discharging
-                case false when _batteryControl.IsStartingChargeDischarge == false:
+                case false when battery.IsStartingChargeDischarge == false:
                     // UpdateSetPointGenerators
-                    _solarControl.RecalculateSetPoint();
-                    _turbineControl.RecalculateSetPoint();
+                    solar.UpdateSetPoint();
+                    turbine.UpdateSetPoint();
 
-                    _solarControl.Stop();
-                    _turbineControl.Stop();
-                    await _batteryControl.Discharge();
+                    solar.Stop();
+                    turbine.Stop();
+                    await battery.Discharge();
                     break;
             }
         }
 
         private void RecalculateTotalPower()
         {
-            _solarControl.UpdateActivePower();
-            _turbineControl.UpdateActivePower();
+            solar.UpdateActivePower();
+            turbine.UpdateActivePower();
 
-            var totalPower = _solarControl.ActivePower + _turbineControl.ActivePower;
-            _batteryControl.RecalculateTotalPower(totalPower);
+            var totalPower = solar.ActivePower + turbine.ActivePower;
+            battery.SetTotalPower(totalPower);
         }
     }
 }

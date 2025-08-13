@@ -1,4 +1,4 @@
-﻿using Application.Interfaces.File;
+﻿using Application.Interfaces.User;
 
 namespace API.Utility;
 

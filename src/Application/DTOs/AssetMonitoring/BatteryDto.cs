@@ -2,10 +2,10 @@
 
 public record BatteryDto(
     string AssetType,
+    string Message,
     double Capacity,
+    double SetPoint,
     double? StateCharge,
     double? RateDischarge,
-    string Message,
-    double SetPoint,
     DateTime Timestamp)
     : AssetDto(AssetType, Message, SetPoint, Timestamp);

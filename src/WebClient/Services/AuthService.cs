@@ -1,130 +1,126 @@
-﻿using Microsoft.AspNetCore.Components;
-using Microsoft.JSInterop;
-using System.Net.Http.Headers;
+﻿using System.Net.Http.Headers;
 using System.Net.Http.Json;
-using System.Runtime.CompilerServices;
-using RXC.Client.DTOs;
-using RXC.Client.DTOs.User.Auth;
-using RXC.Client.DTOs.User.Profile;
-using Microsoft.AspNetCore.Components.Forms;
-using static System.Net.WebRequestMethods;
+using Microsoft.AspNetCore.Components;
+using Microsoft.JSInterop;
+using WebClient.DTOs;
+using WebClient.DTOs.User.Auth;
+using WebClient.DTOs.User.Profile;
 
-namespace RXC.Client.Services
+namespace WebClient.Services;
+
+public class AuthService
 {
-    public class AuthService
+    private readonly HttpClient _http;
+    private readonly NavigationManager _nav;
+    private readonly IJSRuntime _js;
+
+    public AuthService(HttpClient http, NavigationManager nav, IJSRuntime js)
     {
-        private readonly HttpClient _http;
-        private readonly NavigationManager _nav;
-        private readonly IJSRuntime _js;
+        _http = http;
+        _nav = nav;
+        _js = js;
+    }
 
-        public AuthService(HttpClient http, NavigationManager nav, IJSRuntime js)
-        {
-            _http = http;
-            _nav = nav;
-            _js = js;
-        }
+    public async Task<GeneralResponse<string>> LoginAsync(Login model)
+    {
+        var result = await _http.PostAsJsonAsync(requestUri:"api/auth/login", model);
+        var response = await result.Content.ReadFromJsonAsync<GeneralResponse<string>>();
 
-        public async Task<GeneralResponse<string>> LoginAsync(Login model)
-        {
-            var result = await _http.PostAsJsonAsync(requestUri:"api/auth/login", model);
-            var response = await result.Content.ReadFromJsonAsync<GeneralResponse<string>>();
-
-            if (!result.IsSuccessStatusCode)
-                return response;
-
-            var token = response.Data;
-            await _js.InvokeVoidAsync(identifier:"localStorage.setItem", "authToken", token);
-            _http.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(scheme:"Bearer", token);
-            _nav.NavigateTo(uri:"/dashboard/profile");
+        if (!result.IsSuccessStatusCode)
             return response;
-        }
 
-        public async Task<GeneralResponse<string>> RegisterAsync(Register model)
-        {
-            var result= await _http.PostAsJsonAsync(requestUri:"api/auth/register", model);
-            return await  result.Content.ReadFromJsonAsync<GeneralResponse<string>>();
-        }
+        var token = response.Data;
+        await _js.InvokeVoidAsync(identifier:"localStorage.setItem", "authToken", token);
+        _http.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(scheme:"Bearer", token);
+        _nav.NavigateTo(uri:"/dashboard/profile");
+        return response;
+    }
 
-        public async Task<GeneralResponse<bool>> LogoutAsync()
-        {
-          var result=  await _http.PostAsync("api/auth/logout", null);
-          var resultContent = await result.Content.ReadFromJsonAsync<GeneralResponse<bool>>();
+    public async Task<GeneralResponse<string>> RegisterAsync(Register model)
+    {
+        var result= await _http.PostAsJsonAsync(requestUri:"api/auth/register", model);
+        return await  result.Content.ReadFromJsonAsync<GeneralResponse<string>>();
+    }
 
-          if (!resultContent.IsSuccess)
-              return new GeneralResponse<bool>()
-              {
-                  IsSuccess = false, 
-                  Message = "Log out is not work"
-              };
+    public async Task<GeneralResponse<bool>> LogoutAsync()
+    {
+        var result=  await _http.PostAsync("api/auth/logout", null);
+        var resultContent = await result.Content.ReadFromJsonAsync<GeneralResponse<bool>>();
 
-          await _js.InvokeVoidAsync("localStorage.removeItem", "authToken");
-
-            _http.DefaultRequestHeaders.Authorization = null;
-
-            return new GeneralResponse<bool>
-            {
-                IsSuccess = true,
-                Data = true,
-                Message = "Logged out successfully"
-            };
-        }
-
-        public async Task<GeneralResponse<bool>> ChangePasswordAsync(ChangePassword changePassword)
-        {
-
-            var result = await _http.PutAsJsonAsync(
-                requestUri: "api/auth/change-password",
-                value: changePassword);
-
-            var resultContent = await result.Content.ReadFromJsonAsync<GeneralResponse<bool>>();
-            if (!resultContent.IsSuccess)
-                return new GeneralResponse<bool>()
-                {
-                    IsSuccess = false,
-                    Message = resultContent.Message,
-                    Errors = resultContent.Errors
-                };
-
+        if (!resultContent.IsSuccess)
             return new GeneralResponse<bool>()
             {
-                Data = resultContent.Data,
-                IsSuccess = true,
-                Message = resultContent.Message
+                IsSuccess = false, 
+                Message = "Log out is not work"
             };
-        }
 
-        public async Task<GeneralResponse<bool>> EditProfileAsync(EditProfile editProfile)
+        await _js.InvokeVoidAsync("localStorage.removeItem", "authToken");
+
+        _http.DefaultRequestHeaders.Authorization = null;
+
+        return new GeneralResponse<bool>
         {
-            try
+            IsSuccess = true,
+            Data = true,
+            Message = "Logged out successfully"
+        };
+    }
+
+    public async Task<GeneralResponse<bool>> ChangePasswordAsync(ChangePassword changePassword)
+    {
+
+        var result = await _http.PutAsJsonAsync(
+            requestUri: "api/auth/change-password",
+            value: changePassword);
+
+        var resultContent = await result.Content.ReadFromJsonAsync<GeneralResponse<bool>>();
+        if (!resultContent.IsSuccess)
+            return new GeneralResponse<bool>()
             {
-                var response = await _http.PutAsJsonAsync(
-                    "api/dashboard/profile/edit",
-                    editProfile);
+                IsSuccess = false,
+                Message = resultContent.Message,
+                Errors = resultContent.Errors
+            };
 
-                if (!response.IsSuccessStatusCode)
-                {
-                    return new GeneralResponse<bool>
-                    {
-                        IsSuccess = false,
-                        Message = $"Server error: {response.StatusCode}"
-                    };
-                }
+        return new GeneralResponse<bool>()
+        {
+            Data = resultContent.Data,
+            IsSuccess = true,
+            Message = resultContent.Message
+        };
+    }
 
-                var resultContent = await response.Content.ReadFromJsonAsync<GeneralResponse<bool>>();
-                return resultContent ?? new GeneralResponse<bool>
-                {
-                    IsSuccess = false,
-                    Message = "Invalid server response"
-                };
-            }
-            catch (Exception ex)
+    public async Task<GeneralResponse<bool>> EditProfileAsync(EditProfile editProfile)
+    {
+        try
+        {
+            var response = await _http.PutAsJsonAsync(
+                "api/dashboard/profile/edit",
+                editProfile);
+
+            if (!response.IsSuccessStatusCode)
             {
                 return new GeneralResponse<bool>
                 {
                     IsSuccess = false,
-                    Message = $"Network error: {ex.Message}"
+                    Message = $"Server error: {response.StatusCode}"
                 };
             }
+
+            var resultContent = await response.Content.ReadFromJsonAsync<GeneralResponse<bool>>();
+            return resultContent ?? new GeneralResponse<bool>
+            {
+                IsSuccess = false,
+                Message = "Invalid server response"
+            };
+        }
+        catch (Exception ex)
+        {
+            return new GeneralResponse<bool>
+            {
+                IsSuccess = false,
+                Message = $"Network error: {ex.Message}"
+            };
         }
     }
 }

@@ -26,6 +26,7 @@ public class Battery : Asset
     public double FrequentlyDisCharge { get; }
     public bool IsNeedToCharge { get; private set; }
     public bool IsStartingChargeDischarge { get; private set; }
+    public string ChargeStateMessage { get;private set; } 
 
     public static Battery Create(double capacity,
             double stateCharge,
@@ -43,6 +44,7 @@ public class Battery : Asset
     }
     public async Task Charge()
     {
+        ChargeStateMessage = "Battery is charging";
         IsStartingChargeDischarge = true;
         while (Math.Abs(Capacity - StateCharge) > 0.001)
         {
@@ -51,9 +53,14 @@ public class Battery : Asset
         }
         IsNeedToCharge = false;
         IsStartingChargeDischarge = false;
+        ChargeStateMessage = "Charge complete.";
+        UpdateSetPoint();
     }
-    public async Task Discharge(double rateOfDischarge)
+    public async Task Discharge()
     {
+        ChargeStateMessage = "Battery is discharging";
+        var amountToDischarge = StateCharge - SetPoint;
+        var rateOfDischarge = amountToDischarge / FrequentlyDisCharge;
         IsNeedToCharge = false;
         IsStartingChargeDischarge = true;
         while (StateCharge > SetPoint)
@@ -70,6 +77,7 @@ public class Battery : Asset
         }
         IsNeedToCharge = true;
         IsStartingChargeDischarge = false;
+        ChargeStateMessage = "Discharge complete.";
     }
     public void SetTotalPower(double amount)
     {

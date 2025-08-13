@@ -15,6 +15,7 @@ public class WindTurbine : Asset
     public double WindSpeed { get; private set; }  // km/h
     public double ActivePower { get; private set; } // kW
     public double SetPoint { get; private set; } // Determines operation status
+    public string StatusMessage { get; private set; }
 
     public static WindTurbine Create(double windSpeed,double activePower,double setPoint, Guid siteId)
         => new WindTurbine(windSpeed, activePower, setPoint,siteId);
@@ -23,17 +24,20 @@ public class WindTurbine : Asset
         SetPoint = 10;
         if (WindSpeed != 0.0 )
         {
+            StatusMessage = "Wind turbine is generating power";
             return true;
         }
         else
         {
             ActivePower = 0;
+            StatusMessage = "Wind turbine is not generating power";
             return false;
         }
     }
     public void Stop()
     {
         ActivePower = SetPoint;
+        StatusMessage = "Wind turbine is off";
     }
 
     public void UpdateSetPoint()
@@ -43,7 +47,16 @@ public class WindTurbine : Asset
     public bool UpdateWindSpeed()
     {
         WindSpeed = new Random().NextDouble() * 10;
-        return WindSpeed != 0.0 || SetPoint != 0.0;
+        if (WindSpeed != 0.0 || SetPoint != 0.0)
+        {
+            StatusMessage = "Wind turbine is generating power";
+            return true;
+        }
+        else
+        {
+            StatusMessage = "Wind turbine is not generating power";
+            return false;
+        }
     }
     public void UpdateActivePower()
     {

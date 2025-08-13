@@ -1,10 +1,10 @@
 ﻿using System.Net.Http.Json;
 using Microsoft.AspNetCore.Components.Forms;
 using Microsoft.JSInterop;
-using RXC.Client.DTOs;
-using RXC.Client.DTOs.User.Profile;
+using WebClient.DTOs;
+using WebClient.DTOs.User.Profile;
 
-namespace Client.Pages.Dashboard.Profile;
+namespace WebClient.Pages.Dashboard.Profile;
 
 public partial class Edit
 {

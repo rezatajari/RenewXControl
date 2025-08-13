@@ -1,4 +1,4 @@
-﻿using RXC.Client.DTOs;
+﻿namespace WebClient.DTOs.AssetMonitoring;
 public record Asset
 {
     public string AssetType { get; set; }

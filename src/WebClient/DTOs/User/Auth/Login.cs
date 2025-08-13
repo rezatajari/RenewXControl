@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace RXC.Client.DTOs.User.Auth
+namespace WebClient.DTOs.User.Auth
 {
     public class Login
     {

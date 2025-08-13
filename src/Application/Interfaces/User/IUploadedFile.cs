@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Application.Interfaces.File;
+namespace Application.Interfaces.User;
 
 public interface IUploadedFile
 {

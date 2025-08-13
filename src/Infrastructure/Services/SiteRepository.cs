@@ -2,7 +2,7 @@
 using Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 
-namespace Infrastructure.Services.Site;
+namespace Infrastructure.Services;
 
 public class SiteRepository:ISiteRepository
 {

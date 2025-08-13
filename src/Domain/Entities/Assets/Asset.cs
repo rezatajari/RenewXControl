@@ -1,6 +1,6 @@
 ﻿namespace Domain.Entities.Assets;
 
-public abstract  class Asset
+public abstract class Asset
 {
     public Guid Id { get; set; }= Guid.NewGuid();
     public string Name { get; set; }

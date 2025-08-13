@@ -1,11 +1,10 @@
 ﻿using Microsoft.JSInterop;
-using RXC.Client.Services;
 
-namespace Client.Pages.Auth;
+namespace WebClient.Pages.Auth;
 
 public partial class Login
 {
-    private RXC.Client.DTOs.User.Auth.Login model = new();
+    private DTOs.User.Auth.Login model = new();
     private string? errorMessage;
     private string? successMessage;
     private bool isLoading = false;

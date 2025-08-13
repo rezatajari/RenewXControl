@@ -1,13 +1,13 @@
 ﻿using System.Net.Http.Headers;
 using System.Net.Http.Json;
 using Microsoft.JSInterop;
-using RXC.Client.DTOs;
+using WebClient.DTOs;
 
-namespace Client.Pages.Asset;
+namespace WebClient.Pages.Asset;
 
 public partial class AddTurbine
 {
-    private RXC.Client.DTOs.AddAsset.AddTurbine turbineModel = new();
+    private DTOs.AddAsset.AddTurbine turbineModel = new();
     private bool isLoading = false;
     private bool showSuccess = false;
     private string? errorMessage;

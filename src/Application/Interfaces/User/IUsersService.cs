@@ -1,6 +1,6 @@
 ﻿using Application.Common;
+using Application.DTOs;
 using Application.DTOs.User.Profile;
-using Application.Interfaces.File;
 
 namespace Application.Interfaces.User;
 
@@ -11,4 +11,5 @@ public interface IUsersService
     GeneralResponse<bool> ValidateUserId(Guid userId);
     Task<GeneralResponse<bool>> ChangePasswordAsync(ChangePassword changePassword, Guid userId);
     Task<GeneralResponse<string>> SaveProfileImageAsync(IUploadedFile file);
+    Task<List<UserMonitoringInfo>> GetAllUsersWithSitesAndAssetsAsync();
 }

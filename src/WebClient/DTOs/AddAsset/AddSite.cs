@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace RXC.Client.DTOs.AddAsset
+namespace WebClient.DTOs.AddAsset
 {
     public class AddSite
     {

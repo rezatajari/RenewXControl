@@ -1,5 +1,5 @@
 ﻿using API.Utility;
-using Infrastructure.Hubs;
+using Infrastructure;
 using Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.FileProviders;
@@ -64,7 +64,7 @@ public static class WebApplicationConfiguration
 
     public static WebApplication MapEndpoints(this WebApplication app)
     {
-        app.MapHub<AssetsHub>("/assetsHub").RequireAuthorization();
+        app.MapHub<AssetsHub>("/assetsHub");
         app.MapControllers();
         app.MapFallbackToFile("index.html");
         return app;

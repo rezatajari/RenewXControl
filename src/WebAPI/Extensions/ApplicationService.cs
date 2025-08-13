@@ -1,14 +1,13 @@
 ﻿using Application.Common;
 using Application.Implementations.Asset;
-using Application.Implementations.Monitoring;
 using Application.Interfaces.Asset;
-using Application.Interfaces.File;
-using Application.Interfaces.Monitoring;
 using Application.Interfaces.User;
-using Infrastructure.Services.Asset;
-using Infrastructure.Services.Site;
 using Infrastructure.Services.User;
 using Infrastructure.Persistence;
+using Application.Interfaces;
+using Infrastructure.Services;
+using Application.DTOs;
+using Infrastructure;
 
 namespace API.Extensions;
 
@@ -24,10 +23,9 @@ public static class ApplicationService
         services.AddScoped<ISiteRepository, SiteRepository>();
         services.AddScoped<IAssetService, AssetService>();
         services.AddScoped<IAssetRepository, AssetRepository>();
-        services.AddScoped<IAssetControlFactory, AssetControlFactory>();
+        services.AddSingleton<List<UserMonitoringInfo>>();
         services.AddScoped<IMonitoringService, Application.Implementations.Monitoring.MonitoringService>();
-        services.AddSingleton<ConnectedUsersStore>();
-        services.AddHostedService<Infrastructure.Services.Asset.MonitoringScreen>();
+        services.AddHostedService<MonitoringScreen>();
 
         return services;
     }

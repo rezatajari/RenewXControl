@@ -1,6 +1,7 @@
-﻿namespace RXC.Client.DTOs.User.Profile;
-
+﻿
 using System.ComponentModel.DataAnnotations;
+
+namespace WebClient.DTOs.User.Profile;
 
 public class EditProfile
 {

@@ -1,10 +1,10 @@
 ﻿using Microsoft.JSInterop;
 
-namespace Client.Pages.Auth;
+namespace WebClient.Pages.Auth;
 
 public partial class Register
 {
-    private RXC.Client.DTOs.User.Auth.Register model = new();
+    private DTOs.User.Auth.Register model = new();
     private string errorMessage = string.Empty;
     private bool isLoading = false;
 

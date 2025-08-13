@@ -15,6 +15,7 @@ public class SolarPanel : Asset
     public double Irradiance { get; private set; } // W/m²
     public double ActivePower { get; private set; } // kW
     public double SetPoint { get; private set; }  // Determines operation status
+    public string StatusMessage { get; private set; } 
 
     public static SolarPanel Create(double irradiance, double activePower,double setPoint, Guid siteId)
         => new SolarPanel(irradiance, activePower, setPoint,siteId);
@@ -25,17 +26,20 @@ public class SolarPanel : Asset
         SetPoint = 10;
         if (Irradiance != 0.0)
         {
+            StatusMessage = "Solar panel is generating power";
             return true;
         }
         else
         {
             ActivePower = 0;
+            StatusMessage = "Solar panel is not generating power";
             return false;
         }
     }
     public bool Stop()
     {
         ActivePower = SetPoint;
+        StatusMessage = "Solar panel is off";
         return true;
     }
 
@@ -46,7 +50,16 @@ public class SolarPanel : Asset
     public bool UpdateIrradiance()
     {
         Irradiance = new Random().NextDouble() * 10;
-        return Irradiance != 0.0 || SetPoint != 0.0;
+        if (Irradiance != 0.0 || SetPoint != 0.0)
+        {
+            StatusMessage = "Solar panel is generating power";
+            return true;
+        }
+        else
+        {
+            StatusMessage = "Solar panel is not generating power";
+            return false;
+        }
     }
     public void UpdateActivePower()
     {

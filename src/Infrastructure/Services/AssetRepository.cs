@@ -3,7 +3,7 @@ using Domain.Entities.Assets;
 using Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 
-namespace Infrastructure.Services.Asset;
+namespace Infrastructure.Services;
 
 public class AssetRepository : IAssetRepository
 {

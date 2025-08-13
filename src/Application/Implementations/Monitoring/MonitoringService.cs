@@ -1,55 +1,60 @@
 ﻿using Application.Common;
 using Application.DTOs;
-using Application.Interfaces.Asset;
-using Application.Interfaces.Monitoring;
+using Application.Interfaces;
 using Application.Interfaces.User;
+using Domain.Entities.Assets;
 
 namespace Application.Implementations.Monitoring;
 
 public class MonitoringService(
-    IAssetService assetService,
-    IAssetControlFactory assetControlFactory,
     IUsersService userService)
     : IMonitoringService
 {
-    public async Task<GeneralResponse<MonitoringAssetControl>> MonitoringAssetControl(Guid userId)
+    public async Task<GeneralResponse<List<UserMonitoringInfo>>> GetAllUsersWithSitesAndAssets()
     {
-        var userValidation = userService.ValidateUserId(userId);
-        if (!userValidation.IsSuccess)
-            return GeneralResponse<MonitoringAssetControl>.Failure();
+        var listMonitoringInfo= await userService.GetAllUsersWithSitesAndAssetsAsync();
+        if (listMonitoringInfo.Count == 0)
+            return GeneralResponse<List<UserMonitoringInfo>>.Failure(message:"Does not have any information exist");
 
-        var solarResult = await assetService.GetSolarByUserIdAsync(userId);
-        if (!solarResult.IsSuccess)
-            return GeneralResponse<MonitoringAssetControl>.Failure(solarResult.Message,
-                solarResult.Errors);
-
-        var turbineResult = await assetService.GetTurbineByUserIdAsync(userId);
-        if (!turbineResult.IsSuccess)
-            return GeneralResponse<MonitoringAssetControl>.Failure(turbineResult.Message,
-                turbineResult.Errors);
-
-        var batteryResult = await assetService.GetBatteryByUserIdAsync(userId);
-        if (!batteryResult.IsSuccess)
-            return GeneralResponse<MonitoringAssetControl>.Failure(batteryResult.Message,
-            batteryResult.Errors);
-
-
-        var solarControl = assetControlFactory.CreateSolarControl(solarResult.Data);
-        var turbineControl = assetControlFactory.CreateTurbineControl(turbineResult.Data);
-        var batteryControl = assetControlFactory.CreateBatteryControl(batteryResult.Data);
-
-        var operation = assetControlFactory.CreateAssetOperations(solarControl, turbineControl, batteryControl);
-
-        var monitorAssetControl = new MonitoringAssetControl
+        return GeneralResponse<List<UserMonitoringInfo>>.Success(data:listMonitoringInfo);
+    }
+    public async Task ChargeDischarge(SolarPanel solar, WindTurbine turbine, Battery battery)
+    {
+        switch (battery.IsNeedToCharge)
         {
-            SolarControl = solarControl,
-            TurbineControl = turbineControl,
-            BatteryControl = batteryControl,
-            AssetOperations = operation
-        };
+            // charging
+            case true when battery.IsStartingChargeDischarge == false:
+                solar.Start();
+                turbine.Start();
+                RecalculateTotalPower(solar,turbine,battery);
+                await battery.Charge();
+                break;
 
-        return GeneralResponse<MonitoringAssetControl>.Success(
-            data: monitorAssetControl,
-            message: "Monitoring asset is registration");
+            // when battery need to update new total power for charging
+            case true when battery.IsStartingChargeDischarge == true:
+                RecalculateTotalPower(solar, turbine, battery);
+                break;
+
+            // discharging
+            case false when battery.IsStartingChargeDischarge == false:
+                // UpdateSetPointGenerators
+                solar.UpdateSetPoint();
+                turbine.UpdateSetPoint();
+
+                solar.Stop();
+                turbine.Stop();
+                await battery.Discharge();
+                break;
+        }
+    }
+
+
+    private static void RecalculateTotalPower(SolarPanel solar,WindTurbine turbine,Battery battery)
+    {
+        solar.UpdateActivePower();
+        turbine.UpdateActivePower();
+
+        var totalPower = solar.ActivePower + turbine.ActivePower;
+        battery.SetTotalPower(totalPower);
     }
 }

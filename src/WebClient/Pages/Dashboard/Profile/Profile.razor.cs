@@ -1,13 +1,13 @@
 ﻿using System.Net.Http.Headers;
 using System.Net.Http.Json;
 using Microsoft.JSInterop;
-using RXC.Client.DTOs;
+using WebClient.DTOs;
 
-namespace Client.Pages.Dashboard.Profile;
+namespace WebClient.Pages.Dashboard.Profile;
 
 public partial class Profile
 {
-    private RXC.Client.DTOs.User.Profile.Profile? profile;
+    private DTOs.User.Profile.Profile? profile;
     private string? successMessage;
     private string? errorMessage;
 
@@ -49,7 +49,7 @@ public partial class Profile
             Http.DefaultRequestHeaders.Authorization =
                 new AuthenticationHeaderValue("Bearer", token);
 
-            var response = await Http.GetFromJsonAsync<GeneralResponse<RXC.Client.DTOs.User.Profile.Profile>>("api/Dashboard/profile");
+            var response = await Http.GetFromJsonAsync<GeneralResponse<DTOs.User.Profile.Profile>>("api/Dashboard/profile");
 
             if (response == null || !response.IsSuccess)
             {

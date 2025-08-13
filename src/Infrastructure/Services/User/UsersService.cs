@@ -1,30 +1,24 @@
 ﻿using Application.Common;
+using Application.DTOs;
 using Application.DTOs.User.Profile;
 using Application.Interfaces.Asset;
-using Application.Interfaces.File;
 using Application.Interfaces.User;
+using Domain.Entities.Assets;
 using Infrastructure.Persistence;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 
 namespace Infrastructure.Services.User;
 
-public class UsersService:IUsersService
+public class UsersService(
+    UserManager<ApplicationUser> userManager,
+    IAssetRepository assetRepository,
+    IWebHostEnvironment env,
+    RxcDbContext db)
+    : IUsersService
 {
-    private readonly UserManager<ApplicationUser> _userManager;
-    private readonly IAssetRepository _assetRepository;
-    private readonly IWebHostEnvironment _env;
-
-
-    public UsersService(
-        UserManager<ApplicationUser> userManager,
-        IAssetRepository assetRepository, 
-        IWebHostEnvironment env)
-    {
-        _userManager=userManager;
-        _assetRepository=assetRepository;
-        _env = env;
-    }
+    private readonly RxcDbContext _db = db;
 
     public async Task<GeneralResponse<Profile>> GetProfile(Guid userId)
     {
@@ -33,7 +27,7 @@ public class UsersService:IUsersService
             return GeneralResponse<Profile>.Failure(message:userValidation.Message,errors:userValidation.Errors);
 
 
-        var user = await _userManager.FindByIdAsync(userId.ToString());
+        var user = await userManager.FindByIdAsync(userId.ToString());
         if(user is null)
             return GeneralResponse<Profile>.Failure(
                 message:"User found",
@@ -45,8 +39,8 @@ public class UsersService:IUsersService
                     }
                     ]);
 
-        var role = await _userManager.GetRolesAsync(user);
-        var totalAssets = await _assetRepository.GetTotalAssets(userId);
+        var role = await userManager.GetRolesAsync(user);
+        var totalAssets = await assetRepository.GetTotalAssets(userId);
         var profile = new Profile(totalAssets, user.UserName, role,user.ProfileImage);
 
         return GeneralResponse<Profile>.Success(
@@ -61,7 +55,7 @@ public class UsersService:IUsersService
         if (!userValidation.IsSuccess)
             return GeneralResponse<bool>.Failure(message: userValidation.Message, errors: userValidation.Errors);
 
-        var user = await _userManager.FindByIdAsync(userId.ToString());
+        var user = await userManager.FindByIdAsync(userId.ToString());
         if (user is null)
             return GeneralResponse<bool>.Failure(
                 message: "User found",
@@ -76,7 +70,7 @@ public class UsersService:IUsersService
         user.UserName= editProfile.UserName;
         user.ProfileImage = editProfile.ProfileImage;
 
-       var result= await _userManager.UpdateAsync(user);
+       var result= await userManager.UpdateAsync(user);
         
        if (result.Succeeded)
         return GeneralResponse<bool>.Success(
@@ -105,8 +99,8 @@ public class UsersService:IUsersService
 
     public async Task<GeneralResponse<bool>> ChangePasswordAsync(ChangePassword changePassword, Guid userId)
     {
-        var user = await _userManager.FindByIdAsync(userId.ToString());
-        var result = await _userManager.ChangePasswordAsync(
+        var user = await userManager.FindByIdAsync(userId.ToString());
+        var result = await userManager.ChangePasswordAsync(
             user,
             changePassword.CurrentPassword,
             changePassword.NewPassword);
@@ -146,7 +140,7 @@ public class UsersService:IUsersService
         try
         {
             // Use wwwroot/profile-images for better organization
-            var uploadFolder = Path.Combine(_env.WebRootPath, "profile-images");
+            var uploadFolder = Path.Combine(env.WebRootPath, "profile-images");
 
             if (!Directory.Exists(uploadFolder))
                 Directory.CreateDirectory(uploadFolder);
@@ -164,5 +158,59 @@ public class UsersService:IUsersService
         {
             return GeneralResponse<string>.Failure("File upload failed. Please try again.");
         }
+    }
+
+    public async Task<List<UserMonitoringInfo>> GetAllUsersWithSitesAndAssetsAsync()
+    {
+        var monitoringData = await db.Users
+            .Include(u => u.Sites)
+            .ThenInclude(s => s.Assets)
+            .ToListAsync();
+
+        var result = monitoringData
+            .SelectMany(u => u.Sites, (user, site) =>
+            {
+                var solarPanel = site.Assets
+                    .OfType<SolarPanel>()
+                    .Select(sp => SolarPanel.Create(
+                                sp.Irradiance,
+                                sp.ActivePower,
+                                sp.SetPoint,
+                                site.Id))
+                    .FirstOrDefault();
+
+                var windTurbine = site.Assets
+                    .OfType<WindTurbine>()
+                    .Select(wt => WindTurbine.Create(
+                                wt.WindSpeed,
+                                wt.ActivePower,
+                                wt.SetPoint,
+                                site.Id))
+                    .FirstOrDefault();
+
+                var battery = site.Assets
+                    .OfType<Battery>()
+                    .Select(b => Battery.Create(
+                        b.Capacity,
+                        b.StateCharge,
+                        b.SetPoint,
+                        b.FrequentlyDisCharge,
+                        site.Id))
+                    .FirstOrDefault();
+
+                return new UserMonitoringInfo
+                {
+                    Username = user.UserName,
+                    SiteName = site.Name,
+                    SiteLocation = site.Location,
+                    SolarPanel = solarPanel,
+                    WindTurbine = windTurbine,
+                    Battery = battery
+                };
+            })
+            .ToList();
+
+
+        return result;
     }
 }

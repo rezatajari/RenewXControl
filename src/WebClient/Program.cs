@@ -1,8 +1,8 @@
 ﻿using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
-using RXC.Client.Services;
-using Client;
-using Client.Utility;
 using System.Net.Http.Json;
+using WebClient;
+using WebClient.Services;
+using WebClient.Utility;
 
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
 builder.RootComponents.Add<App>("#app");

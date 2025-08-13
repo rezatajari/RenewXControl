@@ -1,5 +1,4 @@
-﻿using Application.DTOs.AssetMonitoring;
-
+﻿
 namespace Application.DTOs.AssetMonitoring;
 
 public record Solar(

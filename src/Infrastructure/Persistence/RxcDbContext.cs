@@ -49,6 +49,17 @@ public class RxcDbContext:IdentityDbContext<ApplicationUser,IdentityRole<Guid>,G
             battery.Ignore(b => b.IsNeedToCharge);
             battery.Ignore(b => b.IsStartingChargeDischarge);
             battery.Ignore(b => b.TotalPower);
+            battery.Ignore(b => b.ChargeStateMessage);
+        });
+
+        modelBuilder.Entity<SolarPanel>(solar =>
+        {
+            solar.Ignore(s => s.StatusMessage); 
+        });
+
+        modelBuilder.Entity<WindTurbine>(wind =>
+        {
+            wind.Ignore(w => w.StatusMessage);
         });
     }
 }

@@ -1,10 +1,10 @@
 ﻿using Microsoft.JSInterop;
 
-namespace Client.Pages.Dashboard.Profile;
+namespace WebClient.Pages.Dashboard.Profile;
 
 public partial class ChangePassword
 {
-    private RXC.Client.DTOs.User.Auth.ChangePassword model = new();
+    private DTOs.User.Auth.ChangePassword model = new();
     private bool _isLoading = false;
     private string _errorMessage = string.Empty;
 

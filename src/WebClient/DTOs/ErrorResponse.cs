@@ -1,4 +1,4 @@
-﻿namespace RXC.Client.DTOs
+﻿namespace WebClient.DTOs
 {
     public class ErrorResponse
     {

@@ -3,7 +3,6 @@ using API.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
 
-var environment = builder.Environment;
 builder.Configuration.AddAppConfigurations(builder.Environment);
 
 builder.Services

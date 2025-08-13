@@ -6,28 +6,19 @@ using Domain.Entities.Site;
 
 namespace Application.Implementations.Asset;
 
-public class SiteService:ISiteService
+public class SiteService(ISiteRepository siteRepository, IUnitOfWork unitOfWork, IUsersService userService)
+    : ISiteService
 {
-    private readonly ISiteRepository _siteRepository;
-    private readonly IUsersService _userService;
-    private readonly IUnitOfWork _unitOfWork;
-
-    public SiteService(ISiteRepository siteRepository, IUnitOfWork unitOfWork, IUsersService userService)
-    {
-        _siteRepository = siteRepository;
-        _unitOfWork = unitOfWork;
-        _userService = userService;
-    }
     public async Task<GeneralResponse<Guid>> AddSiteAsync(AddSite addSite, Guid userId)
     {
-        var userValidation = _userService.ValidateUserId(userId);
+        var userValidation = userService.ValidateUserId(userId);
         if (!userValidation.IsSuccess)
             return GeneralResponse<Guid>.Failure(message:userValidation.Message,errors:userValidation.Errors);
 
         var site = Site.Create(addSite.Name,addSite.Location, userId);
-        await _siteRepository.AddAsync(site);
+        await siteRepository.AddAsync(site);
 
-        await _unitOfWork.SaveChangesAsync();
+        await unitOfWork.SaveChangesAsync();
 
         return GeneralResponse<Guid>.Success(
             data: site.Id,
@@ -37,11 +28,11 @@ public class SiteService:ISiteService
 
     public async Task<GeneralResponse<Guid>> GetSiteId(Guid userId)
     {
-        var userValidation = _userService.ValidateUserId(userId);
+        var userValidation = userService.ValidateUserId(userId);
         if (!userValidation.IsSuccess)
             return GeneralResponse<Guid>.Failure(message: userValidation.Message, errors: userValidation.Errors);
 
-        var siteId = await _siteRepository.GetIdAsync(userId);
+        var siteId = await siteRepository.GetIdAsync(userId);
         if (siteId == Guid.Empty)
         {
             return GeneralResponse<Guid>.Failure(
@@ -60,7 +51,7 @@ public class SiteService:ISiteService
 
     public async Task<GeneralResponse<bool>> HasSiteAsync(Guid userId)
     {
-        var response =await _siteRepository.HasSite(userId);
+        var response =await siteRepository.HasSite(userId);
         if (response)
             return GeneralResponse<bool>.Success(data: true, message: "Has site operation is successful");
 

@@ -1,13 +1,13 @@
 ﻿using System.Net.Http.Headers;
 using System.Net.Http.Json;
 using Microsoft.JSInterop;
-using RXC.Client.DTOs;
+using WebClient.DTOs;
 
-namespace Client.Pages.Asset;
+namespace WebClient.Pages.Asset;
 
 public partial class AddSite
 {
-    private RXC.Client.DTOs.AddAsset.AddSite siteModel = new();
+    private DTOs.AddAsset.AddSite siteModel = new();
     private bool isLoading = false;
     private bool _showSuccess = false;
 

@@ -1,4 +1,4 @@
-﻿namespace Client.Utility;
+﻿namespace WebClient.Utility;
 
 public class AppSettings
 {

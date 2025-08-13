@@ -1,11 +1,9 @@
-﻿using System.Net;
-using System.Net.Http.Json;
+﻿using System.Net.Http.Json;
 using Microsoft.JSInterop;
-using RXC.Client.DTOs;
-using RXC.Client.DTOs.User.Profile;
-using RXC.Client.Services;
+using WebClient.DTOs;
+using WebClient.DTOs.User.Profile;
 
-namespace Client.Layout
+namespace WebClient.Layout
 {
     public partial class DashboardLayout
     {
@@ -41,7 +39,7 @@ namespace Client.Layout
             // Load user data
             try
             {
-                var response = await WebRequestMethods.Http.GetAsync("api/user/profile");
+                var response = await Http.GetAsync("api/user/profile");
                 if (response.IsSuccessStatusCode)
                 {
                     var user = await response.Content.ReadFromJsonAsync<Profile>();
@@ -49,7 +47,7 @@ namespace Client.Layout
                 }
 
                 // Check if user has sites
-                var siteResponse = await WebRequestMethods.Http.GetAsync("api/site/HasSite");
+                var siteResponse = await Http.GetAsync("api/site/HasSite");
                 if (siteResponse.IsSuccessStatusCode)
                 {
                     var result = await siteResponse.Content.ReadFromJsonAsync<GeneralResponse<bool>>();
