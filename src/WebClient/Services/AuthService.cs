@@ -8,29 +8,8 @@ using WebClient.DTOs.User.Profile;
 
 namespace WebClient.Services;
 
-public class AuthService(HttpClient http, NavigationManager nav, IJSRuntime js)
+public class AuthService(HttpClient http,IJSRuntime js)
 {
-    public async Task<GeneralResponse<string>> LoginAsync(Login model)
-    {
-        var result = await http.PostAsJsonAsync(requestUri:"api/auth/login", model);
-        var response = await result.Content.ReadFromJsonAsync<GeneralResponse<string>>();
-
-        if (!result.IsSuccessStatusCode)
-            return response;
-
-        var token = response.Data;
-        await js.InvokeVoidAsync(identifier:"localStorage.setItem", "authToken", token);
-        http.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(scheme:"Bearer", token);
-        nav.NavigateTo(uri:"/dashboard/profile");
-        return response;
-    }
-
-    public async Task<GeneralResponse<string>> RegisterAsync(Register model)
-    {
-        var result= await http.PostAsJsonAsync(requestUri:"Account/Register", model);
-        return await  result.Content.ReadFromJsonAsync<GeneralResponse<string>>();
-    }
-
     public async Task<GeneralResponse<bool>> LogoutAsync()
     {
         var result=  await http.PostAsync("api/auth/logout", null);

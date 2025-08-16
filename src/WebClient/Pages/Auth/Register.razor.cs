@@ -1,13 +1,17 @@
-﻿using Microsoft.JSInterop;
+﻿using System.Net.Http.Json;
+using Microsoft.AspNetCore.Components;
+using Microsoft.JSInterop;
+using WebClient.DTOs;
 
 namespace WebClient.Pages.Auth;
 
-public partial class Register
+public partial class Register(HttpClient http, IJSRuntime js)
 {
     private readonly DTOs.User.Auth.Register _model=new();
     private string _errorMessage = string.Empty;
-    private bool _isLoading = false;
-
+    private bool _isLoading;
+    [Inject] private IJSRuntime Js { get; set; } = js;
+    [Inject] private NavigationManager Nav { get; set; } = default!;
     private async Task RegisterUser()
     {
         _isLoading = true;
@@ -15,15 +19,17 @@ public partial class Register
 
         try
         {
-            var response = await AuthService.RegisterAsync(_model);
-            if (!response.IsSuccess)
+            var response = await http.PostAsJsonAsync(requestUri: "Account/Register", _model);
+            var result = await response.Content.ReadFromJsonAsync<GeneralResponse<string>>();
+
+            if (!result.IsSuccess)
             {
-                _errorMessage = response.Message ?? "Registration failed";
+                _errorMessage = result.Message ?? "Registration failed";
             }
             else
             {
-                await Js.InvokeVoidAsync("localStorage.setItem", "RegisterSuccess", response.Message ?? "Registration successful");
-                Navigation.NavigateTo("/login");
+                await Js.InvokeVoidAsync("localStorage.setItem", "RegisterSuccess", result.Message ?? "Registration successful");
+                Nav.NavigateTo("/login");
             }
         }
         catch (Exception ex)

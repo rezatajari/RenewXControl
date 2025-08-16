@@ -1,8 +1,4 @@
 ﻿@page "/login"
-@using WebClient.Services
-@inject AuthService AuthService
-@inject NavigationManager Navigation
-@inject IJSRuntime JS
 
 <PageTitle>Login - RenewXControl</PageTitle>
 
@@ -16,17 +12,17 @@
                         <h2 class="h4 mt-2">Sign in to RXC</h2>
                     </div>
 
-                    @if (!string.IsNullOrEmpty(errorMessage))
+                    @if (!string.IsNullOrEmpty(_errorMessage))
                     {
-                        <div class="alert alert-danger mb-3 text-center">@errorMessage</div>
+                        <div class="alert alert-danger mb-3 text-center">@_errorMessage</div>
                     }
 
-                    @if (!string.IsNullOrEmpty(successMessage))
+                    @if (!string.IsNullOrEmpty(_successMessage))
                     {
-                        <div class="alert alert-success mb-3 text-center">@successMessage</div>
+                        <div class="alert alert-success mb-3 text-center">@_successMessage</div>
                     }
 
-                    @if (isLoading)
+                    @if (_isLoading)
                     {
                         <div class="text-center mb-3">
                             <div class="spinner-border text-primary" role="status">
@@ -36,25 +32,25 @@
                         </div>
                     }
 
-                    <EditForm Model="@model" OnValidSubmit="@LoginUser">
+                    <EditForm Model="@_model" OnValidSubmit="@LoginUser">
                         <DataAnnotationsValidator />
                         <ValidationSummary class="text-danger mb-3" />
 
                         <div class="mb-3">
                             <label class="form-label">Email</label>
-                            <InputText @bind-Value="model.Email" class="form-control" placeholder="Enter your email" />
-                            <ValidationMessage For="@(() => model.Email)" class="text-danger" />
+                            <InputText @bind-Value="_model.Email" class="form-control" placeholder="Enter your email" />
+                            <ValidationMessage For="@(() => _model.Email)" class="text-danger" />
                         </div>
 
                         <div class="mb-4">
                             <label class="form-label">Password</label>
-                            <InputText @bind-Value="model.Password" type="password" class="form-control" placeholder="Enter your password" />
-                            <ValidationMessage For="@(() => model.Password)" class="text-danger" />
+                            <InputText @bind-Value="_model.Password" type="password" class="form-control" placeholder="Enter your password" />
+                            <ValidationMessage For="@(() => _model.Password)" class="text-danger" />
                         </div>
 
                         <div class="d-grid gap-2">
-                            <button type="submit" class="btn btn-primary" disabled="@isLoading">
-                                @if (isLoading)
+                            <button type="submit" class="btn btn-primary" disabled="@_isLoading">
+                                @if (_isLoading)
                                 {
                                     <span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
                                 }

@@ -1,47 +1,60 @@
 ﻿using Microsoft.JSInterop;
+using System.Net.Http.Headers;
+using System.Net.Http.Json;
+using Microsoft.AspNetCore.Components;
+using WebClient.DTOs;
 
 namespace WebClient.Pages.Auth;
 
-public partial class Login
+public partial class Login(HttpClient http, IJSRuntime js)
 {
-    private DTOs.User.Auth.Login model = new();
-    private string? errorMessage;
-    private string? successMessage;
-    private bool isLoading = false;
-
+    private readonly DTOs.User.Auth.Login _model = new();
+    private string _errorMessage=string.Empty;
+    private string _successMessage=string.Empty;
+    private bool _isLoading;
+    [Inject] private IJSRuntime Js { get; set; } = js;
+    [Inject] private NavigationManager Nav { get; set; } = default!;
 
     protected override async Task OnInitializedAsync()
     {
-        successMessage = await JS.InvokeAsync<string>(identifier: "localStorage.getItem", "RegisterSuccess");
-        if (!string.IsNullOrEmpty(successMessage))
+        _successMessage = await Js.InvokeAsync<string>(identifier: "localStorage.getItem", "RegisterSuccess");
+        if (!string.IsNullOrEmpty(_successMessage))
         {
-            await JS.InvokeVoidAsync(identifier: "localStorage.removeItem", "RegisterSuccess");
+            await Js.InvokeVoidAsync(identifier: "localStorage.removeItem", "RegisterSuccess");
         }
     }
 
     private async Task LoginUser()
     {
 
-        successMessage = null;
+        _successMessage = string.Empty;
 
-        isLoading = true;
-        errorMessage = null;
+        _isLoading = true;
+        _errorMessage = string.Empty;
+
         try
         {
-            var result = await AuthService.LoginAsync(model);
+            var response = await http.PostAsJsonAsync(requestUri: "Account/Login", _model);
+            var result = await response.Content.ReadFromJsonAsync<GeneralResponse<string>>();
+
             if (!result.IsSuccess)
             {
-                errorMessage = result.Message;
+                _errorMessage = result.Message?? "Login operation failed";
             }
             else
             {
-                await JS.InvokeVoidAsync(identifier: "localStorage.setItem", "loginSuccess", $"{result.Message}");
-                Navigation.NavigateTo(uri: "/Dashboard/profile");
+
+                var token = result?.Data;
+                await Js.InvokeVoidAsync(identifier: "localStorage.setItem", "authToken", token);
+                http.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(scheme: "Bearer", token);
+
+                await Js.InvokeVoidAsync(identifier: "localStorage.setItem", "loginSuccess", $"{result.Message}");
+                Nav.NavigateTo(uri: "/User/Profile");
             }
         }
         finally
         {
-            isLoading = false;
+            _isLoading = false;
         }
     }
 }
