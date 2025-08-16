@@ -3,14 +3,14 @@ using Microsoft.AspNetCore.SignalR.Client;
 using WebClient.DTOs.AssetMonitoring;
 using WebClient.Utility;
 
-namespace WebClient.Pages.Asset;
+namespace WebClient.Pages;
 
 public partial class MonitoringAsset
 {
     [Inject] private HubConfig HubConfig { get; set; } = default!;
     private HubConnection? _hubConnection;
 
-    private List<UserMonitoringInfoDto> _assetsMonitoring = [];
+    private readonly List<UserMonitoringInfoDto> _assetsMonitoring = [];
 
     protected override async Task OnInitializedAsync()
     {
