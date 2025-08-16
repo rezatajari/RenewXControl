@@ -3,7 +3,7 @@ using System.Net.Http.Json;
 using Microsoft.JSInterop;
 using WebClient.DTOs;
 
-namespace WebClient.Pages.Dashboard.Profile;
+namespace WebClient.Pages.Profile;
 
 public partial class Profile
 {

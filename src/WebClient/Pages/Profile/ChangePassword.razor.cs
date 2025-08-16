@@ -1,6 +1,6 @@
 ﻿using Microsoft.JSInterop;
 
-namespace WebClient.Pages.Dashboard.Profile;
+namespace WebClient.Pages.Profile;
 
 public partial class ChangePassword
 {

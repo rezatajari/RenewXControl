@@ -2,7 +2,7 @@
 
 namespace WebClient.DTOs.User.Auth;
 
-public record Register
+public class Register
 {
     [Required]
     public string UserName { get; set; }

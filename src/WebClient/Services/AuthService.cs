@@ -8,43 +8,32 @@ using WebClient.DTOs.User.Profile;
 
 namespace WebClient.Services;
 
-public class AuthService
+public class AuthService(HttpClient http, NavigationManager nav, IJSRuntime js)
 {
-    private readonly HttpClient _http;
-    private readonly NavigationManager _nav;
-    private readonly IJSRuntime _js;
-
-    public AuthService(HttpClient http, NavigationManager nav, IJSRuntime js)
-    {
-        _http = http;
-        _nav = nav;
-        _js = js;
-    }
-
     public async Task<GeneralResponse<string>> LoginAsync(Login model)
     {
-        var result = await _http.PostAsJsonAsync(requestUri:"api/auth/login", model);
+        var result = await http.PostAsJsonAsync(requestUri:"api/auth/login", model);
         var response = await result.Content.ReadFromJsonAsync<GeneralResponse<string>>();
 
         if (!result.IsSuccessStatusCode)
             return response;
 
         var token = response.Data;
-        await _js.InvokeVoidAsync(identifier:"localStorage.setItem", "authToken", token);
-        _http.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(scheme:"Bearer", token);
-        _nav.NavigateTo(uri:"/dashboard/profile");
+        await js.InvokeVoidAsync(identifier:"localStorage.setItem", "authToken", token);
+        http.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(scheme:"Bearer", token);
+        nav.NavigateTo(uri:"/dashboard/profile");
         return response;
     }
 
     public async Task<GeneralResponse<string>> RegisterAsync(Register model)
     {
-        var result= await _http.PostAsJsonAsync(requestUri:"api/auth/register", model);
+        var result= await http.PostAsJsonAsync(requestUri:"Account/Register", model);
         return await  result.Content.ReadFromJsonAsync<GeneralResponse<string>>();
     }
 
     public async Task<GeneralResponse<bool>> LogoutAsync()
     {
-        var result=  await _http.PostAsync("api/auth/logout", null);
+        var result=  await http.PostAsync("api/auth/logout", null);
         var resultContent = await result.Content.ReadFromJsonAsync<GeneralResponse<bool>>();
 
         if (!resultContent.IsSuccess)
@@ -54,9 +43,9 @@ public class AuthService
                 Message = "Log out is not work"
             };
 
-        await _js.InvokeVoidAsync("localStorage.removeItem", "authToken");
+        await js.InvokeVoidAsync("localStorage.removeItem", "authToken");
 
-        _http.DefaultRequestHeaders.Authorization = null;
+        http.DefaultRequestHeaders.Authorization = null;
 
         return new GeneralResponse<bool>
         {
@@ -69,7 +58,7 @@ public class AuthService
     public async Task<GeneralResponse<bool>> ChangePasswordAsync(ChangePassword changePassword)
     {
 
-        var result = await _http.PutAsJsonAsync(
+        var result = await http.PutAsJsonAsync(
             requestUri: "api/auth/change-password",
             value: changePassword);
 
@@ -94,7 +83,7 @@ public class AuthService
     {
         try
         {
-            var response = await _http.PutAsJsonAsync(
+            var response = await http.PutAsJsonAsync(
                 "api/dashboard/profile/edit",
                 editProfile);
 

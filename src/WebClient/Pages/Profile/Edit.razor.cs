@@ -4,7 +4,7 @@ using Microsoft.JSInterop;
 using WebClient.DTOs;
 using WebClient.DTOs.User.Profile;
 
-namespace WebClient.Pages.Dashboard.Profile;
+namespace WebClient.Pages.Profile;
 
 public partial class Edit
 {

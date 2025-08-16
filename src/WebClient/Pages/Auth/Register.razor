@@ -2,7 +2,7 @@
 @using WebClient.Services
 @inject AuthService AuthService
 @inject NavigationManager Navigation
-@inject IJSRuntime JS
+@inject IJSRuntime Js
 
 <PageTitle>Register - RenewXControl</PageTitle>
 
@@ -16,12 +16,12 @@
                         <h2 class="h4 mt-2">Create New Account</h2>
                     </div>
 
-                    @if (!string.IsNullOrEmpty(errorMessage))
+                    @if (!string.IsNullOrEmpty(_errorMessage))
                     {
-                        <div class="alert alert-danger mb-3 text-center">@errorMessage</div>
+                        <div class="alert alert-danger mb-3 text-center">@_errorMessage</div>
                     }
 
-                    @if (isLoading)
+                    @if (_isLoading)
                     {
                         <div class="text-center mb-3">
                             <div class="spinner-border text-primary" role="status">
@@ -31,37 +31,37 @@
                         </div>
                     }
 
-                    <EditForm Model="@model" OnValidSubmit="@RegisterUser">
+                    <EditForm Model="@_model" OnValidSubmit="@RegisterUser">
                         <DataAnnotationsValidator />
                         <ValidationSummary class="text-danger mb-3" />
 
                         <div class="mb-3">
                             <label class="form-label">Username</label>
-                            <InputText @bind-Value="model.UserName" class="form-control" placeholder="Enter username" />
-                            <ValidationMessage For="@(() => model.UserName)" class="text-danger" />
+                            <InputText @bind-Value="_model.UserName" class="form-control" placeholder="Enter username" />
+                            <ValidationMessage For="@(() => _model.UserName)" class="text-danger" />
                         </div>
 
                         <div class="mb-3">
                             <label class="form-label">Email</label>
-                            <InputText @bind-Value="model.Email" class="form-control" placeholder="Enter email" />
-                            <ValidationMessage For="@(() => model.Email)" class="text-danger" />
+                            <InputText @bind-Value="_model.Email" class="form-control" placeholder="Enter email" />
+                            <ValidationMessage For="@(() => _model.Email)" class="text-danger" />
                         </div>
 
                         <div class="mb-3">
                             <label class="form-label">Password</label>
-                            <InputText @bind-Value="model.Password" type="password" class="form-control" placeholder="Enter password" />
-                            <ValidationMessage For="@(() => model.Password)" class="text-danger" />
+                            <InputText @bind-Value="_model.Password" type="password" class="form-control" placeholder="Enter password" />
+                            <ValidationMessage For="@(() => _model.Password)" class="text-danger" />
                         </div>
 
                         <div class="mb-4">
                             <label class="form-label">Confirm Password</label>
-                            <InputText @bind-Value="model.ConfirmPassword" type="password" class="form-control" placeholder="Confirm password" />
-                            <ValidationMessage For="@(() => model.ConfirmPassword)" class="text-danger" />
+                            <InputText @bind-Value="_model.ConfirmPassword" type="password" class="form-control" placeholder="Confirm password" />
+                            <ValidationMessage For="@(() => _model.ConfirmPassword)" class="text-danger" />
                         </div>
 
                         <div class="d-grid gap-2">
-                            <button type="submit" class="btn btn-primary" disabled="@isLoading">
-                                @if (isLoading)
+                            <button type="submit" class="btn btn-primary" disabled="@_isLoading">
+                                @if (_isLoading)
                                 {
                                     <span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
                                 }
