@@ -1,10 +1,6 @@
 ﻿@page "/asset/add-battery"
 @layout DashboardLayout
-@using System.Net.Http.Headers
 @using WebClient.Layout
-@inject HttpClient Http
-@inject NavigationManager Nav
-@inject IJSRuntime JS
 
 <PageTitle>Add Battery - RenewXControl</PageTitle>
 
@@ -19,15 +15,15 @@
                 </div>
 
                 <div class="card-body">
-                    @if (!string.IsNullOrEmpty(errorMessage))
+                    @if (!string.IsNullOrEmpty(_errorMessage))
                     {
                         <div class="alert alert-danger alert-dismissible fade show mb-4">
-                            @errorMessage
-                            <button type="button" class="btn-close" @onclick="() => errorMessage = null"></button>
+                            @_errorMessage
+                            <button type="button" class="btn-close" @onclick="() => _errorMessage = null"></button>
                         </div>
                     }
 
-                    <EditForm Model="@batteryModel" OnValidSubmit="@HandleSubmit">
+                    <EditForm Model="@_batteryModel" OnValidSubmit="@HandleSubmit">
                         <DataAnnotationsValidator />
                         <ValidationSummary class="text-danger mb-4" />
 
@@ -35,32 +31,32 @@
                             <!-- Capacity Input -->
                             <div class="col-md-6">
                                 <label class="form-label">Capacity (kWh)*</label>
-                                <InputNumber class="form-control" @bind-Value="@batteryModel.Capacity" />
-                                <ValidationMessage For="@(() => batteryModel.Capacity)" class="text-danger" />
+                                <InputNumber class="form-control" @bind-Value="@_batteryModel.Capacity" />
+                                <ValidationMessage For="@(() => _batteryModel.Capacity)" class="text-danger" />
                                 <small class="text-muted">Minimum: 1 kWh</small>
                             </div>
 
                             <!-- State of Charge Input -->
                             <div class="col-md-6">
                                 <label class="form-label">State of Charge (%)*</label>
-                                <InputNumber class="form-control" @bind-Value="@batteryModel.StateCharge" />
-                                <ValidationMessage For="@(() => batteryModel.StateCharge)" class="text-danger" />
+                                <InputNumber class="form-control" @bind-Value="@_batteryModel.StateCharge" />
+                                <ValidationMessage For="@(() => _batteryModel.StateCharge)" class="text-danger" />
                                 <small class="text-muted">Range: 0-100%</small>
                             </div>
 
                             <!-- Set Point Input -->
                             <div class="col-md-6">
                                 <label class="form-label">Set Point (%)*</label>
-                                <InputNumber class="form-control" @bind-Value="@batteryModel.SetPoint" />
-                                <ValidationMessage For="@(() => batteryModel.SetPoint)" class="text-danger" />
+                                <InputNumber class="form-control" @bind-Value="@_batteryModel.SetPoint" />
+                                <ValidationMessage For="@(() => _batteryModel.SetPoint)" class="text-danger" />
                                 <small class="text-muted">Range: 0-100%</small>
                             </div>
 
                             <!-- Discharge Cycles Input -->
                             <div class="col-md-6">
                                 <label class="form-label">Discharge Cycles/Day*</label>
-                                <InputNumber class="form-control" @bind-Value="@batteryModel.FrequentlyDischarge" />
-                                <ValidationMessage For="@(() => batteryModel.FrequentlyDischarge)" class="text-danger" />
+                                <InputNumber class="form-control" @bind-Value="@_batteryModel.FrequentlyDischarge" />
+                                <ValidationMessage For="@(() => _batteryModel.FrequentlyDischarge)" class="text-danger" />
                                 <small class="text-muted">Range: 0-100 cycles</small>
                             </div>
                         </div>
@@ -69,8 +65,8 @@
                             <button type="button" class="btn btn-outline-secondary" @onclick="Cancel">
                                 <i class="bi bi-x-circle me-1"></i> Cancel
                             </button>
-                            <button type="submit" class="btn btn-primary" disabled="@isLoading">
-                                @if (isLoading)
+                            <button type="submit" class="btn btn-primary" disabled="@_isLoading">
+                                @if (_isLoading)
                                 {
                                     <span class="spinner-border spinner-border-sm me-1" role="status" aria-hidden="true"></span>
                                 }
@@ -88,13 +84,13 @@
     </div>
 </div>
 
-@if (showSuccess)
+@if (_showSuccess)
 {
     <div class="position-fixed bottom-0 end-0 p-3" style="z-index: 11">
         <div id="successToast" class="toast show" role="alert" aria-live="assertive" aria-atomic="true">
             <div class="toast-header bg-success text-white">
                 <strong class="me-auto">Success</strong>
-                <button type="button" class="btn-close btn-close-white" @onclick="() => showSuccess = false"></button>
+                <button type="button" class="btn-close btn-close-white" @onclick="() => _showSuccess = false"></button>
             </div>
             <div class="toast-body">
                 <i class="bi bi-check-circle me-2"></i> Battery added successfully!

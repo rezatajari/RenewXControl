@@ -1,11 +1,12 @@
 ﻿using System.Net.Http.Headers;
 using System.Net.Http.Json;
+using Microsoft.AspNetCore.Components;
 using Microsoft.JSInterop;
 using WebClient.DTOs;
 
 namespace WebClient.Pages.Asset;
 
-public partial class AddSolar
+public partial class AddSolar(HttpClient http,IJSRuntime js,NavigationManager nav)
 {
     private DTOs.AddAsset.AddSolar solarModel = new();
     private bool isLoading = false;
@@ -21,15 +22,15 @@ public partial class AddSolar
 
         try
         {
-            var token = await JS.InvokeAsync<string>("localStorage.getItem", "authToken");
+            var token = await js.InvokeAsync<string>("localStorage.getItem", "authToken");
             if (string.IsNullOrEmpty(token))
             {
-                Nav.NavigateTo("/login");
+                nav.NavigateTo("/login");
                 return;
             }
 
-            Http.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
-            var response = await Http.PostAsJsonAsync("api/asset/add/solar", solarModel);
+            http.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+            var response = await http.PostAsJsonAsync("api/asset/add/solar", solarModel);
 
             if (response.IsSuccessStatusCode)
             {
@@ -55,6 +56,6 @@ public partial class AddSolar
 
     private void Cancel()
     {
-        Nav.NavigateTo("/dashboard/profile");
+        nav.NavigateTo("/dashboard/profile");
     }
 }

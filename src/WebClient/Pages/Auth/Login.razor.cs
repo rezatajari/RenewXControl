@@ -1,12 +1,12 @@
-﻿using Microsoft.JSInterop;
-using System.Net.Http.Headers;
+﻿using System.Net.Http.Headers;
 using System.Net.Http.Json;
+using Microsoft.JSInterop;
 using Microsoft.AspNetCore.Components;
 using WebClient.DTOs;
 
 namespace WebClient.Pages.Auth;
 
-public partial class Login(HttpClient http, IJSRuntime js)
+public partial class Login(HttpClient http, IJSRuntime js,NavigationManager nav)
 {
     private readonly DTOs.User.Auth.Login _model = new();
     private string _errorMessage=string.Empty;
@@ -17,10 +17,10 @@ public partial class Login(HttpClient http, IJSRuntime js)
 
     protected override async Task OnInitializedAsync()
     {
-        _successMessage = await Js.InvokeAsync<string>(identifier: "localStorage.getItem", "RegisterSuccess");
+        _successMessage = await js.InvokeAsync<string>(identifier: "localStorage.getItem", "RegisterSuccess");
         if (!string.IsNullOrEmpty(_successMessage))
         {
-            await Js.InvokeVoidAsync(identifier: "localStorage.removeItem", "RegisterSuccess");
+            await js.InvokeVoidAsync(identifier: "localStorage.removeItem", "RegisterSuccess");
         }
     }
 
@@ -45,11 +45,11 @@ public partial class Login(HttpClient http, IJSRuntime js)
             {
 
                 var token = result?.Data;
-                await Js.InvokeVoidAsync(identifier: "localStorage.setItem", "authToken", token);
+                await js.InvokeVoidAsync(identifier: "localStorage.setItem", "authToken", token);
                 http.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(scheme: "Bearer", token);
 
-                await Js.InvokeVoidAsync(identifier: "localStorage.setItem", "loginSuccess", $"{result.Message}");
-                Nav.NavigateTo(uri: "/User/Profile");
+                await js.InvokeVoidAsync(identifier: "localStorage.setItem", "loginSuccess", $"{result.Message}");
+                nav.NavigateTo(uri: "/User/Profile");
             }
         }
         finally

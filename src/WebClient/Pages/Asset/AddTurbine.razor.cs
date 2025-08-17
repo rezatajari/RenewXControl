@@ -1,11 +1,12 @@
 ﻿using System.Net.Http.Headers;
 using System.Net.Http.Json;
+using Microsoft.AspNetCore.Components;
 using Microsoft.JSInterop;
 using WebClient.DTOs;
 
 namespace WebClient.Pages.Asset;
 
-public partial class AddTurbine
+public partial class AddTurbine(HttpClient http,IJSRuntime js,NavigationManager nav)
 {
     private DTOs.AddAsset.AddTurbine turbineModel = new();
     private bool isLoading = false;
@@ -23,15 +24,15 @@ public partial class AddTurbine
 
         try
         {
-            var token = await JS.InvokeAsync<string>("localStorage.getItem", "authToken");
+            var token = await js.InvokeAsync<string>("localStorage.getItem", "authToken");
             if (string.IsNullOrEmpty(token))
             {
-                Nav.NavigateTo("/login");
+                nav.NavigateTo("/login");
                 return;
             }
 
-            Http.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
-            var response = await Http.PostAsJsonAsync("api/asset/add/turbine", turbineModel);
+            http.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+            var response = await http.PostAsJsonAsync("api/asset/add/turbine", turbineModel);
 
             if (response.IsSuccessStatusCode)
             {
@@ -57,6 +58,6 @@ public partial class AddTurbine
 
     private void Cancel()
     {
-        Nav.NavigateTo("/dashboard/profile");
+        nav.NavigateTo("/dashboard/profile");
     }
 }

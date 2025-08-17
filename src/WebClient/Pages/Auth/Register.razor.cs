@@ -5,7 +5,7 @@ using WebClient.DTOs;
 
 namespace WebClient.Pages.Auth;
 
-public partial class Register(HttpClient http, IJSRuntime js)
+public partial class Register(HttpClient http, IJSRuntime js, NavigationManager nav)
 {
     private readonly DTOs.User.Auth.Register _model=new();
     private string _errorMessage = string.Empty;
@@ -28,8 +28,8 @@ public partial class Register(HttpClient http, IJSRuntime js)
             }
             else
             {
-                await Js.InvokeVoidAsync("localStorage.setItem", "RegisterSuccess", result.Message ?? "Registration successful");
-                Nav.NavigateTo("/login");
+                await js.InvokeVoidAsync("localStorage.setItem", "RegisterSuccess", result.Message ?? "Registration successful");
+                nav.NavigateTo("/login");
             }
         }
         catch (Exception ex)

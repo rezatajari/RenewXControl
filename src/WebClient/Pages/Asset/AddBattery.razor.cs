@@ -1,58 +1,58 @@
 ﻿using System.Net.Http.Headers;
 using System.Net.Http.Json;
+using Microsoft.AspNetCore.Components;
 using Microsoft.JSInterop;
 using WebClient.DTOs;
 
 namespace WebClient.Pages.Asset;
 
-public partial class AddBattery
+public partial class AddBattery(HttpClient http, IJSRuntime js, NavigationManager nav)
 {
-    private DTOs.AddAsset.AddBattery batteryModel = new();
-    private bool isLoading = false;
-    private bool showSuccess = false;
-    private string? errorMessage;
+    private readonly DTOs.AddAsset.AddBattery _batteryModel = new();
+    private bool _isLoading;
+    private bool _showSuccess;
+    private string? _errorMessage;
 
     private async Task HandleSubmit()
     {
-        isLoading = true;
-        errorMessage = null;
+        _isLoading = true;
+        _errorMessage = null;
 
         try
         {
-            var token = await JS.InvokeAsync<string>("localStorage.getItem", "authToken");
+            var token = await js.InvokeAsync<string>("localStorage.getItem", "authToken");
             if (string.IsNullOrEmpty(token))
             {
-                Nav.NavigateTo("/login");
+                nav.NavigateTo("/login");
                 return;
             }
 
-            Http.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
-            var response = await Http.PostAsJsonAsync("api/asset/add/battery", batteryModel);
+            http.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+            var response = await http.PostAsJsonAsync(requestUri:"Assets/battery", _batteryModel);
 
             if (response.IsSuccessStatusCode)
             {
-                showSuccess = true;
-                await Task.Delay(2000); // Show success message for 2 seconds
+                _showSuccess = true;
+                await Task.Delay(2000); 
             }
             else
             {
                 var errorResponse = await response.Content.ReadFromJsonAsync<GeneralResponse<string>>();
-                errorMessage = errorResponse?.Message ?? "Failed to add battery";
+                _errorMessage = errorResponse?.Message ?? "Failed to add battery";
             }
         }
         catch (Exception ex)
         {
-            errorMessage = $"An error occurred: {ex.Message}";
-            Console.Error.WriteLine($"Add Battery Error: {ex}");
+            _errorMessage = $"An error occurred: {ex.Message}";
         }
         finally
         {
-            isLoading = false;
+            _isLoading = false;
         }
     }
 
     private void Cancel()
     {
-        Nav.NavigateTo("/dashboard/profile");
+        nav.NavigateTo("/User/Profile");
     }
 }

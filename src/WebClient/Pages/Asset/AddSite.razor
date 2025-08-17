@@ -20,23 +20,23 @@
                 </div>
 
                 <div class="card-body">
-                    <EditForm Model="@siteModel" OnValidSubmit="@HandleSubmit">
+                    <EditForm Model="@_siteModel" OnValidSubmit="@HandleSubmit">
                         <DataAnnotationsValidator />
                         <ValidationSummary class="text-danger mb-4" />
 
                         <div class="mb-3">
                             <label class="form-label">Site Name*</label>
-                            <InputText class="form-control" @bind-Value="@siteModel.Name"
+                            <InputText class="form-control" @bind-Value="@_siteModel.Name"
                                        placeholder="Enter site name" />
-                            <ValidationMessage For="@(() => siteModel.Name)" class="text-danger" />
+                            <ValidationMessage For="@(() => _siteModel.Name)" class="text-danger" />
                             <small class="text-muted">Maximum 50 characters</small>
                         </div>
 
                         <div class="mb-4">
                             <label class="form-label">Location*</label>
-                            <InputText class="form-control" @bind-Value="@siteModel.Location"
+                            <InputText class="form-control" @bind-Value="@_siteModel.Location"
                                        placeholder="Enter location address" />
-                            <ValidationMessage For="@(() => siteModel.Location)" class="text-danger" />
+                            <ValidationMessage For="@(() => _siteModel.Location)" class="text-danger" />
                             <small class="text-muted">Maximum 100 characters</small>
                         </div>
 
@@ -44,8 +44,8 @@
                             <button type="button" class="btn btn-outline-secondary" @onclick="Cancel">
                                 <i class="bi bi-x-circle me-1"></i> Cancel
                             </button>
-                            <button type="submit" class="btn btn-primary" disabled="@isLoading">
-                                @if (isLoading)
+                            <button type="submit" class="btn btn-primary" disabled="@_isLoading">
+                                @if (_isLoading)
                                 {
                                     <span class="spinner-border spinner-border-sm me-1" role="status" aria-hidden="true"></span>
                                 }

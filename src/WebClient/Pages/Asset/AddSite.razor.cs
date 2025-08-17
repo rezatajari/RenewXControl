@@ -1,56 +1,56 @@
 ﻿using System.Net.Http.Headers;
 using System.Net.Http.Json;
+using Microsoft.AspNetCore.Components;
 using Microsoft.JSInterop;
 using WebClient.DTOs;
 
 namespace WebClient.Pages.Asset;
 
-public partial class AddSite
+public partial class AddSite(HttpClient http,IJSRuntime js,NavigationManager nav)
 {
-    private DTOs.AddAsset.AddSite siteModel = new();
-    private bool isLoading = false;
-    private bool _showSuccess = false;
+    private readonly DTOs.AddAsset.AddSite _siteModel = new();
+    private bool _isLoading;
+    private bool _showSuccess;
 
     private async Task HandleSubmit()
     {
-        isLoading = true;
+        _isLoading = true;
         try
         {
-            var token = await JS.InvokeAsync<string>("localStorage.getItem", "authToken");
+            var token = await js.InvokeAsync<string>("localStorage.getItem", "authToken");
             if (string.IsNullOrEmpty(token))
             {
-                Nav.NavigateTo("/login");
+                nav.NavigateTo("/login");
                 return;
             }
 
-            Http.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
-            var response = await Http.PostAsJsonAsync("api/site/add", siteModel);
+            http.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+            var response = await http.PostAsJsonAsync(requestUri:"Sites/Site", _siteModel);
 
             if (response.IsSuccessStatusCode)
             {
                 _showSuccess = true;
                 DashboardState.SetHasSite(true);
-                await Task.Delay(2000); // Show success message for 2 seconds
+                await Task.Delay(2000);
             }
             else
             {
                 var errorResponse = await response.Content.ReadFromJsonAsync<GeneralResponse<string>>();
-                await JS.InvokeVoidAsync("alert", errorResponse?.Message ?? "Failed to add site");
+                await js.InvokeVoidAsync("alert", errorResponse?.Message ?? "Failed to add site");
             }
         }
         catch (Exception ex)
         {
-            await JS.InvokeVoidAsync("alert", $"Error: {ex.Message}");
-            Console.Error.WriteLine($"Add Site Error: {ex}");
+            await js.InvokeVoidAsync("alert", $"Error: {ex.Message}");
         }
         finally
         {
-            isLoading = false;
+            _isLoading = false;
         }
     }
 
     private void Cancel()
     {
-        Nav.NavigateTo("/dashboard/profile");
+        nav.NavigateTo("/User/Profile");
     }
 }
