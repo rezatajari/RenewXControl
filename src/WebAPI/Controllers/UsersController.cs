@@ -47,7 +47,7 @@ public class UsersController : BaseController
     }
 
 
-    [HttpPut(template: "Change-Pass")]
+    [HttpPut(template: "Change-Password")]
     public async Task<IActionResult> ChangePassword([FromBody] ChangePassword changePassword)
     {
 

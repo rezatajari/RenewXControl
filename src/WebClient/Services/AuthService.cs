@@ -10,29 +10,6 @@ namespace WebClient.Services;
 public class AuthService(HttpClient http,IJSRuntime js)
 {
 
-    public async Task<GeneralResponse<bool>> ChangePasswordAsync(ChangePassword changePassword)
-    {
-
-        var result = await http.PutAsJsonAsync(
-            requestUri: "api/auth/change-password",
-            value: changePassword);
-
-        var resultContent = await result.Content.ReadFromJsonAsync<GeneralResponse<bool>>();
-        if (!resultContent.IsSuccess)
-            return new GeneralResponse<bool>()
-            {
-                IsSuccess = false,
-                Message = resultContent.Message,
-                Errors = resultContent.Errors
-            };
-
-        return new GeneralResponse<bool>()
-        {
-            Data = resultContent.Data,
-            IsSuccess = true,
-            Message = resultContent.Message
-        };
-    }
 
     public async Task<GeneralResponse<bool>> EditProfileAsync(EditProfile editProfile)
     {

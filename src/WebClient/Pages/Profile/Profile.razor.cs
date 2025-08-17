@@ -88,11 +88,11 @@ public partial class Profile(HttpClient http, IJSRuntime js, NavigationManager n
     }
     private void NavigateToEditProfile()
     {
-        nav.NavigateTo("/dashboard/profile/edit");
+        nav.NavigateTo("/User/Profile/Edit");
     }
 
     private void NavigateToChangePassword()
     {
-        nav.NavigateTo("/dashboard/profile/change-password");
+        nav.NavigateTo("/User/Profile/Change-Password");
     }
 }
