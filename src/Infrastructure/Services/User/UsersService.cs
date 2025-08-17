@@ -18,7 +18,6 @@ public class UsersService(
     RxcDbContext db)
     : IUsersService
 {
-    private readonly RxcDbContext _db = db;
 
     public async Task<GeneralResponse<Profile>> GetProfile(Guid userId)
     {

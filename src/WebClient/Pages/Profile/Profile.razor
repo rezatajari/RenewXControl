@@ -1,9 +1,9 @@
 ﻿@page "/User/Profile"
+@using System.Security.Cryptography
 @using WebClient.Layout
 @layout DashboardLayout
 
 <PageTitle>Profile - RenewXControl</PageTitle>
-
 <div class="container-fluid">
     <div class="row justify-content-center">
         <div class="col-md-8 col-lg-6">
@@ -48,7 +48,7 @@
                                 <div class="position-relative">
                                     @if (!string.IsNullOrEmpty(_profile?.ProfileImage))
                                     {
-                                        <img src="@GetProfileImageUrl(_profile.ProfileImage)" 
+                                        <img src="@($"{http.BaseAddress}{_profile?.ProfileImage}")"
                                              class="img-thumbnail rounded-circle" 
                                              style="width: 200px; height: 200px; object-fit: cover;"
                                              alt="Profile image"
