@@ -1,10 +1,4 @@
 ﻿@inherits LayoutComponentBase
-@using WebClient.Services
-@inject DashboardState DashboardState
-@inject IJSRuntime JS
-@inject NavigationManager Nav
-@inject HttpClient Http
-@inject AuthService AuthService
 
 <div class="d-flex flex-column min-vh-100 bg-light">
     <!-- Top Navigation -->
@@ -25,7 +19,7 @@
                 <div class="dropdown">
                     <button class="btn btn-light dropdown-toggle" type="button" id="userDropdown"
                             data-bs-toggle="dropdown" aria-expanded="false">
-                        <i class="bi bi-person-circle me-1"></i> @userName
+                        <i class="bi bi-person-circle me-1"></i> @_userName
                     </button>
                     <ul class="dropdown-menu dropdown-menu-end">
                         <li>
@@ -48,7 +42,7 @@
     <!-- Main Content Area -->
     <div class="d-flex flex-grow-1">
         <!-- Sidebar - Collapsible -->
-        <div class="@sidebarClass bg-white border-end shadow-sm">
+        <div class="@SidebarClass bg-white border-end shadow-sm">
             <div class="d-flex flex-column h-100 p-3">
                 <!-- Navigation -->
                 <ul class="nav nav-pills flex-column mb-auto">
@@ -66,10 +60,10 @@
                             <span>
                                 <i class="bi bi-gear me-2"></i> Asset Management
                             </span>
-                            <i class="bi @(showAssetsMenu ? "bi-chevron-up" : "bi-chevron-down")"></i>
+                            <i class="bi @(_showAssetsMenu ? "bi-chevron-up" : "bi-chevron-down")"></i>
                         </button>
 
-                        @if (showAssetsMenu)
+                        @if (_showAssetsMenu)
                         {
                             <ul class="nav flex-column ps-4 mt-1">
                                 <li class="nav-item">

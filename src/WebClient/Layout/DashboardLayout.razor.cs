@@ -1,53 +1,62 @@
 ﻿using System.Net.Http.Json;
+using Microsoft.AspNetCore.Components;
 using Microsoft.JSInterop;
 using WebClient.DTOs;
 using WebClient.DTOs.User.Profile;
+using WebClient.Services;
 
 namespace WebClient.Layout
 {
-    public partial class DashboardLayout
+    public partial class DashboardLayout(HttpClient http,IJSRuntime js,NavigationManager nav, DashboardState dashboardState)
     {
-        private bool sidebarCollapsed = false;
-        private bool showAssetsMenu = false;
-        private string userName = "User";
-      
+        [Inject] private DashboardState DashboardState { get; set; } = dashboardState;
+        private bool _sidebarCollapsed;
+        private bool _showAssetsMenu;
+        private string _userName = "User";
+
+
         // Dynamically set sidebar classes
-        private string sidebarClass => sidebarCollapsed
+        private string SidebarClass => _sidebarCollapsed
             ? "d-lg-none"  // Hide completely on mobile when collapsed
             : "d-flex flex-shrink-0 flex-column w-250"; // Show with fixed width
 
         private async Task Logout()
         {
-            var result = await AuthService.LogoutAsync();
-            if (!result.IsSuccess)
-                await JS.InvokeVoidAsync("alert", "Logout failed: " + result.Message);
+            var response = await http.PostAsync("Account/Logout", null);
+            var result = await response.Content.ReadFromJsonAsync<GeneralResponse<bool>>();
 
-            Nav.NavigateTo("/login",forceLoad:true);
+            if (!result.IsSuccess)
+                await js.InvokeVoidAsync("alert", "Logout failed: " + result.Message);
+
+            await js.InvokeVoidAsync("localStorage.removeItem", "authToken");
+            http.DefaultRequestHeaders.Authorization = null;
+
+            nav.NavigateTo("/login",forceLoad:true);
         }
         protected override async Task OnInitializedAsync()
         {
             DashboardState.OnChange += StateHasChanged;
 
             // Check authentication
-            var token = await JS.InvokeAsync<string>("localStorage.getItem", "authToken");
+            var token = await js.InvokeAsync<string>("localStorage.getItem", "authToken");
             if (string.IsNullOrEmpty(token))
             {
-                Nav.NavigateTo("/login");
+                nav.NavigateTo("/login");
                 return;
             }
 
             // Load user data
             try
             {
-                var response = await Http.GetAsync("api/user/profile");
+                var response = await http.GetAsync("api/user/profile");
                 if (response.IsSuccessStatusCode)
                 {
                     var user = await response.Content.ReadFromJsonAsync<Profile>();
-                    userName = user?.UserName ?? "User";
+                    _userName = user?.UserName ?? "User";
                 }
 
                 // Check if user has sites
-                var siteResponse = await Http.GetAsync("api/site/HasSite");
+                var siteResponse = await http.GetAsync("api/site/HasSite");
                 if (siteResponse.IsSuccessStatusCode)
                 {
                     var result = await siteResponse.Content.ReadFromJsonAsync<GeneralResponse<bool>>();
@@ -67,12 +76,12 @@ namespace WebClient.Layout
 
         private void ToggleSidebar()
         {
-            sidebarCollapsed = !sidebarCollapsed;
+            _sidebarCollapsed = !_sidebarCollapsed;
         }
 
         private void ToggleAssetsMenu()
         {
-            showAssetsMenu = !showAssetsMenu;
+            _showAssetsMenu = !_showAssetsMenu;
         }
     }
 }

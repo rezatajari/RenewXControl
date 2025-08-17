@@ -1,38 +1,14 @@
-﻿using System.Net.Http.Headers;
-using System.Net.Http.Json;
-using Microsoft.AspNetCore.Components;
+﻿using System.Net.Http.Json;
 using Microsoft.JSInterop;
 using WebClient.DTOs;
 using WebClient.DTOs.User.Auth;
 using WebClient.DTOs.User.Profile;
 
 namespace WebClient.Services;
-
+//TODO:Remove authservice in UI
+//TODO: Refactor Profile.razor
 public class AuthService(HttpClient http,IJSRuntime js)
 {
-    public async Task<GeneralResponse<bool>> LogoutAsync()
-    {
-        var result=  await http.PostAsync("api/auth/logout", null);
-        var resultContent = await result.Content.ReadFromJsonAsync<GeneralResponse<bool>>();
-
-        if (!resultContent.IsSuccess)
-            return new GeneralResponse<bool>()
-            {
-                IsSuccess = false, 
-                Message = "Log out is not work"
-            };
-
-        await js.InvokeVoidAsync("localStorage.removeItem", "authToken");
-
-        http.DefaultRequestHeaders.Authorization = null;
-
-        return new GeneralResponse<bool>
-        {
-            IsSuccess = true,
-            Data = true,
-            Message = "Logged out successfully"
-        };
-    }
 
     public async Task<GeneralResponse<bool>> ChangePasswordAsync(ChangePassword changePassword)
     {
