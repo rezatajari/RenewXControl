@@ -1,4 +1,5 @@
 ﻿using System.Net.Http.Json;
+using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Forms;
 using Microsoft.JSInterop;
 using WebClient.DTOs;
@@ -6,17 +7,13 @@ using WebClient.DTOs.User.Profile;
 
 namespace WebClient.Pages.Profile;
 
-public partial class Edit
+public partial class Edit(HttpClient http, IJSRuntime js, NavigationManager nav)
 {
+
+    private readonly EditProfile _editProfile = new();
+
+    private bool _isLoading;
     private string _errorMessage = string.Empty;
-
-    private EditProfile _editProfile = new EditProfile
-    {
-        UserName = string.Empty,
-        ProfileImage = string.Empty
-    };
-
-    private bool _isLoading = false;
     private string _tempImageUrl = string.Empty;
 
     private async Task OnInputFileChange(InputFileChangeEventArgs e)
@@ -41,7 +38,7 @@ public partial class Edit
 
             content.Add(fileContent, "file", file.Name);
 
-            var response = await Http.PostAsync("api/File/Upload/ProfileImage", content);
+            var response = await http.PostAsync("Users/User/Upload/Profile-Image", content);
             var responseContent = await response.Content.ReadFromJsonAsync<GeneralResponse<string>>();
 
             if (responseContent is null || !responseContent.IsSuccess)
@@ -74,15 +71,20 @@ public partial class Edit
         _errorMessage = string.Empty;
         try
         {
-            var result = await AuthService.EditProfileAsync(_editProfile);
-            if (!result.IsSuccess)
+            var response = await http.PutAsJsonAsync(
+                "Users/User/Profile/Edit",
+                _editProfile);
+
+            if (!response.IsSuccessStatusCode)
             {
-                _errorMessage = result.Message;
+                _errorMessage = $"Server error: {response.StatusCode}";
                 return;
             }
 
-            await JS.InvokeVoidAsync("localStorage.setItem", "EditProfileSuccess", result.Message);
-            Nav.NavigateTo("dashboard/profile", forceLoad: true); // Add forceLoad to ensure fresh data
+            var result= await response.Content.ReadFromJsonAsync<GeneralResponse<bool>>();
+
+            await js.InvokeVoidAsync("localStorage.setItem", "EditProfileSuccess", result?.Message??"Edit successful");
+            nav.NavigateTo("User/Profile", forceLoad: true);
         }
         catch (Exception ex)
         {

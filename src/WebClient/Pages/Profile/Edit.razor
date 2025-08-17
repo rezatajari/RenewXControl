@@ -1,9 +1,4 @@
-﻿@page "/dashboard/profile/edit"
-@using WebClient.Services
-@inject NavigationManager Nav
-@inject AuthService AuthService
-@inject IJSRuntime JS
-@inject HttpClient Http
+﻿@page "/User/profile/Edit"
 
 <PageTitle>Edit Profile - RenewXControl</PageTitle>
 
@@ -90,7 +85,7 @@
 
                         <!-- Action Buttons -->
                         <div class="d-flex justify-content-between mt-4">
-                            <button type="button" class="btn btn-outline-secondary" @onclick="@(() => Nav.NavigateTo("dashboard/profile"))">
+                            <button type="button" class="btn btn-outline-secondary" @onclick="@(() => nav.NavigateTo("User/Profile"))">
                                 <i class="bi bi-arrow-left me-2"></i> Cancel
                             </button>
                             <button type="submit" class="btn btn-primary" disabled="@_isLoading">

@@ -33,7 +33,6 @@ Console.WriteLine($"Loaded ApiBaseUrl: {config.ApiBaseUrl}");
 Console.WriteLine($"Loaded SignalRHubUrl: {config.SignalRHubUrl}");
 
 // Step 5: Register app services
-builder.Services.AddScoped<AuthService>();
 builder.Services.AddScoped<DashboardState>();
 builder.Services.AddAuthorizationCore();
 

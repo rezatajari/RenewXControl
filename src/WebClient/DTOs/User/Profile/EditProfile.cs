@@ -11,7 +11,7 @@ public class EditProfile
     [RegularExpression(@"^[a-zA-Z0-9_\-\.]+$",
         ErrorMessage = "Only letters, numbers, dots, underscores and hyphens allowed")]
     [Display(Name = "Username", Prompt = "Enter your username")]
-    public string UserName { get; set; }
+    public string? UserName { get; set; }
     public string? ProfileImage { get; set; }
    
 }
