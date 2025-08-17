@@ -1,72 +1,70 @@
 ﻿using System.Net.Http.Headers;
 using System.Net.Http.Json;
+using Microsoft.AspNetCore.Components;
 using Microsoft.JSInterop;
 using WebClient.DTOs;
 
 namespace WebClient.Pages.Profile;
 
-public partial class Profile
+public partial class Profile(HttpClient http, IJSRuntime js, NavigationManager nav)
 {
-    private DTOs.User.Profile.Profile? profile;
-    private string? successMessage;
-    private string? errorMessage;
+    private DTOs.User.Profile.Profile? _profile;
+    private string? _successMessage;
+    private string? _errorMessage;
 
     protected override async Task OnInitializedAsync()
     {
-        var token = await JS.InvokeAsync<string>("localStorage.getItem", "authToken");
+        var token = await js.InvokeAsync<string>("localStorage.getItem", "authToken");
         if (string.IsNullOrEmpty(token))
         {
-            Nav.NavigateTo("/login");
+            nav.NavigateTo("/login");
             return;
         }
 
-        var passwordChangeMsg = await JS.InvokeAsync<string>("localStorage.getItem", "passwordChangeSuccess");
-        var loginSuccessMsg = await JS.InvokeAsync<string>("localStorage.getItem", "loginSuccess");
-        var editProfileMsg = await JS.InvokeAsync<string>("localStorage.getItem", "EditProfileSuccess");
+        var passwordChangeMsg = await js.InvokeAsync<string>("localStorage.getItem", "passwordChangeSuccess");
+        var loginSuccessMsg = await js.InvokeAsync<string>("localStorage.getItem", "loginSuccess");
+        var editProfileMsg = await js.InvokeAsync<string>("localStorage.getItem", "EditProfileSuccess");
 
-        successMessage = passwordChangeMsg ?? loginSuccessMsg ?? editProfileMsg;
+        _successMessage = passwordChangeMsg ?? loginSuccessMsg ?? editProfileMsg;
 
         if (!string.IsNullOrEmpty(passwordChangeMsg))
-            await JS.InvokeVoidAsync("localStorage.removeItem", "passwordChangeSuccess");
+            await js.InvokeVoidAsync("localStorage.removeItem", "passwordChangeSuccess");
 
         if (!string.IsNullOrEmpty(loginSuccessMsg))
-            await JS.InvokeVoidAsync("localStorage.removeItem", "loginSuccess");
+            await js.InvokeVoidAsync("localStorage.removeItem", "loginSuccess");
 
         if (!string.IsNullOrEmpty(editProfileMsg))
-            await JS.InvokeVoidAsync("localStorage.removeItem", "EditProfileSuccess");
+            await js.InvokeVoidAsync("localStorage.removeItem", "EditProfileSuccess");
 
-        if (!string.IsNullOrEmpty(successMessage))
+        if (!string.IsNullOrEmpty(_successMessage))
         {
             StateHasChanged();
 
             await Task.Delay(5000);
-            successMessage = null;
+            _successMessage = null;
             StateHasChanged();
         }
 
         try
         {
-            Http.DefaultRequestHeaders.Authorization =
+            http.DefaultRequestHeaders.Authorization =
                 new AuthenticationHeaderValue("Bearer", token);
 
-            var response = await Http.GetFromJsonAsync<GeneralResponse<DTOs.User.Profile.Profile>>("api/Dashboard/profile");
+            var response = await http.GetFromJsonAsync<GeneralResponse<DTOs.User.Profile.Profile>>(requestUri:"Users/User/Profile");
 
-            if (response == null || !response.IsSuccess)
+            if (response is not { IsSuccess: true })
             {
-                errorMessage = response?.Message ?? "Failed to load profile";
+                _errorMessage = response?.Message ?? "Failed to load profile";
             }
             else
             {
-                profile = response.Data;
-                if (!string.IsNullOrEmpty(response.Message))
-                {
-                    successMessage = response.Message;
-                }
+                _profile = response.Data;
+               _successMessage = response.Message??"Load profiled successfully";
             }
         }
         catch (Exception ex)
         {
-            errorMessage = "An error occurred while loading profile";
+            _errorMessage = "An error occurred while loading profile";
             Console.WriteLine("API Error: " + ex.Message);
         }
     }
@@ -82,19 +80,19 @@ public partial class Profile
         // Handle both wwwroot/profile-images and custom profile-images cases
         if (imagePath.StartsWith("profile-images/"))
         {
-            return $"{Nav.BaseUri}{imagePath}";
+            return $"{nav.BaseUri}{imagePath}";
         }
 
         // Default case - assume it's in wwwroot
-        return $"{Nav.BaseUri}{imagePath.TrimStart('/')}";
+        return $"{nav.BaseUri}{imagePath.TrimStart('/')}";
     }
     private void NavigateToEditProfile()
     {
-        Nav.NavigateTo("/dashboard/profile/edit");
+        nav.NavigateTo("/dashboard/profile/edit");
     }
 
     private void NavigateToChangePassword()
     {
-        Nav.NavigateTo("/dashboard/profile/change-password");
+        nav.NavigateTo("/dashboard/profile/change-password");
     }
 }
