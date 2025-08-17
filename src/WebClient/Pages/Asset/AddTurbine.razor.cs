@@ -8,19 +8,16 @@ namespace WebClient.Pages.Asset;
 
 public partial class AddTurbine(HttpClient http,IJSRuntime js,NavigationManager nav)
 {
-    private DTOs.AddAsset.AddTurbine turbineModel = new();
-    private bool isLoading = false;
-    private bool showSuccess = false;
-    private string? errorMessage;
-    private string turbineModelName = string.Empty;
-    private DateTime? installationDate = DateTime.Today;
-    private string notes = string.Empty;
+    private readonly DTOs.AddAsset.AddTurbine _turbineModel = new();
+    private bool _isLoading;
+    public bool _showSuccess;
+    private string? _errorMessage;
     private int redirectProgress = 0;
 
     private async Task HandleSubmit()
     {
-        isLoading = true;
-        errorMessage = null;
+        _isLoading = true;
+        _errorMessage = null;
 
         try
         {
@@ -32,32 +29,31 @@ public partial class AddTurbine(HttpClient http,IJSRuntime js,NavigationManager 
             }
 
             http.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
-            var response = await http.PostAsJsonAsync("api/asset/add/turbine", turbineModel);
+            var response = await http.PostAsJsonAsync(requestUri:"Assets/turbine", _turbineModel);
 
             if (response.IsSuccessStatusCode)
             {
-                showSuccess = true;
+                _showSuccess = true;
                 await Task.Delay(2000);
             }
             else
             {
                 var errorResponse = await response.Content.ReadFromJsonAsync<GeneralResponse<string>>();
-                errorMessage = errorResponse?.Message ?? "Failed to add wind turbine";
+                _errorMessage = errorResponse?.Message ?? "Failed to add wind turbine";
             }
         }
         catch (Exception ex)
         {
-            errorMessage = $"An error occurred: {ex.Message}";
-            Console.Error.WriteLine($"Add Turbine Error: {ex}");
+            _errorMessage = $"An error occurred: {ex.Message}";
         }
         finally
         {
-            isLoading = false;
+            _isLoading = false;
         }
     }
 
     private void Cancel()
     {
-        nav.NavigateTo("/dashboard/profile");
+        nav.NavigateTo("/User/Profile");
     }
 }

@@ -1,4 +1,4 @@
-﻿@page "/asset/add-turbine"
+﻿@page "/Asset/Add/Turbine"
 @layout DashboardLayout
 @using WebClient.Layout
 
@@ -15,15 +15,15 @@
                 </div>
 
                 <div class="card-body">
-                    @if (!string.IsNullOrEmpty(errorMessage))
+                    @if (!string.IsNullOrEmpty(_errorMessage))
                     {
                         <div class="alert alert-danger alert-dismissible fade show mb-4">
-                            @errorMessage
-                            <button type="button" class="btn-close" @onclick="() => errorMessage = null"></button>
+                            @_errorMessage
+                            <button type="button" class="btn-close" @onclick="() => _errorMessage = null"></button>
                         </div>
                     }
 
-                    <EditForm Model="@turbineModel" OnValidSubmit="@HandleSubmit">
+                    <EditForm Model="@_turbineModel" OnValidSubmit="@HandleSubmit">
                         <DataAnnotationsValidator />
                         <ValidationSummary class="text-danger mb-4" />
 
@@ -31,24 +31,24 @@
                             <!-- Wind Speed Input -->
                             <div class="col-md-6">
                                 <label class="form-label">Wind Speed (m/s)*</label>
-                                <InputNumber class="form-control" @bind-Value="@turbineModel.WindSpeed" />
-                                <ValidationMessage For="@(() => turbineModel.WindSpeed)" class="text-danger" />
+                                <InputNumber class="form-control" @bind-Value="@_turbineModel.WindSpeed" />
+                                <ValidationMessage For="@(() => _turbineModel.WindSpeed)" class="text-danger" />
                                 <small class="text-muted">Must be ≥ 0</small>
                             </div>
 
                             <!-- Set Point Input -->
                             <div class="col-md-6">
                                 <label class="form-label">Set Point (%)*</label>
-                                <InputNumber class="form-control" @bind-Value="@turbineModel.SetPoint" />
-                                <ValidationMessage For="@(() => turbineModel.SetPoint)" class="text-danger" />
+                                <InputNumber class="form-control" @bind-Value="@_turbineModel.SetPoint" />
+                                <ValidationMessage For="@(() => _turbineModel.SetPoint)" class="text-danger" />
                                 <small class="text-muted">Range: 0-100%</small>
                             </div>
 
                             <!-- Active Power Input -->
                             <div class="col-12">
                                 <label class="form-label">Active Power (kW)*</label>
-                                <InputNumber class="form-control" @bind-Value="@turbineModel.ActivePower" />
-                                <ValidationMessage For="@(() => turbineModel.ActivePower)" class="text-danger" />
+                                <InputNumber class="form-control" @bind-Value="@_turbineModel.ActivePower" />
+                                <ValidationMessage For="@(() => _turbineModel.ActivePower)" class="text-danger" />
                                 <small class="text-muted">Must be ≥ 0</small>
                             </div>
 
@@ -58,8 +58,8 @@
                             <button type="button" class="btn btn-outline-secondary" @onclick="Cancel">
                                 <i class="bi bi-x-circle me-1"></i> Cancel
                             </button>
-                            <button type="submit" class="btn btn-primary" disabled="@isLoading">
-                                @if (isLoading)
+                            <button type="submit" class="btn btn-primary" disabled="@_isLoading">
+                                @if (_isLoading)
                                 {
                                     <span class="spinner-border spinner-border-sm me-1" role="status" aria-hidden="true"></span>
                                 }
@@ -77,13 +77,13 @@
     </div>
 </div>
 
-@if (showSuccess)
+@if (_showSuccess)
 {
     <div class="position-fixed bottom-0 end-0 p-3" style="z-index: 11">
         <div class="toast show" role="alert" aria-live="assertive" aria-atomic="true">
             <div class="toast-header bg-success text-white">
                 <strong class="me-auto">Success</strong>
-                <button type="button" class="btn-close btn-close-white" @onclick="() => showSuccess = false"></button>
+                <button type="button" class="btn-close btn-close-white" @onclick="() => _showSuccess = false"></button>
             </div>
             <div class="toast-body">
                 <i class="bi bi-check-circle me-2"></i> Wind turbine added successfully!
