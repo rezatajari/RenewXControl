@@ -48,7 +48,7 @@
                 <ul class="nav nav-pills flex-column mb-auto">
                     <!-- Dashboard -->
                     <li class="nav-item">
-                        <NavLink class="nav-link" href="/dashboard/profile" Match="NavLinkMatch.All">
+                        <NavLink class="nav-link" href="/User/Profile" Match="NavLinkMatch.All">
                             <i class="bi bi-speedometer2 me-2"></i> Profile
                         </NavLink>
                     </li>
@@ -67,7 +67,7 @@
                         {
                             <ul class="nav flex-column ps-4 mt-1">
                                 <li class="nav-item">
-                                    <NavLink class="nav-link" href="/asset/add-site">
+                                    <NavLink class="nav-link" href="/Asset/Add/Site">
                                         <i class="bi bi-building me-2"></i> Add Site
                                     </NavLink>
                                 </li>
@@ -75,17 +75,17 @@
                                 @if (DashboardState.HasSite)
                                 {
                                     <li class="nav-item">
-                                        <NavLink class="nav-link" href="/asset/add-battery">
+                                        <NavLink class="nav-link" href="/Asset/Add/Battery">
                                             <i class="bi bi-battery-charging me-2"></i> Add Battery
                                         </NavLink>
                                     </li>
                                     <li class="nav-item">
-                                        <NavLink class="nav-link" href="/asset/add-solar">
+                                        <NavLink class="nav-link" href="/Asset/Add/Solar">
                                             <i class="bi bi-sun me-2"></i> Add Solar
                                         </NavLink>
                                     </li>
                                     <li class="nav-item">
-                                        <NavLink class="nav-link" href="/asset/add-turbine">
+                                        <NavLink class="nav-link" href="/Asset/Add/Turbine">
                                             <i class="bi bi-fan me-2"></i> Add Turbine
                                         </NavLink>
                                     </li>

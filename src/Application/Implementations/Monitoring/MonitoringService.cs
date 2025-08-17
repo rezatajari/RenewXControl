@@ -20,7 +20,7 @@ public class MonitoringService(
     }
     public async Task ChargeDischarge(SolarPanel solar, WindTurbine turbine, Battery battery)
     {
-        switch (battery.IsNeedToCharge)
+        switch (battery is { IsNeedToCharge: true })
         {
             // charging
             case true when battery.IsStartingChargeDischarge == false:
@@ -51,8 +51,8 @@ public class MonitoringService(
 
     private static void RecalculateTotalPower(SolarPanel solar,WindTurbine turbine,Battery battery)
     {
-        solar.UpdateActivePower();
-        turbine.UpdateActivePower();
+        solar?.UpdateActivePower();
+        turbine?.UpdateActivePower();
 
         var totalPower = solar.ActivePower + turbine.ActivePower;
         battery.SetTotalPower(totalPower);

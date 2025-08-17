@@ -28,7 +28,7 @@ public class MonitoringScreen(
                 info.SolarPanel?.UpdateIrradiance();
                 info.WindTurbine?.UpdateWindSpeed();
 
-                if (info.Battery != null)
+                if (info is { Battery: not null, SolarPanel: not null, WindTurbine: not null })
                 {
                     using var scope = scopeFactory.CreateScope();
                     var monitoringService = scope.ServiceProvider.GetRequiredService<IMonitoringService>();
