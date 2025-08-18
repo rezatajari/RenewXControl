@@ -3,10 +3,11 @@ using System.Net.Http.Json;
 using Microsoft.AspNetCore.Components;
 using Microsoft.JSInterop;
 using WebClient.DTOs;
+using WebClient.Services;
 
 namespace WebClient.Pages.Asset;
 
-public partial class AddSite(HttpClient http,IJSRuntime js,NavigationManager nav)
+public partial class AddSite(HttpClient http,IJSRuntime js,NavigationManager nav,DashboardState dashboardState)
 {
     private readonly DTOs.AddAsset.AddSite _siteModel = new();
     private bool _isLoading;
@@ -30,7 +31,7 @@ public partial class AddSite(HttpClient http,IJSRuntime js,NavigationManager nav
             if (response.IsSuccessStatusCode)
             {
                 _showSuccess = true;
-                DashboardState.SetHasSite(true);
+                dashboardState.SetHasSite(true);
                 await Task.Delay(2000);
             }
             else

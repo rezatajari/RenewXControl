@@ -9,7 +9,6 @@ namespace WebClient.Layout
 {
     public partial class DashboardLayout(HttpClient http,IJSRuntime js,NavigationManager nav, DashboardState dashboardState)
     {
-        [Inject] private DashboardState DashboardState { get; set; } = dashboardState;
         private bool _sidebarCollapsed;
         private bool _showAssetsMenu;
         private string _userName = "User";
@@ -35,7 +34,7 @@ namespace WebClient.Layout
         }
         protected override async Task OnInitializedAsync()
         {
-            DashboardState.OnChange += StateHasChanged;
+            dashboardState.OnChange += StateHasChanged;
 
             // Check authentication
             var token = await js.InvokeAsync<string>("localStorage.getItem", "authToken");
@@ -48,7 +47,7 @@ namespace WebClient.Layout
             // Load user data
             try
             {
-                var response = await http.GetAsync("api/user/profile");
+                var response = await http.GetAsync("Users/User/Profile");
                 if (response.IsSuccessStatusCode)
                 {
                     var user = await response.Content.ReadFromJsonAsync<Profile>();
@@ -56,11 +55,11 @@ namespace WebClient.Layout
                 }
 
                 // Check if user has sites
-                var siteResponse = await http.GetAsync("api/site/HasSite");
+                var siteResponse = await http.GetAsync("Sites/User/UserId/Has-Site");
                 if (siteResponse.IsSuccessStatusCode)
                 {
                     var result = await siteResponse.Content.ReadFromJsonAsync<GeneralResponse<bool>>();
-                    DashboardState.SetHasSite(result?.Data ?? false);
+                    dashboardState.SetHasSite(result?.Data ?? false);
                 }
             }
             catch (Exception ex)
@@ -71,7 +70,7 @@ namespace WebClient.Layout
 
         public void Dispose()
         {
-            DashboardState.OnChange -= StateHasChanged;
+            dashboardState.OnChange -= StateHasChanged;
         }
 
         private void ToggleSidebar()
