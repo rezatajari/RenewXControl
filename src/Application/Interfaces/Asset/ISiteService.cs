@@ -11,4 +11,5 @@ public interface ISiteService
     Task<GeneralResponse<List<Site>>> GetSites(Guid userId);
     Task<GeneralResponse<Guid>> GetSiteId(Guid userId);
     Task<GeneralResponse<bool>> HasSite(Guid userId);
+    Task<GeneralResponse<bool>> CanAddAsset(Guid siteId, Type assetType);
 }

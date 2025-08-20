@@ -80,4 +80,26 @@ public class SiteService(ISiteRepository siteRepository, IUnitOfWork unitOfWork)
                 }
             ]);
     }
+
+    public async Task<GeneralResponse<bool>> CanAddAsset(Guid siteId, Type assetType)
+    {
+        // Get existing assets for the site
+        var assets = await siteRepository.GetAssetsBySite(siteId);
+
+        // Check if this asset type already exists
+        var exists = assets.Any(a => a.GetType() == assetType);
+        if (exists)
+            return GeneralResponse<bool>.Failure(
+                message: $"You already have a {assetType.Name} for this site",
+                errors:
+                [
+                    new ErrorResponse
+                    {
+                        Name = assetType.Name,
+                        Message = $"Only one {assetType.Name} allowed per site"
+                    }
+                ]);
+
+        return GeneralResponse<bool>.Success(true, "Can add asset");
+    }
 }

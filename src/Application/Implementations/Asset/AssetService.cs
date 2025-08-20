@@ -19,6 +19,10 @@ namespace Application.Implementations.Asset
             var site = await siteService.HasSite(userId); 
             if (!site.IsSuccess) return GeneralResponse<Guid>.Failure(message:site.Message);
 
+            // Check if the asset can be added
+            var canAdd = await siteService.CanAddAsset(siteId, typeof(Battery));
+            if (!canAdd.IsSuccess) return GeneralResponse<Guid>.Failure(message: canAdd.Message);
+
             var battery = Battery.Create(addBattery.Capacity,addBattery.StateCharge,addBattery.SetPoint,addBattery.FrequentlyDischarge, siteId);
             await assetRepository.AddAssetAsync(battery);
 
@@ -34,6 +38,10 @@ namespace Application.Implementations.Asset
             var site = await siteService.HasSite(userId);
             if (!site.IsSuccess) return GeneralResponse<Guid>.Failure(message: site.Message);
 
+            // Check if the asset can be added
+            var canAdd = await siteService.CanAddAsset(siteId, typeof(SolarPanel));
+            if (!canAdd.IsSuccess) return GeneralResponse<Guid>.Failure(message: canAdd.Message);
+
             var solar = SolarPanel.Create(addSolar.Irradiance,addSolar.ActivePower,addSolar.SetPoint, siteId);
             await assetRepository.AddAssetAsync(solar);
 
@@ -48,6 +56,11 @@ namespace Application.Implementations.Asset
         {
             var site = await siteService.HasSite(userId);
             if (!site.IsSuccess) return GeneralResponse<Guid>.Failure(message: site.Message);
+
+            // Check if the asset can be added
+            var canAdd = await siteService.CanAddAsset(siteId, typeof(WindTurbine));
+            if (!canAdd.IsSuccess) return GeneralResponse<Guid>.Failure(message: canAdd.Message);
+
 
             var turbine = WindTurbine.Create(addTurbine.WindSpeed,addTurbine.ActivePower,addTurbine.SetPoint, siteId);
             await assetRepository.AddAssetAsync(turbine);

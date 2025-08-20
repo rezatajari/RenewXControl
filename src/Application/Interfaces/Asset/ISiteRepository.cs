@@ -9,4 +9,5 @@ public interface ISiteRepository
     Task<Guid> GetIdAsync(Guid userId);
     Task<bool> HasSite(Guid userId);
     Task<List<Site>> GetSitesAsync(Guid userId);
+    Task<List<Domain.Entities.Assets.Asset>> GetAssetsBySite(Guid siteId);
 }
