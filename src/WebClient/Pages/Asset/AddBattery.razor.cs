@@ -9,12 +9,29 @@ namespace WebClient.Pages.Asset;
 public partial class AddBattery(HttpClient http, IJSRuntime js, NavigationManager nav)
 {
     private readonly DTOs.AddAsset.AddBattery _batteryModel = new();
+    private Guid? _siteId;
     private bool _isLoading;
     private bool _showSuccess;
     private string? _errorMessage;
 
+    private string _siteValidationMessage;
+
+    private bool ValidateSite()
+    {
+        if (_siteId ==null)
+        {
+            _siteValidationMessage = "Please select a site!";
+            return false;
+        }
+        _siteValidationMessage = null;
+        return true;
+    }
+
     private async Task HandleSubmit()
     {
+        if (!ValidateSite())
+            return;
+
         _isLoading = true;
         _errorMessage = null;
 
@@ -28,7 +45,7 @@ public partial class AddBattery(HttpClient http, IJSRuntime js, NavigationManage
             }
 
             http.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
-            var response = await http.PostAsJsonAsync(requestUri:"Assets/battery", _batteryModel);
+            var response = await http.PostAsJsonAsync(requestUri:$"Sites/{_siteId}/Assets/battery", _batteryModel);
 
             if (response.IsSuccessStatusCode)
             {

@@ -10,12 +10,29 @@ namespace WebClient.Pages.Asset;
 public partial class AddSolar(HttpClient http,IJSRuntime js,NavigationManager nav)
 {
     private readonly DTOs.AddAsset.AddSolar _solarModel = new();
+    private Guid? _siteId;
     private bool _isLoading;
     private bool _showSuccess;
     private string? _errorMessage;
 
+    private string _siteValidationMessage;
+
+    private bool ValidateSite()
+    {
+        if (_siteId == null)
+        {
+            _siteValidationMessage = "Please select a site!";
+            return false;
+        }
+        _siteValidationMessage = null;
+        return true;
+    }
+
     private async Task HandleSubmit()
     {
+        if (!ValidateSite())
+            return;
+
         _isLoading = true;
         _errorMessage = null;
 
@@ -29,7 +46,7 @@ public partial class AddSolar(HttpClient http,IJSRuntime js,NavigationManager na
             }
 
             http.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
-            var response = await http.PostAsJsonAsync(requestUri:"Assets/solar", _solarModel);
+            var response = await http.PostAsJsonAsync(requestUri: $"Sites/{_siteId}/Assets/solar", _solarModel);
 
             if (response.IsSuccessStatusCode)
             {

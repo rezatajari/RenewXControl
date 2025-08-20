@@ -1,8 +1,11 @@
 ﻿@page "/Asset/Add/Battery"
 @layout DashboardLayout
+@using System.Net.Http.Headers
 @using WebClient.Layout
 
 <PageTitle>Add Battery - RenewXControl</PageTitle>
+
+
 
 <div class="container-fluid">
     <div class="row justify-content-center">
@@ -59,7 +62,16 @@
                                 <ValidationMessage For="@(() => _batteryModel.FrequentlyDischarge)" class="text-danger" />
                                 <small class="text-muted">Range: 0-100 cycles</small>
                             </div>
+
+                            <!-- Site Type Selector -->
+                            <div class="col-md-6">
+                                <label class="form-label">List of Your sites</label>
+                                <SiteSelector @bind-SelectedSiteId="_siteId" />
+                            </div>
+                            
+                            <div class="text-danger">@_siteValidationMessage</div>
                         </div>
+                        
 
                         <div class="d-flex justify-content-end gap-2 mt-4">
                             <button type="button" class="btn btn-outline-secondary" @onclick="Cancel">

@@ -9,13 +9,31 @@ namespace WebClient.Pages.Asset;
 public partial class AddTurbine(HttpClient http,IJSRuntime js,NavigationManager nav)
 {
     private readonly DTOs.AddAsset.AddTurbine _turbineModel = new();
+    private Guid? _siteId;
     private bool _isLoading;
     public bool _showSuccess;
     private string? _errorMessage;
     private int redirectProgress = 0;
 
+
+    private string _siteValidationMessage;
+
+    private bool ValidateSite()
+    {
+        if (_siteId == null)
+        {
+            _siteValidationMessage = "Please select a site!";
+            return false;
+        }
+        _siteValidationMessage = null;
+        return true;
+    }
+
     private async Task HandleSubmit()
     {
+        if (!ValidateSite())
+            return;
+
         _isLoading = true;
         _errorMessage = null;
 
@@ -29,7 +47,7 @@ public partial class AddTurbine(HttpClient http,IJSRuntime js,NavigationManager 
             }
 
             http.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
-            var response = await http.PostAsJsonAsync(requestUri:"Assets/turbine", _turbineModel);
+            var response = await http.PostAsJsonAsync(requestUri:$"Sites/{_siteId}/Assets/turbine", _turbineModel);
 
             if (response.IsSuccessStatusCode)
             {

@@ -51,8 +51,15 @@
                                 <ValidationMessage For="@(() => _turbineModel.ActivePower)" class="text-danger" />
                                 <small class="text-muted">Must be ≥ 0</small>
                             </div>
-
+                            
+                            <!-- Site Type Selector -->
+                            <div class="col-md-6">
+                                <label class="form-label">List of Your sites</label>
+                                <SiteSelector @bind-SelectedSiteId="_siteId" />
+                            </div>
                         </div>
+                        
+                        <div class="text-danger">@_siteValidationMessage</div>
 
                         <div class="d-flex justify-content-end gap-2 mt-4">
                             <button type="button" class="btn btn-outline-secondary" @onclick="Cancel">

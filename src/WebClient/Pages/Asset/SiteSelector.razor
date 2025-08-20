@@ -1,0 +1,40 @@
+﻿@using System.Net.Http.Json
+@using WebClient.DTOs
+
+
+<select class="form-control" @onchange="OnSiteChanged">
+    <option value="">-- Select a site --</option>
+    @foreach (var site in _sites)
+    {
+        <option value="@site.SiteId">@site.Name - @site.Location</option>
+    }
+</select>
+
+
+@code {
+
+    [Inject]
+    private HttpClient Http { get; set; } = default!;
+    private List<Site> _sites = [];
+
+
+    [Parameter]
+    public Guid? SelectedSiteId { get; set; }
+    [Parameter]
+    public EventCallback<Guid?> SelectedSiteIdChanged { get; set; }
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        var response = await Http.GetFromJsonAsync<GeneralResponse<List<Site>>>(requestUri:"Sites");
+        _sites = response?.Data ?? [];
+    }
+
+
+    private async Task OnSiteChanged(ChangeEventArgs e)
+    {
+        SelectedSiteId = Guid.TryParse(e.Value?.ToString(), out var id) ? id : null;
+        await SelectedSiteIdChanged.InvokeAsync(SelectedSiteId);
+    }
+}
+
