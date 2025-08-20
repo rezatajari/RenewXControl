@@ -6,15 +6,11 @@ using Domain.Entities.Site;
 
 namespace Application.Implementations.Asset;
 
-public class SiteService(ISiteRepository siteRepository, IUnitOfWork unitOfWork, IUsersService userService)
+public class SiteService(ISiteRepository siteRepository, IUnitOfWork unitOfWork)
     : ISiteService
 {
     public async Task<GeneralResponse<Guid>> AddSite(AddSite addSite, Guid userId)
     {
-        var userValidation = userService.ValidateUserId(userId);
-        if (!userValidation.IsSuccess)
-            return GeneralResponse<Guid>.Failure(message:userValidation.Message,errors:userValidation.Errors);
-
         var site = Site.Create(addSite.Name,addSite.Location, userId);
         await siteRepository.AddAsync(site);
 
@@ -48,13 +44,9 @@ public class SiteService(ISiteRepository siteRepository, IUnitOfWork unitOfWork,
             message: "Sites retrieved successfully");
 
     }
-    //TODO: doesnt need uservalidation
+
     public async Task<GeneralResponse<Guid>> GetSiteId(Guid userId)
     {
-        var userValidation = userService.ValidateUserId(userId);
-        if (!userValidation.IsSuccess)
-            return GeneralResponse<Guid>.Failure(message: userValidation.Message, errors: userValidation.Errors);
-
         var siteId = await siteRepository.GetIdAsync(userId);
         if (siteId == Guid.Empty)
         {
