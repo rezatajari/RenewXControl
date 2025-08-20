@@ -8,4 +8,5 @@ public interface ISiteRepository
     Task<Site?> GetByIdAsync(Guid siteId);
     Task<Guid> GetIdAsync(Guid userId);
     Task<bool> HasSite(Guid userId);
+    Task<List<Site>> GetSitesAsync(Guid userId);
 }

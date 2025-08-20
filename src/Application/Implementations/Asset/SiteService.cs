@@ -9,7 +9,7 @@ namespace Application.Implementations.Asset;
 public class SiteService(ISiteRepository siteRepository, IUnitOfWork unitOfWork, IUsersService userService)
     : ISiteService
 {
-    public async Task<GeneralResponse<Guid>> AddSiteAsync(AddSite addSite, Guid userId)
+    public async Task<GeneralResponse<Guid>> AddSite(AddSite addSite, Guid userId)
     {
         var userValidation = userService.ValidateUserId(userId);
         if (!userValidation.IsSuccess)
@@ -26,6 +26,29 @@ public class SiteService(ISiteRepository siteRepository, IUnitOfWork unitOfWork,
         );
     }
 
+    public async Task<GeneralResponse<List<DTOs.Site>>> GetSites(Guid userId)
+    {
+        var response= await siteRepository.GetSitesAsync(userId);
+        if (response.Count == 0)
+        {
+            return GeneralResponse<List<DTOs.Site>>.Failure(
+                message: "No sites found",
+                errors: [
+                    new ErrorResponse
+                    {
+                        Name = "GetSites",
+                        Message = "The user does not own any site"
+                    }
+                ]);
+        }
+
+        var sites = response.Select(site => new DTOs.Site(site.Id, site.Name, site.Location)).ToList();
+        return GeneralResponse<List<DTOs.Site>>.Success(
+            data:sites,
+            message: "Sites retrieved successfully");
+
+    }
+    //TODO: doesnt need uservalidation
     public async Task<GeneralResponse<Guid>> GetSiteId(Guid userId)
     {
         var userValidation = userService.ValidateUserId(userId);
@@ -49,7 +72,7 @@ public class SiteService(ISiteRepository siteRepository, IUnitOfWork unitOfWork,
         return GeneralResponse<Guid>.Success(siteId);
     }
 
-    public async Task<GeneralResponse<bool>> HasSiteAsync(Guid userId)
+    public async Task<GeneralResponse<bool>> HasSite(Guid userId)
     {
         var response =await siteRepository.HasSite(userId);
         if (response)

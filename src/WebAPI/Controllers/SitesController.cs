@@ -24,6 +24,14 @@ public class SitesController : BaseController
         _siteService = siteService;
     }
 
+
+    [HttpGet]
+    public async Task<IActionResult> GetSites()
+    {
+        var response= await _siteService.GetSites(UserId);
+        return response.IsSuccess ? Ok(response) : BadRequest(response);
+    }
+
     /// <summary>
     /// Adds a new site for the authenticated user.
     /// </summary>
@@ -34,7 +42,7 @@ public class SitesController : BaseController
     [HttpPost(template: "Site")]
     public async Task<IActionResult> Add([FromBody] AddSite addSite)
     {
-        var response = await _siteService.AddSiteAsync(addSite, UserId);
+        var response = await _siteService.AddSite(addSite, UserId);
         return response.IsSuccess ? Ok(response) : BadRequest(response);
     }
 
@@ -51,7 +59,7 @@ public class SitesController : BaseController
     [HttpGet(template: "User/UserId/Has-Site")]
     public async Task<IActionResult> HasSite()
     {
-        var response = await _siteService.HasSiteAsync(UserId);
+        var response = await _siteService.HasSite(UserId);
         return response.IsSuccess ? Ok(response) : BadRequest(response);
     }
 }

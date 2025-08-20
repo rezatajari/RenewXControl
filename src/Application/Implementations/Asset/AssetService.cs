@@ -16,7 +16,7 @@ namespace Application.Implementations.Asset
         public async Task<GeneralResponse<Guid>> AddBattery(Guid userId, AddBattery addBattery, Guid siteId)
         {
 
-            var site = await siteService.HasSiteAsync(userId); 
+            var site = await siteService.HasSite(userId); 
             if (!site.IsSuccess) return GeneralResponse<Guid>.Failure(message:site.Message);
 
             var battery = Battery.Create(addBattery.Capacity,addBattery.StateCharge,addBattery.SetPoint,addBattery.FrequentlyDischarge, siteId);
@@ -31,7 +31,7 @@ namespace Application.Implementations.Asset
 
         public async Task<GeneralResponse<Guid>> AddSolar(Guid userId, AddSolar addSolar, Guid siteId)
         {
-            var site = await siteService.HasSiteAsync(userId);
+            var site = await siteService.HasSite(userId);
             if (!site.IsSuccess) return GeneralResponse<Guid>.Failure(message: site.Message);
 
             var solar = SolarPanel.Create(addSolar.Irradiance,addSolar.ActivePower,addSolar.SetPoint, siteId);
@@ -46,7 +46,7 @@ namespace Application.Implementations.Asset
 
         public async Task<GeneralResponse<Guid>> AddTurbine(Guid userId, AddTurbine addTurbine, Guid siteId)
         {
-            var site = await siteService.HasSiteAsync(userId);
+            var site = await siteService.HasSite(userId);
             if (!site.IsSuccess) return GeneralResponse<Guid>.Failure(message: site.Message);
 
             var turbine = WindTurbine.Create(addTurbine.WindSpeed,addTurbine.ActivePower,addTurbine.SetPoint, siteId);

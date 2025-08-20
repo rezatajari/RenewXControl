@@ -1,4 +1,5 @@
 ﻿using Application.Interfaces.Asset;
+using Domain.Entities.Site;
 using Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 
@@ -34,5 +35,10 @@ public class SiteRepository:ISiteRepository
     {
         return await _context.Sites
             .AnyAsync(s => s.UserId == userId);
+    }
+
+    public async Task<List<Site>> GetSitesAsync(Guid userId)
+    {
+        return await _context.Sites.Where(u=>u.UserId==userId).ToListAsync();
     }
 }
