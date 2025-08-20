@@ -32,7 +32,7 @@ public class MonitoringScreen(
                 {
                     using var scope = scopeFactory.CreateScope();
                     var monitoringService = scope.ServiceProvider.GetRequiredService<IMonitoringService>();
-                    monitoringService.ChargeDischarge(info.SolarPanel, info.WindTurbine, info.Battery);
+                   _=  monitoringService.ChargeDischarge(info.SolarPanel, info.WindTurbine, info.Battery);
                 }
 
                 // 2. Map to DTO
