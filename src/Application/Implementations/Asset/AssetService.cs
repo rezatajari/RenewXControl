@@ -13,20 +13,11 @@ namespace Application.Implementations.Asset
         IUsersService userService)
         : IAssetService
     {
-        public async Task<GeneralResponse<Guid>> AddBatteryAsync(AddBattery addBattery, Guid userId)
+        public async Task<GeneralResponse<Guid>> AddBattery(Guid userId, AddBattery addBattery, Guid siteId)
         {
-            var userValidation = userService.ValidateUserId(userId);
-            if (!userValidation.IsSuccess)
-                return GeneralResponse<Guid>.Failure(message: userValidation.Message, errors: userValidation.Errors);
 
-            var siteIdResponse = await siteService.GetSiteId(userId);
-            if (!siteIdResponse.IsSuccess)
-                return GeneralResponse<Guid>.Failure(
-                    message:siteIdResponse.Message,
-                    errors:siteIdResponse.Errors
-                    );
-
-            var siteId = siteIdResponse.Data;
+            var site = await siteService.HasSiteAsync(userId); 
+            if (!site.IsSuccess) return GeneralResponse<Guid>.Failure(message:site.Message);
 
             var battery = Battery.Create(addBattery.Capacity,addBattery.StateCharge,addBattery.SetPoint,addBattery.FrequentlyDischarge, siteId);
             await assetRepository.AddAssetAsync(battery);
@@ -38,20 +29,10 @@ namespace Application.Implementations.Asset
                 message: "Battery added successfully");
         }
 
-        public async Task<GeneralResponse<Guid>> AddSolarAsync(AddSolar addSolar, Guid userId)
+        public async Task<GeneralResponse<Guid>> AddSolar(Guid userId, AddSolar addSolar, Guid siteId)
         {
-            var userValidation = userService.ValidateUserId(userId);
-            if (!userValidation.IsSuccess)
-                return GeneralResponse<Guid>.Failure(message: userValidation.Message, errors: userValidation.Errors);
-
-            var siteIdResponse = await siteService.GetSiteId(userId);
-            if (!siteIdResponse.IsSuccess)
-                return GeneralResponse<Guid>.Failure(
-                    message: siteIdResponse.Message,
-                    errors: siteIdResponse.Errors
-                );
-
-            var siteId = siteIdResponse.Data;
+            var site = await siteService.HasSiteAsync(userId);
+            if (!site.IsSuccess) return GeneralResponse<Guid>.Failure(message: site.Message);
 
             var solar = SolarPanel.Create(addSolar.Irradiance,addSolar.ActivePower,addSolar.SetPoint, siteId);
             await assetRepository.AddAssetAsync(solar);
@@ -63,20 +44,10 @@ namespace Application.Implementations.Asset
                 message: "Solar added successfully");
         }
 
-        public async Task<GeneralResponse<Guid>> AddTurbineAsync(AddTurbine addTurbine, Guid userId)
+        public async Task<GeneralResponse<Guid>> AddTurbine(Guid userId, AddTurbine addTurbine, Guid siteId)
         {
-            var userValidation = userService.ValidateUserId(userId);
-            if (!userValidation.IsSuccess)
-                return GeneralResponse<Guid>.Failure(message: userValidation.Message, errors: userValidation.Errors);
-
-            var siteIdResponse = await siteService.GetSiteId(userId);
-            if (!siteIdResponse.IsSuccess)
-                return GeneralResponse<Guid>.Failure(
-                    message: siteIdResponse.Message,
-                    errors: siteIdResponse.Errors
-                );
-
-            var siteId = siteIdResponse.Data;
+            var site = await siteService.HasSiteAsync(userId);
+            if (!site.IsSuccess) return GeneralResponse<Guid>.Failure(message: site.Message);
 
             var turbine = WindTurbine.Create(addTurbine.WindSpeed,addTurbine.ActivePower,addTurbine.SetPoint, siteId);
             await assetRepository.AddAssetAsync(turbine);
