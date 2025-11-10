@@ -6,12 +6,6 @@ RenewXControl is a smart monitoring and management system designed to optimize r
 
 ---
 
-## 🌐 Live Demo
-
-🔗 [Visit Live Website](http://alirezanuri70-001-site1.mtempurl.com/)
-
----
-
 ## 📷 API Documentation
 
 ![Swagger API UI](https://github.com/rezatajari/RenewXControl/blob/master/doc/Images%26Gifs/SwaggerEndpoints.jpeg)  
