@@ -11,24 +11,12 @@ namespace API.Controllers;
 [Authorize]
 [Route(template: "[controller]")]
 [ApiController]
-public class SitesController : BaseController
+public class SitesController(ISiteService siteService) : BaseController
 {
-    private readonly ISiteService _siteService;
-
-    /// <summary>
-    /// Initializes a new instance of the <see cref="SitesController"/> class.
-    /// </summary>
-    /// <param name="siteService">The site service instance.</param>
-    public SitesController(ISiteService siteService)
-    {
-        _siteService = siteService;
-    }
-
-
     [HttpGet]
     public async Task<IActionResult> GetSites()
     {
-        var response= await _siteService.GetSites(UserId);
+        var response= await siteService.GetSites(UserId);
         return response.IsSuccess ? Ok(response) : BadRequest(response);
     }
 
@@ -42,7 +30,7 @@ public class SitesController : BaseController
     [HttpPost(template: "Site")]
     public async Task<IActionResult> Add([FromBody] AddSite addSite)
     {
-        var response = await _siteService.AddSite(addSite, UserId);
+        var response = await siteService.AddSite(addSite, UserId);
         return response.IsSuccess ? Ok(response) : BadRequest(response);
     }
 
@@ -59,7 +47,7 @@ public class SitesController : BaseController
     [HttpGet(template: "User/UserId/Has-Site")]
     public async Task<IActionResult> HasSite()
     {
-        var response = await _siteService.HasSite(UserId);
+        var response = await siteService.HasSite(UserId);
         return response.IsSuccess ? Ok(response) : BadRequest(response);
     }
 }
