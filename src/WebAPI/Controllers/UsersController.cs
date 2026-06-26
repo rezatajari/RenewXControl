@@ -13,19 +13,8 @@ namespace API.Controllers;
 [Authorize]
 [Route(template: "[controller]/User")]
 [ApiController]
-public class UsersController : BaseController
+public class UsersController(IUsersService usersService) : BaseController
 {
-    private readonly IUsersService _usersService;
-
-    /// <summary>
-    /// Initializes a new instance of the <see cref="UsersController"/> class.
-    /// </summary>
-    /// <param name="dashboardService">The dashboard service instance.</param>
-    public UsersController(IUsersService usersService)
-    {
-        _usersService = usersService;
-    }
-
     /// <summary>
     /// Gets the profile information for the currently authenticated user.
     /// </summary>
@@ -35,14 +24,14 @@ public class UsersController : BaseController
     [HttpGet(template:"Profile")]
     public async Task<IActionResult> Profile()
     {
-        var result = await _usersService.GetProfile(UserId);
+        var result = await usersService.GetProfile(UserId);
         return Ok(result);
     }
 
     [HttpPut(template: "Profile/Edit")]
     public async Task<IActionResult> EditProfile([FromBody] EditProfile editProfile)
     {
-        var result = await _usersService.EditProfile(editProfile,UserId);
+        var result = await usersService.EditProfile(editProfile,UserId);
         return result.IsSuccess ? Ok(result) : BadRequest(result);
     }
 
@@ -51,7 +40,7 @@ public class UsersController : BaseController
     public async Task<IActionResult> ChangePassword([FromBody] ChangePassword changePassword)
     {
 
-        var result = await _usersService.ChangePasswordAsync(changePassword, UserId);
+        var result = await usersService.ChangePasswordAsync(changePassword, UserId);
         return result.IsSuccess ? Ok(result) : BadRequest(result);
     }
 
