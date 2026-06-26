@@ -1,6 +1,5 @@
 ﻿using Domain.Entities.Assets;
 using Domain.Entities.Site;
-using Domain.Entities.User;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
