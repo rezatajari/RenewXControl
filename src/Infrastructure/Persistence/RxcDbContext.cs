@@ -39,6 +39,7 @@ public class RxcDbContext:IdentityDbContext<ApplicationUser,IdentityRole<Guid>,G
         modelBuilder.Entity<Asset>(asset =>
         {
             asset.Property(a => a.Name).IsRequired().HasMaxLength(50);
+            asset.Property(a=>a.CreateTime).HasDefaultValue("GETDATE()").IsRequired();
             asset.HasDiscriminator<string>(name: "AssetType").HasValue<Battery>("Battery")
                 .HasValue<SolarPanel>("Solar").HasValue<WindTurbine>("Wind");
         });

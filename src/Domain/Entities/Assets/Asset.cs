@@ -3,12 +3,12 @@
 public abstract class Asset
 {
     public Guid Id { get; set; }= Guid.NewGuid();
-    public string Name { get; set; }
+    public Guid SiteId { get; set; }
+    public string Name { get; set; }=string.Empty;
     public bool IsActive { get; set; } = true;
     public DateTime UpdateTime { get; set; }
-    public DateTime CreateTime { get; set; } = DateTime.UtcNow;
+    public DateTime CreateTime { get; set; } 
 
-    public Guid SiteId { get; set; }
-    public Site.Site Site { get; set; }
+    public Site.Site Site { get; set; }= null!;
 
 }
