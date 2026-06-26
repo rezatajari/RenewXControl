@@ -8,7 +8,6 @@ public interface ISiteService
 {
     Task<GeneralResponse<Guid>> AddSite(AddSite addSite,Guid userId);
     Task<GeneralResponse<List<Site>>> GetSites(Guid userId);
-    Task<GeneralResponse<Guid>> GetSiteId(Guid userId);
     Task<GeneralResponse<bool>> HasSite(Guid userId);
     Task<GeneralResponse<bool>> CanAddAsset(Guid siteId, Type assetType);
 }

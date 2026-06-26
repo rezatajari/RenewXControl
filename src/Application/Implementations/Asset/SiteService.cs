@@ -45,25 +45,6 @@ public class SiteService(ISiteRepository siteRepository, IUnitOfWork unitOfWork)
 
     }
 
-    public async Task<GeneralResponse<Guid>> GetSiteId(Guid userId)
-    {
-        var siteId = await siteRepository.GetIdAsync(userId);
-        if (siteId == Guid.Empty)
-        {
-            return GeneralResponse<Guid>.Failure(
-                message:"Site Unfounded",
-                errors: [
-                    new ErrorResponse
-                    {
-                        Name = "Site",
-                        Message = "The user does not own any site"
-                    }
-                ]);
-        }
-
-        return GeneralResponse<Guid>.Success(siteId);
-    }
-
     public async Task<GeneralResponse<bool>> HasSite(Guid userId)
     {
         var response =await siteRepository.HasSite(userId);
