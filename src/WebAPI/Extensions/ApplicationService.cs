@@ -7,7 +7,6 @@ using Infrastructure.Persistence;
 using Application.Interfaces;
 using Infrastructure.Services;
 using Application.DTOs;
-using Infrastructure;
 
 namespace API.Extensions;
 
