@@ -12,15 +12,15 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Infrastructure.Migrations
 {
     [DbContext(typeof(RxcDbContext))]
-    [Migration("20250804173815_InitialCreate")]
-    partial class InitialCreate
+    [Migration("20260626155258_TO")]
+    partial class TO
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "9.0.7")
+                .HasAnnotation("ProductVersion", "10.0.9")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
@@ -37,7 +37,9 @@ namespace Infrastructure.Migrations
                         .HasColumnType("nvarchar(8)");
 
                     b.Property<DateTime>("CreateTime")
-                        .HasColumnType("datetime2");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime2")
+                        .HasDefaultValueSql("GETDATE()");
 
                     b.Property<bool>("IsActive")
                         .HasColumnType("bit");
@@ -64,7 +66,7 @@ namespace Infrastructure.Migrations
                     b.UseTphMappingStrategy();
                 });
 
-            modelBuilder.Entity("Domain.Entities.Site.Site", b =>
+            modelBuilder.Entity("Domain.Entities.Site", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -361,7 +363,7 @@ namespace Infrastructure.Migrations
 
             modelBuilder.Entity("Domain.Entities.Assets.Asset", b =>
                 {
-                    b.HasOne("Domain.Entities.Site.Site", "Site")
+                    b.HasOne("Domain.Entities.Site", "Site")
                         .WithMany("Assets")
                         .HasForeignKey("SiteId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -370,7 +372,7 @@ namespace Infrastructure.Migrations
                     b.Navigation("Site");
                 });
 
-            modelBuilder.Entity("Domain.Entities.Site.Site", b =>
+            modelBuilder.Entity("Domain.Entities.Site", b =>
                 {
                     b.HasOne("Infrastructure.Persistence.ApplicationUser", null)
                         .WithMany("Sites")
@@ -430,7 +432,7 @@ namespace Infrastructure.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("Domain.Entities.Site.Site", b =>
+            modelBuilder.Entity("Domain.Entities.Site", b =>
                 {
                     b.Navigation("Assets");
                 });

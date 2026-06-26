@@ -38,7 +38,7 @@ public class RxcDbContext:IdentityDbContext<ApplicationUser,IdentityRole<Guid>,G
         modelBuilder.Entity<Asset>(asset =>
         {
             asset.Property(a => a.Name).IsRequired().HasMaxLength(50);
-            asset.Property(a=>a.CreateTime).HasDefaultValue("GETDATE()").IsRequired();
+            asset.Property(a => a.CreateTime).HasDefaultValueSql("GETDATE()");
             asset.HasDiscriminator<string>(name: "AssetType").HasValue<Battery>("Battery")
                 .HasValue<SolarPanel>("Solar").HasValue<WindTurbine>("Wind");
         });
@@ -49,7 +49,7 @@ public class RxcDbContext:IdentityDbContext<ApplicationUser,IdentityRole<Guid>,G
             battery.Ignore(b => b.IsNeedToCharge);
             battery.Ignore(b => b.IsStartingChargeDischarge);
             battery.Ignore(b => b.TotalPower);
-            battery.Ignore(b => b.ChargeStateMessage);
+            battery.Ignore(b => b.State);
         });
 
         modelBuilder.Entity<SolarPanel>(solar =>

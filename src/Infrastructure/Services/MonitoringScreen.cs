@@ -1,6 +1,7 @@
 ﻿using Application.DTOs;
 using Application.DTOs.AssetMonitoring;
 using Application.Interfaces;
+using Domain;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -56,7 +57,7 @@ public class MonitoringScreen(
 
                 var batteryDto = new BatteryDto(
                     "Battery",
-                    info.Battery?.ChargeStateMessage,
+                    MapBatteryState(info.Battery?.State),
                     info.Battery?.Capacity ?? 0,
                     info.Battery?.SetPoint ?? 0,
                     info.Battery?.StateCharge ?? 0,
@@ -97,5 +98,17 @@ public class MonitoringScreen(
             inMemoryData.Clear();
             inMemoryData.AddRange(monitoringInfo.Data);
         }
+    }
+
+    private static string MapBatteryState(BatteryState? state)
+    {
+        return state switch
+        {
+            BatteryState.Charging => "Charging",
+            BatteryState.ChargingCompleted => "Charging completed",
+            BatteryState.Discharging => "Discharging",
+            BatteryState.DischargingCompleted => "Discharging completed",
+            _ => "Unknown"
+        };
     }
 }
