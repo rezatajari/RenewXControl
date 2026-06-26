@@ -2,17 +2,11 @@
 
 namespace API.Utility;
 
-public class FormFileAdapter: IUploadedFile
+public class FormFileAdapter(IFormFile formFile) : IUploadedFile
 {
-    private readonly IFormFile _formFile;
 
-    public FormFileAdapter(IFormFile formFile)
-    {
-        _formFile = formFile;
-    }
-
-    public string FileName => _formFile.FileName;
-    public string ContentType => _formFile.ContentType;
-    public long Length => _formFile.Length;
-    public Stream OpenReadStream() => _formFile.OpenReadStream();
+    public string FileName => formFile.FileName;
+    public string ContentType => formFile.ContentType;
+    public long Length => formFile.Length;
+    public Stream OpenReadStream() => formFile.OpenReadStream();
 }
