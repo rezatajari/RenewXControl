@@ -20,6 +20,7 @@ public sealed class RegisterValidator : AbstractValidator<Register>
             .Matches(@"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).+$");
 
         RuleFor(x => x.ConfirmPassword)
+            .NotEmpty()
             .Equal(x => x.Password);
     }
 }
