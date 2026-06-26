@@ -19,7 +19,7 @@ public class Site
     public ICollection<Asset> Assets { get; private set; } = [];
     public Guid UserId { get; set; }
     public static Site Create(string name,string location,Guid userId)
-        => new Site(name, location,userId);
+        => new(name, location, userId);
     public void AddAsset(Asset asset)
         => Assets.Add(asset);
 }

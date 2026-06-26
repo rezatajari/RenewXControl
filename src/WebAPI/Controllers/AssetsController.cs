@@ -11,18 +11,8 @@ namespace API.Controllers
     [Authorize]
     [Route(template: "Sites/{siteId:guid}/[controller]")]
     [ApiController]
-    public class AssetsController : BaseController
+    public class AssetsController(IAssetService assetService) : BaseController
     {
-        private readonly IAssetService _assetService;
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="AssetsController"/> class.
-        /// </summary>
-        /// <param name="assetService">The asset service instance.</param>
-        public AssetsController(IAssetService assetService)
-        {
-            _assetService = assetService;
-        }
 
         /// <summary>
         /// Adds a new battery asset for the authenticated user.
@@ -35,7 +25,7 @@ namespace API.Controllers
         public async Task<IActionResult> AddBattery([FromBody] AddBattery addBattery, Guid siteId)
         {
 
-            var response = await _assetService.AddBattery(UserId, addBattery, siteId);
+            var response = await assetService.AddBattery(UserId, addBattery, siteId);
             return response.IsSuccess ? Ok(response) : BadRequest(response);
         }
 
@@ -49,7 +39,7 @@ namespace API.Controllers
         [HttpPost(template: "solar")]
         public async Task<IActionResult> AddSolar([FromBody] AddSolar addSolar, Guid siteId)
         {
-            var response = await _assetService.AddSolar(UserId,addSolar,siteId );
+            var response = await assetService.AddSolar(UserId,addSolar,siteId );
             return response.IsSuccess ? Ok(response) : BadRequest(response);
         }
 
@@ -63,7 +53,7 @@ namespace API.Controllers
         [HttpPost(template: "turbine")]
         public async Task<IActionResult> AddTurbine([FromBody] AddTurbine addTurbine, Guid siteId)
         {
-            var response = await _assetService.AddTurbine(UserId, addTurbine, siteId);
+            var response = await assetService.AddTurbine(UserId, addTurbine, siteId);
             return response.IsSuccess ? Ok(response) : BadRequest(response);
         }
     }
