@@ -1,5 +1,5 @@
 ﻿using Domain.Entities.Assets;
-namespace Domain.Entities.Site;
+namespace Domain.Entities;
 
 public class Site
 {

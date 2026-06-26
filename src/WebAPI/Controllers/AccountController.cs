@@ -7,21 +7,14 @@ namespace API.Controllers;
 /// <summary>
 /// Handles authentication operations such as user registration and login.
 /// </summary>
+/// <remarks>
+/// Initializes a new instance of the <see cref="AccountController"/> class.
+/// </remarks>
+/// <param name="accountService">The authentication service.</param>
 [Route(template: "[controller]")]
 [ApiController]
-public class AccountController : BaseController
+public class AccountController(IAccountService accountService) : BaseController
 {
-    private readonly IAccountService _accountService;
-
-    /// <summary>
-    /// Initializes a new instance of the <see cref="AccountController"/> class.
-    /// </summary>
-    /// <param name="accountService">The authentication service.</param>
-    public AccountController(IAccountService accountService)
-    {
-        _accountService = accountService;
-    }
-
     /// <summary>
     /// Registers a new user.
     /// </summary>

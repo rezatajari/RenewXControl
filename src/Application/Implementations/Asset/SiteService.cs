@@ -2,7 +2,7 @@
 using Application.DTOs.AddAsset;
 using Application.Interfaces.Asset;
 using Application.Interfaces.User;
-using Domain.Entities.Site;
+using Domain.Entities;
 
 namespace Application.Implementations.Asset;
 

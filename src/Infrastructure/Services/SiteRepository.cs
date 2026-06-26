@@ -1,6 +1,6 @@
 ﻿using Application.Interfaces.Asset;
+using Domain.Entities;
 using Domain.Entities.Assets;
-using Domain.Entities.Site;
 using Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 
@@ -14,12 +14,12 @@ public class SiteRepository:ISiteRepository
     {
         _context= context;
     }
-    public async Task AddAsync(Domain.Entities.Site.Site site)
+    public async Task AddAsync(Site site)
     {
         await _context.Sites.AddAsync(site);
     }
 
-    public async Task<Domain.Entities.Site.Site?> GetByIdAsync(Guid siteId)
+    public async Task<Site?> GetByIdAsync(Guid siteId)
     {
         return await _context.Sites.FindAsync(siteId);
     }

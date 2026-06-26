@@ -9,6 +9,6 @@ public abstract class Asset
     public DateTime UpdateTime { get; set; }
     public DateTime CreateTime { get; set; } 
 
-    public Site.Site Site { get; set; }= null!;
+    public Site Site { get; set; }= null!;
 
 }

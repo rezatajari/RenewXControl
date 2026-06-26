@@ -1,4 +1,4 @@
-﻿using Domain.Entities.Site;
+﻿using Domain.Entities;
 using Microsoft.AspNetCore.Identity;
 
 namespace Infrastructure.Persistence;
