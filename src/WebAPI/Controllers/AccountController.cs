@@ -25,7 +25,7 @@ public class AccountController(IAccountService accountService) : BaseController
     [HttpPost(template: "Register")]
     public async Task<IActionResult> Register([FromBody] Register register)
     {
-        var result = await _accountService.RegisterAsync(register);
+        var result = await accountService.RegisterAsync(register);
         return result.IsSuccess ? Ok(result) : BadRequest(result);
     }
 
@@ -39,14 +39,14 @@ public class AccountController(IAccountService accountService) : BaseController
     [HttpPost(template: "Login")]
     public async Task<IActionResult> Login([FromBody] Login login)
     {
-        var result = await _accountService.LoginAsync(login);
+        var result = await accountService.LoginAsync(login);
         return result.IsSuccess ? Ok(result) : BadRequest(result);
     }
 
     [HttpPost(template: "Logout")]
     public async Task<IActionResult> Logout()
     {
-        var result = await _accountService.LogoutAsync();
+        var result = await accountService.LogoutAsync();
         return result.IsSuccess ? Ok(result) : BadRequest(result);
     }
 }
