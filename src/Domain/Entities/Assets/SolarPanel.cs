@@ -18,7 +18,7 @@ public class SolarPanel : Asset
     public string StatusMessage { get; private set; } 
 
     public static SolarPanel Create(double irradiance, double activePower,double setPoint, Guid siteId)
-        => new SolarPanel(irradiance, activePower, setPoint,siteId);
+        => new(irradiance, activePower, setPoint, siteId);
 
     public bool Start()
     {

@@ -18,7 +18,7 @@ public class WindTurbine : Asset
     public string StatusMessage { get; private set; }
 
     public static WindTurbine Create(double windSpeed,double activePower,double setPoint, Guid siteId)
-        => new WindTurbine(windSpeed, activePower, setPoint,siteId);
+        => new(windSpeed, activePower, setPoint, siteId);
     public bool Start()
     {
         SetPoint = 10;

@@ -2,20 +2,13 @@
 
 namespace API.Utility;
 
-public class GlobalErrorException
+public class GlobalErrorException(RequestDelegate next)
 {
-    private readonly RequestDelegate _next;
-
-    public GlobalErrorException(RequestDelegate next)
-    {
-        _next=next;
-    }
-
     public async Task Invoke(HttpContext context)
     {
         try
         {
-            await _next(context);
+            await next(context);
         }
         catch (UnauthorizedAccessException e)
         {
