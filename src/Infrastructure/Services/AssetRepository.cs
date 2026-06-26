@@ -5,31 +5,25 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Infrastructure.Services;
 
-public class AssetRepository : IAssetRepository
+public class AssetRepository(RxcDbContext context) : IAssetRepository
 {
-    private readonly RxcDbContext _context;
-    public AssetRepository(RxcDbContext context)
-    {
-        _context = context;
-    }
-
     public async Task<int> GetTotalAssets(Guid userId)
     {
 
-        return await (from asset in _context.Assets
-            join site in _context.Sites on asset.SiteId equals site.Id
+        return await (from asset in context.Assets
+            join site in context.Sites on asset.SiteId equals site.Id
             where site.UserId == userId
             select asset).CountAsync();
     }
 
     public async Task AddAssetAsync(Domain.Entities.Assets.Asset asset)
     {
-        await _context.Assets.AddAsync(asset);
+        await context.Assets.AddAsync(asset);
     }
 
     public async Task<SolarPanel> GetSolarByUserId(Guid userId)
     {
-        return await _context.Assets.Include(s => s.Site)
+        return await context.Assets.Include(s => s.Site)
             .OfType<SolarPanel>()
             .Where(u => u.Site != null && u.Site.UserId == userId)
             .FirstOrDefaultAsync();
@@ -37,7 +31,7 @@ public class AssetRepository : IAssetRepository
 
     public async Task<WindTurbine> GetTurbineByUserId(Guid userId)
     {
-        return await _context.Assets.Include(s => s.Site)
+        return await context.Assets.Include(s => s.Site)
             .OfType<WindTurbine>()
             .Where(u => u.Site != null && u.Site.UserId == userId)
             .FirstOrDefaultAsync();
@@ -45,7 +39,7 @@ public class AssetRepository : IAssetRepository
 
     public async Task<Battery> GetBatteryByUserId(Guid userId)
     {
-        return await _context.Assets.Include(s => s.Site)
+        return await context.Assets.Include(s => s.Site)
             .OfType<Battery>()
             .Where(u => u.Site != null && u.Site.UserId == userId)
             .FirstOrDefaultAsync();
