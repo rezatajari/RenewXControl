@@ -32,7 +32,7 @@ public class Battery : Asset
             double setPoint,
             double frequentlyDischarge,
             Guid siteId)
-        => new Battery(capacity, stateCharge, setPoint, frequentlyDischarge, siteId);
+        => new(capacity, stateCharge, setPoint, frequentlyDischarge, siteId);
     private bool NeedsCharging()
     {
         return StateCharge < Capacity;
