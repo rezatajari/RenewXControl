@@ -49,7 +49,7 @@ public class UsersController(IUsersService usersService) : BaseController
     public async Task<IActionResult> UploadImage(IFormFile file)
     {
         var uploadedFile = new FormFileAdapter(file);
-        var result = await _usersService.SaveProfileImageAsync(uploadedFile);
+        var result = await usersService.SaveProfileImageAsync(uploadedFile);
         return result.IsSuccess ? Ok(result) : BadRequest(result);
     }
 }

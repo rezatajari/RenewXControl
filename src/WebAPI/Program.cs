@@ -1,6 +1,6 @@
 ﻿using API;
 using API.Extensions;
-using Application.Validation;
+using Application.Validation.User.Auth;
 using FluentValidation;
 using FluentValidation.AspNetCore;
 
