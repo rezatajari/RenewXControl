@@ -10,11 +10,10 @@ public class Battery : Asset
         Capacity = capacity;
         StateCharge = stateCharge;
         SetPoint = setPoint;
-        FrequentlyDisCharge = frequentlyDisCharge;
         TotalPower = 0;
         SiteId= siteId;
 
-        if (!CheckEmpty()) return;
+        if (!NeedsCharging()) return;
         IsNeedToCharge = true;
         IsStartingChargeDischarge = false;
     }
@@ -26,7 +25,7 @@ public class Battery : Asset
     public double FrequentlyDisCharge { get; }
     public bool IsNeedToCharge { get; private set; }
     public bool IsStartingChargeDischarge { get; private set; }
-    public string ChargeStateMessage { get;private set; } 
+    public BatteryState State { get; private set; }
 
     public static Battery Create(double capacity,
             double stateCharge,
@@ -34,7 +33,7 @@ public class Battery : Asset
             double frequentlyDischarge,
             Guid siteId)
         => new Battery(capacity, stateCharge, setPoint, frequentlyDischarge, siteId);
-    private bool CheckEmpty()
+    private bool NeedsCharging()
     {
         return StateCharge < Capacity;
     }
@@ -44,7 +43,7 @@ public class Battery : Asset
     }
     public async Task Charge()
     {
-        ChargeStateMessage = "Battery is charging";
+        State = BatteryState.Charging;
         IsStartingChargeDischarge = true;
         while (Math.Abs(Capacity - StateCharge) > 0.001)
         {
@@ -53,12 +52,12 @@ public class Battery : Asset
         }
         IsNeedToCharge = false;
         IsStartingChargeDischarge = false;
-        ChargeStateMessage = "Charge complete.";
+        State = BatteryState.ChargingCompleted;
         UpdateSetPoint();
     }
     public async Task Discharge()
     {
-        ChargeStateMessage = "Battery is discharging";
+        State = BatteryState.Discharging;
         var amountToDischarge = StateCharge - SetPoint;
         var rateOfDischarge = amountToDischarge / FrequentlyDisCharge;
         IsNeedToCharge = false;
@@ -77,7 +76,7 @@ public class Battery : Asset
         }
         IsNeedToCharge = true;
         IsStartingChargeDischarge = false;
-        ChargeStateMessage = "Discharge complete.";
+        State = BatteryState.DischargingCompleted;
     }
     public void SetTotalPower(double amount)
     {
