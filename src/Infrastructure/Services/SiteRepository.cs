@@ -6,27 +6,21 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Infrastructure.Services;
 
-public class SiteRepository:ISiteRepository
+public class SiteRepository(RxcDbContext context) : ISiteRepository
 {
-    private readonly RxcDbContext _context;
-
-    public SiteRepository(RxcDbContext context)
-    {
-        _context= context;
-    }
     public async Task AddAsync(Site site)
     {
-        await _context.Sites.AddAsync(site);
+        await context.Sites.AddAsync(site);
     }
 
     public async Task<Site?> GetByIdAsync(Guid siteId)
     {
-        return await _context.Sites.FindAsync(siteId);
+        return await context.Sites.FindAsync(siteId);
     }
 
     public async Task<Guid> GetIdAsync(Guid userId)
     {
-        return await _context.Sites
+        return await context.Sites
             .Where(s => s.UserId == userId)
             .Select(s => s.Id)
             .FirstOrDefaultAsync();
@@ -34,18 +28,18 @@ public class SiteRepository:ISiteRepository
 
     public async Task<bool> HasSite(Guid userId)
     {
-        return await _context.Sites
+        return await context.Sites
             .AnyAsync(s => s.UserId == userId);
     }
 
     public async Task<List<Site>> GetSitesAsync(Guid userId)
     {
-        return await _context.Sites.Where(u=>u.UserId==userId).ToListAsync();
+        return await context.Sites.Where(u=>u.UserId==userId).ToListAsync();
     }
 
     public async Task<List<Asset>> GetAssetsBySite(Guid siteId)
     {
-        return await _context.Assets
+        return await context.Assets
             .Where(a => a.SiteId == siteId)
             .ToListAsync();
     }

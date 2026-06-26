@@ -1,6 +1,5 @@
 ﻿using Application.Common;
 using Application.DTOs.AddAsset;
-using Domain.Entities.Site;
 using Site = Application.DTOs.Site;
 
 namespace Application.Interfaces.Asset;
